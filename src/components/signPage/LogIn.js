@@ -21,7 +21,7 @@ export default function LogIn() {
             setIsLoading(false);
             if(res.status === 200) {
                 localStorage.setItem('user',JSON.stringify({
-                    user: res.data.user,
+                    ...res.data.user,
                     token: res.data.token
                 }));
                 setUser(JSON.parse(localStorage.getItem('user')));
