@@ -56,7 +56,7 @@ export default function Publish({ posts, setPosts }) {
                 </button>
             </Form>
             <UserImg>
-                <img src={user.avatar} alt="avatar do usuário" />
+                {user ? <img src={user.avatar} alt="avatar do usuário" /> : ""}
             </UserImg>
         </PublishStyle>
     );
