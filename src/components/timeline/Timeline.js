@@ -4,8 +4,11 @@ import Publish from "./Publish";
 import PostsList from "./PostsList";
 import Trending from "./Trending";
 import MediaQuery from "react-responsive";
+import { useState } from "react";
 
 export default function Timeline() {
+    const [posts, setPosts] = useState([]);
+
     return (
         <>
             <NavBar />
@@ -14,8 +17,8 @@ export default function Timeline() {
                     <PageTitle>timeline</PageTitle>
                     <TimelineBodyContainer>
                         <PostsListContainer>
-                            <Publish />
-                            <PostsList />
+                            <Publish posts={posts} setPosts={setPosts} />
+                            <PostsList posts={posts} setPosts={setPosts} />
                         </PostsListContainer>
                         <MediaQuery minWidth={700}>
                             <Trending />

@@ -2,10 +2,9 @@ import styled from "styled-components";
 import { getPosts } from "../../services/api.js";
 import UserContext from "../../contexts/UserContext.js";
 import Post from "../shared/Post.js";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useContext } from "react";
 
-export default function PostsList() {
-    const [posts, setPosts] = useState([]);
+export default function PostsList({ posts, setPosts }) {
     const { user } = useContext(UserContext);
 
     useEffect(() => {
@@ -13,12 +12,12 @@ export default function PostsList() {
         request.then((res) => {
             setPosts(res.data.posts);
         });
-    }, []);
+    }, [posts]);
 
     return (
         <Container>
             {posts.map((post) => (
-                <Post post={post} />
+                <Post post={post} key={post.id} />
             ))}
         </Container>
     );

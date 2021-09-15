@@ -139,7 +139,7 @@ const Comment = styled.p`
 
 const LinkBox = styled.div`
     width: 100%;
-    height: 150px;
+    height: 100%;
     display: flex;
     align-items: center;
     border: 1px solid #4d4d4d;
@@ -179,7 +179,7 @@ const LinkRef = styled.a`
 
 const LinkImg = styled.div`
     width: 35%;
-    height: 100%;
+    height: 150px;
     overflow: hidden;
     display: flex;
     justify-content: center;

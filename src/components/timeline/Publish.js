@@ -1,23 +1,59 @@
 import styled from "styled-components";
 import UserContext from "../../contexts/UserContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { createPost } from "../../services/api";
 
-export default function Publish() {
+export default function Publish({ posts, setPosts }) {
     const { user } = useContext(UserContext);
-    console.log(user);
+    const [loading, setLoading] = useState(false);
+    const [text, setText] = useState("");
+    const [link, setLink] = useState("");
+
+    function publish(e) {
+        e.preventDefault();
+        setLoading(true);
+        const body = {
+            text,
+            link,
+        };
+
+        const request = createPost(body, user.token);
+        request.then((res) => {
+            setText("");
+            setLink("");
+            setLoading(false);
+            setPosts([...posts, res.data.post]);
+        });
+        request.catch(() => {
+            setLoading(false);
+            alert("Houve um erro ao publicar seu link");
+        });
+    }
 
     return (
         <PublishStyle>
             <WhatToLikeToday>
                 O que você tem pra favoritar hoje?
             </WhatToLikeToday>
-            <Form onSubmit={(e) => e.preventDefault()}>
-                <input type="text" placeholder="http://..." />
+            <Form onSubmit={(e) => publish(e)}>
+                <input
+                    type="url"
+                    placeholder="http://..."
+                    required
+                    disabled={loading}
+                    value={link}
+                    onChange={(e) => setLink(e.target.value)}
+                />
                 <textarea
                     type="text"
                     placeholder="Muito irado esse link falando de #javascript"
+                    disabled={loading}
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
                 />
-                <button>Publicar</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? "Publicando..." : "Publicar"}
+                </button>
             </Form>
             <img src={user.avatar} alt="avatar do usuário" />
         </PublishStyle>
