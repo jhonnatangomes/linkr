@@ -1,9 +1,10 @@
 import GlobalStyle from '../styles/globalStyles';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { useState } from "react";
+import { Redirect } from 'react-router';
 
 import UserContext from '../contexts/UserContext';
-import SignPage from './sign-in & sign-up/SignPage';
+import SignPage from './signPage/SignPage';
 import Timeline from './timeline/Timeline';
 
 export default function App() {
