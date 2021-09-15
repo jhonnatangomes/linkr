@@ -31,13 +31,14 @@ export default function LogIn() {
         request.catch((error)=> {
             setIsLoading(false);
             if(error.response.status === 403){ alert('Email ou senha incorretos!') }
+            else {alert('Algo deu errado! Por favor, tente novamente.')}
         })
     }
 
     return(
         <Form onSubmit={login}>
-            <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder="e-mail" ></input>
-            <input onChange={(e)=>setPassword(e.target.value)} value={password} type="password" placeholder="password"></input>
+            <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder="e-mail" required ></input>
+            <input onChange={(e)=>setPassword(e.target.value)} value={password} type="password" placeholder="password" required></input>
             <Button isloading={isLoading} disabled={isLoading} type="submit">Log In</Button>
             <StyledLink to='/signup'>First time? Create an account!</StyledLink>
         </Form>
