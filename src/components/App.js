@@ -14,9 +14,10 @@ export default function App() {
             <BrowserRouter>
 				<GlobalStyle />
 				<Switch>
-                    <Route path="/" exact component={SignPage} />
                     <Route path="/signup" exact component={SignPage} />
                     <Route path="/timeline" exact component={Timeline} />
+                    <Route path="/" exact component={SignPage} />
+                    <Redirect to="/signup" />
                 </Switch>
 			</BrowserRouter>
         </UserContext.Provider>
