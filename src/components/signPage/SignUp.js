@@ -1,7 +1,7 @@
 import styled from "styled-components"
-import axios from "axios";
 import { useState } from "react";
 import { Link, useHistory } from 'react-router-dom';
+import { signUp } from "../../services/api";
 
 export default function SignUp() {
     const [email, setEmail] = useState('');
@@ -16,7 +16,7 @@ export default function SignUp() {
         if (pictureUrl.match(/\.(jpeg|jpg|gif|png|svg)$/) != null){
             setIsLoading(true);
             const body = { email, password, username, pictureUrl };
-            const request = axios.post('https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-up', body);
+            const request = signUp(body);
             request.then((res)=> {
                 setIsLoading(false);
                 if (res.status === 200) { history.push("/") }
