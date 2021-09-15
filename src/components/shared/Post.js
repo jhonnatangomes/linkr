@@ -17,7 +17,9 @@ function PostLeftBox({ post }) {
                 <img src={post.user.avatar} alt="Nome do usuário" />
             </UserImg>
             <HeartIcon />
-            13 likes
+            {post.likes.length === 1
+                ? post.likes.length + " like"
+                : post.likes.length + " likes"}
         </LeftBox>
     );
 }
