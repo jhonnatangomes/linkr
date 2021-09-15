@@ -1,17 +1,30 @@
 import styled from "styled-components";
+import { getTrending } from "../../services/api";
+import { useState, useEffect, useContext } from "react";
+import UserContext from "../../contexts/UserContext";
+import { Link } from "react-router-dom";
 
 export default function Trending() {
+    const { user } = useContext(UserContext);
+    const [trending, setTrending] = useState([]);
+
+    useEffect(() => {
+        const request = getTrending(user.token);
+        request.then((res) => {
+            setTrending(res.data.hashtags);
+        });
+    }, []);
+
     return (
         <TrendingStyle>
             <p>trending</p>
             <DivisionLine />
             <HashtagContainer>
-                <p>#javascript</p>
-                <p>#javascript</p>
-                <p>#javascript</p>
-                <p>#javascript</p>
-                <p>#javascript</p>
-                <p>#javascript</p>
+                {trending.map((topic) => (
+                    <Link to={`/hashtag/${topic.name}`}>
+                        <p key={topic.id}>#{topic.name}</p>
+                    </Link>
+                ))}
             </HashtagContainer>
         </TrendingStyle>
     );
@@ -19,7 +32,7 @@ export default function Trending() {
 
 const TrendingStyle = styled.div`
     width: 301px;
-    height: 500px;
+    height: 100%;
     background: #171717;
     border-radius: 16px;
 
@@ -49,5 +62,10 @@ const HashtagContainer = styled.div`
         letter-spacing: 5%;
         color: white;
         margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    & p:hover {
+        text-decoration: underline;
     }
 `;
