@@ -22,7 +22,7 @@ export default function Publish({ posts, setPosts }) {
             setText("");
             setLink("");
             setLoading(false);
-            setPosts([...posts, res.data.post]);
+            setPosts([res.data.post, ...posts]);
         });
         request.catch(() => {
             setLoading(false);
@@ -55,7 +55,9 @@ export default function Publish({ posts, setPosts }) {
                     {loading ? "Publicando..." : "Publicar"}
                 </button>
             </Form>
-            <img src={user.avatar} alt="avatar do usuário" />
+            <UserImg>
+                <img src={user.avatar} alt="avatar do usuário" />
+            </UserImg>
         </PublishStyle>
     );
 }
@@ -69,25 +71,12 @@ const PublishStyle = styled.div`
     margin-bottom: 29px;
     position: relative;
 
-    img {
-        position: absolute;
-        left: 18px;
-        top: 16px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-    }
-
     @media (max-width: 700px) {
         width: 100%;
         padding: 10px 15px 12px 15px;
         text-align: center;
         margin-bottom: 16px;
         border-radius: 0;
-
-        div {
-            display: none;
-        }
     }
 `;
 
@@ -170,5 +159,26 @@ const Form = styled.form`
             line-height: 16px;
             font-size: 13px;
         }
+    }
+`;
+
+const UserImg = styled.div`
+    position: absolute;
+    left: 18px;
+    top: 16px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    & img {
+        height: 100%;
+    }
+
+    @media (max-width: 700px) {
+        display: none;
     }
 `;

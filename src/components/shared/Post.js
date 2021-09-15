@@ -25,10 +25,25 @@ function PostLeftBox({ post }) {
 }
 
 function PostInfo({ post }) {
+    function formatText(text) {
+        const newText = [""];
+        for (let char of text) {
+            if (char === "#") {
+                newText.push("");
+            }
+            newText[newText.length - 1] += char;
+        }
+        return newText;
+    }
+
     return (
         <Info>
             <Username>{post.user.username}</Username>
-            <Comment>{post.text}</Comment>
+            <Comment>
+                {formatText(post.text).map((text, i) =>
+                    text[0] === "#" ? <span key={i}>{text}</span> : text
+                )}
+            </Comment>
             <LinkInfo post={post} />
         </Info>
     );
@@ -40,12 +55,10 @@ function LinkInfo({ post }) {
             <LinkText>
                 <LinkTitle>{post.linkTitle}</LinkTitle>
                 <LinkDescription>{post.linkDescription}</LinkDescription>
-                <LinkRef href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-                    {post.link}
-                </LinkRef>
+                <LinkRef href={post.link}>{post.link}</LinkRef>
             </LinkText>
             <LinkImg>
-                <img src={post.linkImage} />
+                <img src={post.linkImage} alt="" />
             </LinkImg>
         </LinkBox>
     );
@@ -131,6 +144,11 @@ const Comment = styled.p`
     color: #b7b7b7;
     font-size: 17px;
     margin-bottom: 10px;
+
+    span {
+        font-weight: 700;
+        color: #ffffff;
+    }
 
     @media (max-width: 700px) {
         font-size: 15px;

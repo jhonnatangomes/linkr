@@ -20,7 +20,7 @@ export default function Timeline() {
                             <Publish posts={posts} setPosts={setPosts} />
                             <PostsList posts={posts} setPosts={setPosts} />
                         </PostsListContainer>
-                        <MediaQuery minWidth={700}>
+                        <MediaQuery minWidth={937}>
                             <Trending />
                         </MediaQuery>
                     </TimelineBodyContainer>

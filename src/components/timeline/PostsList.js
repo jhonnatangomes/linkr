@@ -12,7 +12,7 @@ export default function PostsList({ posts, setPosts }) {
         request.then((res) => {
             setPosts(res.data.posts);
         });
-    }, [posts]);
+    }, []);
 
     return (
         <Container>
