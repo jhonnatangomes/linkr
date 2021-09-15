@@ -1,7 +1,7 @@
 import styled from "styled-components"
-import axios from "axios";
 import { useState, useContext } from "react";
 import { Link, useHistory } from 'react-router-dom';
+import { signIn } from "../../services/api";
 
 import UserContext from '../../contexts/UserContext';
 
@@ -16,7 +16,7 @@ export default function LogIn() {
         e.preventDefault();
         setIsLoading(true);
         const body = { email, password };
-        const request = axios.post('https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-in', body);
+        const request = signIn(body);
         request.then((res)=> {
             setIsLoading(false);
             if(res.status === 200) {
@@ -31,13 +31,14 @@ export default function LogIn() {
         request.catch((error)=> {
             setIsLoading(false);
             if(error.response.status === 403){ alert('Email ou senha incorretos!') }
+            else {alert('Algo deu errado! Por favor, tente novamente.')}
         })
     }
 
     return(
         <Form onSubmit={login}>
-            <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder="e-mail" ></input>
-            <input onChange={(e)=>setPassword(e.target.value)} value={password} type="password" placeholder="password"></input>
+            <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder="e-mail" required ></input>
+            <input onChange={(e)=>setPassword(e.target.value)} value={password} type="password" placeholder="password" required></input>
             <Button isloading={isLoading} disabled={isLoading} type="submit">Log In</Button>
             <StyledLink to='/signup'>First time? Create an account!</StyledLink>
         </Form>
