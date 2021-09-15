@@ -1,6 +1,11 @@
 import styled from "styled-components";
+import UserContext from "../../contexts/UserContext";
+import { useContext } from "react";
 
 export default function Publish() {
+    const { user } = useContext(UserContext);
+    console.log(user);
+
     return (
         <PublishStyle>
             <WhatToLikeToday>
@@ -14,7 +19,7 @@ export default function Publish() {
                 />
                 <button>Publicar</button>
             </Form>
-            <div></div>
+            <img src={user.avatar} alt="avatar do usuário" />
         </PublishStyle>
     );
 }
@@ -28,14 +33,13 @@ const PublishStyle = styled.div`
     margin-bottom: 29px;
     position: relative;
 
-    div {
+    img {
         position: absolute;
         left: 18px;
         top: 16px;
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        background-color: red;
     }
 
     @media (max-width: 700px) {
@@ -81,7 +85,7 @@ const Form = styled.form`
     }
 
     textarea {
-        padding: 8px 0;
+        padding: 8px 13px;
         resize: none;
         height: 66px;
     }

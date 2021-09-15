@@ -1,23 +1,20 @@
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
 
-export default function Post() {
+export default function Post({ post }) {
     return (
         <PostContainer>
-            <PostLeftBox />
-            <PostInfo />
+            <PostLeftBox post={post} />
+            <PostInfo post={post} />
         </PostContainer>
     );
 }
 
-function PostLeftBox() {
+function PostLeftBox({ post }) {
     return (
         <LeftBox>
             <UserImg>
-                <img
-                    src="https://chuvadenanquim.files.wordpress.com/2011/11/steinsgate-01-kyouma-mayuri-itaru-monitor.jpg?w=300&h=168"
-                    alt="Nome do usuário"
-                />
+                <img src={post.user.avatar} alt="Nome do usuário" />
             </UserImg>
             <HeartIcon />
             13 likes
@@ -25,35 +22,28 @@ function PostLeftBox() {
     );
 }
 
-function PostInfo() {
+function PostInfo({ post }) {
     return (
         <Info>
-            <Username>Nome do usuário</Username>
-            <Comment>
-                Muito maneiro esse tutorial de Material UI com React, deem uma
-                olhada! #react #material
-            </Comment>
-            <LinkInfo />
+            <Username>{post.user.username}</Username>
+            <Comment>{post.text}</Comment>
+            <LinkInfo post={post} />
         </Info>
     );
 }
 
-function LinkInfo() {
+function LinkInfo({ post }) {
     return (
         <LinkBox>
             <LinkText>
-                <LinkTitle>Título do link</LinkTitle>
-                <LinkDescription>
-                    Hey! I have moved this tutorial to my personal blog. Same
-                    content, new location. Sorry about making you click through
-                    to another page.
-                </LinkDescription>
+                <LinkTitle>{post.linkTitle}</LinkTitle>
+                <LinkDescription>{post.linkDescription}</LinkDescription>
                 <LinkRef href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-                    https://www.youtube.com/watch?v=dQw4w9WgXcQ
+                    {post.link}
                 </LinkRef>
             </LinkText>
             <LinkImg>
-                <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
+                <img src={post.linkImage} />
             </LinkImg>
         </LinkBox>
     );

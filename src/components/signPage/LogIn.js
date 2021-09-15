@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import axios from "axios";
 import { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
+import { signIn } from "../../services/api";
 
 import UserContext from "../../contexts/UserContext";
 
@@ -16,17 +16,14 @@ export default function LogIn() {
         e.preventDefault();
         setIsLoading(true);
         const body = { email, password };
-        const request = axios.post(
-            "https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/sign-in",
-            body
-        );
+        const request = signIn(body);
         request.then((res) => {
             setIsLoading(false);
             if (res.status === 200) {
                 localStorage.setItem(
                     "user",
                     JSON.stringify({
-                        user: res.data.user,
+                        ...res.data.user,
                         token: res.data.token,
                     })
                 );
