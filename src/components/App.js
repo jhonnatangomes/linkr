@@ -6,6 +6,7 @@ import { Redirect } from 'react-router';
 import UserContext from '../contexts/UserContext';
 import SignPage from './signPage/SignPage';
 import Timeline from './timeline/Timeline';
+import MyPosts from './myPosts/MyPosts';
 
 export default function App() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
@@ -17,6 +18,7 @@ export default function App() {
 				<Switch>
                     <Route path="/signup" exact component={SignPage} />
                     <Route path="/timeline" exact component={Timeline} />
+                    <Route path="/my-posts" exact component={MyPosts} />
                     <Route path="/" exact component={SignPage} />
                     <Redirect to="/signup" />
                 </Switch>
