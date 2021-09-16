@@ -51,16 +51,18 @@ function PostInfo({ post }) {
 
 function LinkInfo({ post }) {
     return (
-        <LinkBox>
-            <LinkText>
-                <LinkTitle>{post.linkTitle}</LinkTitle>
-                <LinkDescription>{post.linkDescription}</LinkDescription>
-                <LinkRef href={post.link}>{post.link}</LinkRef>
-            </LinkText>
-            <LinkImg>
-                <img src={post.linkImage} alt="" />
-            </LinkImg>
-        </LinkBox>
+        <a href={post.link}>
+            <LinkBox>
+                <LinkText>
+                    <LinkTitle>{post.linkTitle}</LinkTitle>
+                    <LinkDescription>{post.linkDescription}</LinkDescription>
+                    <LinkRef>{post.link}</LinkRef>
+                </LinkText>
+                <LinkImg>
+                    <img src={post.linkImage} alt="" />
+                </LinkImg>
+            </LinkBox>
+        </a>
     );
 }
 
@@ -190,7 +192,7 @@ const LinkDescription = styled.p`
     margin-bottom: 15px;
 `;
 
-const LinkRef = styled.a`
+const LinkRef = styled.span`
     color: #cecece;
     font-size: 11px;
 `;
