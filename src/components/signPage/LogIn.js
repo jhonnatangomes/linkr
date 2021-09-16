@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from "styled-components"
 import { useState, useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory } from 'react-router-dom';
 import { signIn } from "../../services/api";
 
 import UserContext from "../../contexts/UserContext";
@@ -19,48 +19,28 @@ export default function LogIn() {
         const request = signIn(body);
         request.then((res) => {
             setIsLoading(false);
-            if (res.status === 200) {
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify({
-                        ...res.data.user,
-                        token: res.data.token,
-                    })
-                );
-                setUser(JSON.parse(localStorage.getItem("user")));
-                history.push("/timeline");
+            if(res.status === 200) {
+                localStorage.setItem('user',JSON.stringify({
+                    ...res.data.user,
+                    token: res.data.token
+                }));
+                setUser(JSON.parse(localStorage.getItem('user')));
+                history.push('/timeline');
             }
         });
         request.catch((error) => {
             setIsLoading(false);
-            if (error.response.status === 403) {
-                alert("Email ou senha incorretos!");
-            }
-        });
+            if(error.response.status === 403){ alert('Email ou senha incorretos!') }
+            else {alert('Algo deu errado! Por favor, tente novamente.')}
+        })
     }
 
     return (
         <Form onSubmit={login}>
-            <input
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                type="email"
-                placeholder="e-mail"
-                disabled={isLoading}
-                required
-            ></input>
-            <input
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                type="password"
-                placeholder="password"
-                disabled={isLoading}
-                required
-            ></input>
-            <Button isloading={isLoading} disabled={isLoading} type="submit">
-                Log In
-            </Button>
-            <StyledLink to="/signup">First time? Create an account!</StyledLink>
+            <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder="e-mail" disabled={isLoading} required ></input>
+            <input onChange={(e)=>setPassword(e.target.value)} value={password} type="password" placeholder="password" disabled={isLoading} required></input>
+            <Button isloading={isLoading} disabled={isLoading} type="submit">Log In</Button>
+            <StyledLink to='/signup'>First time? Create an account!</StyledLink>
         </Form>
     );
 }

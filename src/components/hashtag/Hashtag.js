@@ -5,7 +5,7 @@ import Trending from "../shared/Trending";
 import MediaQuery from "react-responsive";
 import { useParams } from "react-router";
 import { useContext, useEffect, useState } from "react";
-import { getHashtagPosts } from "../../services/api";
+import { getHashtagPosts } from "../../services/trendingApi";
 import UserContext from "../../contexts/UserContext";
 
 export default function Hashtag() {

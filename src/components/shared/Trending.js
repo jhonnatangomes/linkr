@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getTrending } from "../../services/api";
+import { getTrending } from "../../services/trendingApi";
 import { useState, useEffect, useContext } from "react";
 import UserContext from "../../contexts/UserContext";
 import { Link } from "react-router-dom";

@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { signUp } from "../../services/api";
+import styled from "styled-components"
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory } from 'react-router-dom';
+import { signUp } from "../../services/api";
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
@@ -38,37 +38,11 @@ export default function SignUp() {
 
     return (
         <Form onSubmit={signup}>
-            <input
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                type="email"
-                placeholder="e-mail"
-                required
-            ></input>
-            <input
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                type="password"
-                placeholder="password"
-                required
-            ></input>
-            <input
-                onChange={(e) => setUserName(e.target.value)}
-                value={username}
-                type="text"
-                placeholder="username"
-                required
-            ></input>
-            <input
-                onChange={(e) => setPictureUrl(e.target.value)}
-                value={pictureUrl}
-                type="text"
-                placeholder="picture url"
-                required
-            ></input>
-            <Button isloading={isLoading} disabled={isLoading} type="submit">
-                Sign Up
-            </Button>
+            <input onChange={(e) => setEmail(e.target.value)} value={email} type="email" placeholder="e-mail" disabled={isLoading} required></input>
+            <input onChange={(e) => setPassword(e.target.value)} value={password} type="password" placeholder="password" disabled={isLoading} required></input>
+            <input onChange={(e) => setUserName(e.target.value)} value={username} type="text" placeholder="username" disabled={isLoading} required></input>
+            <input onChange={(e) => setPictureUrl(e.target.value)} value={pictureUrl} type="text" placeholder="picture url" disabled={isLoading} required></input>
+            <Button isloading={isLoading} disabled={isLoading} type="submit">Sign Up</Button>
             <StyledLink to="/">Switch back to log in</StyledLink>
         </Form>
     );

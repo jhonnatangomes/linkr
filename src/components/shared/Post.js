@@ -27,8 +27,14 @@ function PostLeftBox({ post }) {
 function PostInfo({ post }) {
     function formatText(text) {
         const newText = [""];
+        let isHashtag = false;
         for (let char of text) {
             if (char === "#") {
+                newText.push("");
+                isHashtag = true;
+            }
+            if (isHashtag && char === " ") {
+                isHashtag = false;
                 newText.push("");
             }
             newText[newText.length - 1] += char;
@@ -184,17 +190,29 @@ const LinkTitle = styled.h3`
     color: #cecece;
     font-size: 16px;
     margin-bottom: 5px;
+
+    @media (max-width: 700px) {
+        font-size: 11px;
+    }
 `;
 
 const LinkDescription = styled.p`
     font-size: 11px;
     color: #9b9595;
     margin-bottom: 15px;
+
+    @media (max-width: 700px) {
+        font-size: 9px;
+    }
 `;
 
 const LinkRef = styled.span`
     color: #cecece;
     font-size: 11px;
+
+    @media (max-width: 700px) {
+        font-size: 9px;
+    }
 `;
 
 const LinkImg = styled.div`
