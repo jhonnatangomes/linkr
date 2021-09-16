@@ -12,7 +12,6 @@ export default function Hashtag() {
     const { hashtag } = useParams();
     const { user } = useContext(UserContext);
     const [posts, setPosts] = useState([]);
-    console.log(posts);
 
     useEffect(() => {
         const request = getHashtagPosts(hashtag, user.token);
@@ -49,7 +48,6 @@ const HashtagContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* margin-top: 72px; */
 
     @media (max-width: 700px) {
         width: 100%;
