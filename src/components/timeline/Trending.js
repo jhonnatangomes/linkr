@@ -21,7 +21,7 @@ export default function Trending() {
             <DivisionLine />
             <HashtagContainer>
                 {trending.map((topic) => (
-                    <Link to={`/hashtag/${topic.name}`}>
+                    <Link to={`/hashtag/${topic.name}`} key={topic.id}>
                         <p key={topic.id}>#{topic.name}</p>
                     </Link>
                 ))}
