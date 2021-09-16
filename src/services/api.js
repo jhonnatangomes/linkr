@@ -11,4 +11,26 @@ function signUp(body) {
     return request;
 }
 
-export { signIn, signUp };
+function getPosts(token) {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    const request = axios.get(`${URL_API}/posts`, config);
+    return request;
+}
+
+function createPost(body, token) {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    const request = axios.post(`${URL_API}/posts`, body, config);
+    return request;
+}
+
+export { signIn, signUp, getPosts, createPost };
