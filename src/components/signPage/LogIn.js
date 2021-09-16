@@ -35,6 +35,8 @@ export default function LogIn() {
             setIsLoading(false);
             if (error.response.status === 403) {
                 alert("Email ou senha incorretos!");
+            } else {
+                alert("Algo deu errado! Por favor, tente novamente.");
             }
         });
     }
