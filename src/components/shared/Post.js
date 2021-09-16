@@ -27,8 +27,14 @@ function PostLeftBox({ post }) {
 function PostInfo({ post }) {
     function formatText(text) {
         const newText = [""];
+        let isHashtag = false;
         for (let char of text) {
             if (char === "#") {
+                newText.push("");
+                isHashtag = true;
+            }
+            if (isHashtag && char === " ") {
+                isHashtag = false;
                 newText.push("");
             }
             newText[newText.length - 1] += char;
