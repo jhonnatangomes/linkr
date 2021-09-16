@@ -38,6 +38,7 @@ const TimelineContainer = styled.div`
 
     @media (max-width: 700px) {
         width: 100%;
+        margin-top: 0px;
 
         & > div {
             width: 100%;
