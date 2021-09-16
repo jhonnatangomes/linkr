@@ -80,6 +80,7 @@ const PostContainer = styled.div`
     background-color: #171717;
     overflow: hidden;
     margin-bottom: 15px;
+    overflow-wrap: break-word;
 
     @media (max-width: 700px) {
         border-radius: 0;

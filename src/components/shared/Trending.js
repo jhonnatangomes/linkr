@@ -8,6 +8,7 @@ export default function Trending() {
     const { user } = useContext(UserContext);
     const [trending, setTrending] = useState([]);
 
+
     useEffect(() => {
         const request = getTrending(user.token);
         request.then((res) => {
@@ -35,6 +36,7 @@ const TrendingStyle = styled.div`
     height: 100%;
     background: #171717;
     border-radius: 16px;
+    overflow-wrap: break-word;
 
     & > p {
         padding: 9px 16px 12px 16px;

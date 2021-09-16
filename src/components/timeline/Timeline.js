@@ -34,7 +34,7 @@ const TimelineContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 72px;
+    margin-top: 53px;
 
     @media (max-width: 700px) {
         width: 100%;
@@ -51,7 +51,7 @@ const PageTitle = styled.h1`
     font-weight: 700;
     color: #ffffff;
     margin-bottom: 43px;
-    margin-top: 53px;
+    
 
     @media (max-width: 700px) {
         margin: 19px 17px;
