@@ -30,7 +30,7 @@ export default function Hashtag() {
                         <PostsListContainer>
                             <div>
                                 {posts.map((post) => (
-                                    <Post post={post} />
+                                    <Post post={post} key={post.id} />
                                 ))}
                             </div>
                         </PostsListContainer>
@@ -51,7 +51,6 @@ const HashtagContainer = styled.div`
     margin-top: 72px;
 
     @media (max-width: 700px) {
-        margin-top: 0px;
         width: 100%;
 
         & > div {
@@ -90,5 +89,9 @@ const PostsListContainer = styled.div`
     @media (max-width: 700px) {
         width: 100%;
         margin-right: 0;
+
+        & > div {
+            width: 100%;
+        }
     }
 `;
