@@ -1,5 +1,5 @@
 import axios from "axios";
-const URL_API = "https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr/users";
+const URL_API = "https://mock-api.bootcamp.respondeai.com.br/api/v3/linkr/users";
 
 function getUserPosts (id, token) {
     const config = {
