@@ -2,7 +2,7 @@ import NavBar from "../navBar/NavBar";
 import styled from "styled-components";
 import Publish from "./Publish";
 import PostsList from "./PostsList";
-import Trending from "./Trending";
+import Trending from "../shared/Trending";
 import MediaQuery from "react-responsive";
 import { useState } from "react";
 

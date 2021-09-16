@@ -1,60 +1,37 @@
 import NavBar from "../navBar/NavBar";
 import styled from "styled-components";
 import Post from "../shared/Post";
-import Trending from "../timeline/Trending";
+import Trending from "../shared/Trending";
 import MediaQuery from "react-responsive";
-
-const posts = {
-    posts: [
-        {
-            id: 2,
-            text: "Never Gonna Give You Up #rickroll",
-            link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            linkTitle: "Rick Astley - Never Gonna Give You Up (Video)",
-            linkDescription:
-                "Rick Astley's official music video for “Never Gonna Give You Up” Listen to Rick Astley: https://RickAstley.lnk.to/_listenYDSubscribe to the official Rick Ast...",
-            linkImage: "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
-            user: {
-                id: 1,
-                username: "teste",
-                avatar: "https://mock-api.bootcamp.respondeai.com.br/api/v3/linkr/users/1/avatar",
-            },
-            likes: [
-                {
-                    id: 1,
-                    userId: 1,
-                    postId: 2,
-                    createdAt: "2021-05-24T18:55:37.544Z",
-                    updatedAt: "2021-05-24T18:55:37.544Z",
-                    "user.id": 1,
-                    "user.username": "teste",
-                },
-                {
-                    id: 2,
-                    userId: 4,
-                    postId: 2,
-                    createdAt: "2021-05-25T17:41:50.248Z",
-                    updatedAt: "2021-05-25T17:41:50.248Z",
-                    "user.id": 4,
-                    "user.username": "lalalabanana",
-                },
-            ],
-        },
-    ],
-};
+import { useParams } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { getHashtagPosts } from "../../services/api";
+import UserContext from "../../contexts/UserContext";
 
 export default function Hashtag() {
+    const { hashtag } = useParams();
+    const { user } = useContext(UserContext);
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        const request = getHashtagPosts(hashtag, user.token);
+        request.then((res) => {
+            setPosts(res.data.posts);
+        });
+    }, [hashtag]);
+
     return (
         <>
             <NavBar />
             <HashtagContainer>
                 <div>
-                    <PageTitle># react</PageTitle>
+                    <PageTitle># {hashtag}</PageTitle>
                     <HashtagBodyContainer>
                         <PostsListContainer>
                             <div>
-                                <Post post={posts.posts[0]} />
-                                <Post post={posts.posts[0]} />
+                                {posts.map((post) => (
+                                    <Post post={post} />
+                                ))}
                             </div>
                         </PostsListContainer>
                         <MediaQuery minWidth={937}>

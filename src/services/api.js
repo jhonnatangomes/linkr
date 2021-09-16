@@ -44,4 +44,15 @@ function getTrending(token) {
     return request;
 }
 
-export { signIn, signUp, getPosts, createPost, getTrending };
+function getHashtagPosts(hashtag, token) {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    const request = axios.get(`${URL_API}/hashtags/${hashtag}/posts`, config);
+    return request;
+}
+
+export { signIn, signUp, getPosts, createPost, getTrending, getHashtagPosts };
