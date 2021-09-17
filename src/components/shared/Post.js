@@ -1,22 +1,78 @@
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
+import { AiFillHeart } from "react-icons/ai";
 
-export default function Post({ post }) {
+export default function Post({ post, isLiked, toggleLike, userId }) {
     return (
         <PostContainer>
-            <PostLeftBox post={post} />
+            <PostLeftBox 
+                isLiked={isLiked}
+                toggleLike={toggleLike}
+                userId={userId}
+                post={post} 
+            />
             <PostInfo post={post} />
         </PostContainer>
     );
 }
 
-function PostLeftBox({ post }) {
+const HeartIcon = ({ likes, isLiked, toggleLike, userId }) => {
+
+    let toolTipMessage = '';
+    const otherLikesNames = likes.filter(like => like.userId !== userId).map(like => like['user.username']);
+    const otherLikesCount = otherLikesNames.length;
+
+    if (isLiked) {
+        toolTipMessage += 'Você';
+
+        if (otherLikesCount >= 1) {
+            toolTipMessage += (otherLikesCount === 1) ? ' e ' : ', ';
+            toolTipMessage += otherLikesNames[0]
+        }
+
+        if (otherLikesCount >= 2) {
+            toolTipMessage += (otherLikesCount === 2) ? ` e outra pessoa` : ` e outras ${otherLikesCount - 1} pessoas`;
+        }
+
+    } else {
+        if (otherLikesCount >= 1) {
+            toolTipMessage += otherLikesNames[0]
+
+            if (otherLikesCount >= 2) {
+                toolTipMessage += (otherLikesCount === 2) ? ' e ' : ', ';
+                toolTipMessage += otherLikesNames[1]
+            }
+
+            if (otherLikesCount >= 3) {
+                toolTipMessage += (otherLikesCount === 3) ? ` e outra pessoa` : ` e outras ${otherLikesCount - 2} pessoas`;
+            }
+        }
+    }
+
+    return (
+        <div data-tip={toolTipMessage} onClick={toggleLike}>
+            {isLiked ? (
+                <FillHeart />
+            ) : (
+                <OutlineHeart />
+            )}
+        </div>
+    )
+}
+
+function PostLeftBox({ post, isLiked, toggleLike, userId }) {
     return (
         <LeftBox>
             <UserImg>
                 <img src={post.user.avatar} alt="Nome do usuário" />
             </UserImg>
-            <HeartIcon />
+            <HeartIcon
+                likes={post.likes}
+                postId={post.id}
+                isLiked={isLiked}
+                toggleLike={toggleLike}
+                userId={userId}
+            />
             {post.likes.length === 1
                 ? post.likes.length + " like"
                 : post.likes.length + " likes"}
@@ -137,11 +193,22 @@ const Username = styled.h2`
     }
 `;
 
-const HeartIcon = styled(AiOutlineHeart)`
+const OutlineHeart = styled(AiOutlineHeart)`
     font-size: 20px;
     cursor: pointer;
     margin-bottom: 5px;
 
+    @media (max-width: 700px) {
+        font-size: 17px;
+        margin-bottom: 12px;
+    }
+`;
+
+const FillHeart = styled(AiFillHeart)`
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    color: #AC0000;
     @media (max-width: 700px) {
         font-size: 17px;
         margin-bottom: 12px;
