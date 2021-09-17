@@ -173,7 +173,7 @@ const LikeCounter = ({ likedBy, isLiked }) => {
     const likeCount = isLiked ? likedBy.length + 1 : likedBy.length;
 
     return (
-        <div data-tip={toolTipMessage}>
+        <div data-tip={toolTipMessage} data-for="main">
             {likeCount === 1
                 ? likeCount + " like"
                 : likeCount + " likes"}

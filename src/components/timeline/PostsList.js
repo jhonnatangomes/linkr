@@ -5,8 +5,6 @@ import Post from "../shared/Post.js";
 import { useEffect, useContext } from "react";
 import { useHistory } from "react-router";
 
-import ReactTooltip from 'react-tooltip';
-
 export default function PostsList({ posts, setPosts }) {
     const { user } = useContext(UserContext);
     const history = useHistory();
@@ -22,8 +20,6 @@ export default function PostsList({ posts, setPosts }) {
             history.push("/");
         }
     }, []);
-
-    ReactTooltip.rebuild();
 
     return (
         <Container>
