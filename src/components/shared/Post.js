@@ -202,9 +202,9 @@ function PostInfo({ post }) {
 
     return (
         <Info>
-            <Link to={`/user/${post.user.id}`}>
-                <Username>{post.user.username}</Username>
-            </Link>
+            <Username>
+                <Link to={`/user/${post.user.id}`}>{post.user.username}</Link>
+            </Username>
             <Comment>
                 {formatText(post.text).map((text, i) =>
                     text[0] === "#" ? (
@@ -303,6 +303,7 @@ const Username = styled.h2`
     color: #ffffff;
     font-size: 20px;
     margin-bottom: 10px;
+    width: fit-content;
 
     @media (max-width: 700px) {
         font-size: 17px;
