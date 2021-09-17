@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { getTrending } from "../../services/trendingApi";
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import UserContext from "../../contexts/UserContext";
 import { Link } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
 
 export default function Trending() {
     const { user } = useContext(UserContext);
@@ -22,10 +23,11 @@ export default function Trending() {
             <HashtagContainer>
                 {trending.map((topic) => (
                     <Link to={`/hashtag/${topic.name}`} key={topic.id}>
-                        <p key={topic.id}>#{topic.name}</p>
+                        <p key={topic.id} data-tip={topic.name}>#{topic.name}</p>
                     </Link>
                 ))}
             </HashtagContainer>
+            <ReactTooltip place="bottom" />
         </TrendingStyle>
     );
 }
