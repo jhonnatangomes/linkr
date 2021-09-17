@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 export default function Post({ post }) {
     return (
@@ -13,9 +14,11 @@ export default function Post({ post }) {
 function PostLeftBox({ post }) {
     return (
         <LeftBox>
-            <UserImg>
-                <img src={post.user.avatar} alt="Nome do usuário" />
-            </UserImg>
+            <Link to={`/user/${post.user.id}`}>
+                <UserImg>
+                    <img src={post.user.avatar} alt="Nome do usuário" />
+                </UserImg>
+            </Link>
             <HeartIcon />
             {post.likes.length === 1
                 ? post.likes.length + " like"
@@ -47,7 +50,13 @@ function PostInfo({ post }) {
             <Username>{post.user.username}</Username>
             <Comment>
                 {formatText(post.text).map((text, i) =>
-                    text[0] === "#" ? <span key={i}>{text}</span> : text
+                    text[0] === "#" ? (
+                        <Link to={`/hashtag/${text.slice(1)}`} key={i}>
+                            <span>{text}</span>
+                        </Link>
+                    ) : (
+                        text
+                    )
                 )}
             </Comment>
             <LinkInfo post={post} />
@@ -57,7 +66,7 @@ function PostInfo({ post }) {
 
 function LinkInfo({ post }) {
     return (
-        <a href={post.link}>
+        <a href={post.link} target="_blank">
             <LinkBox>
                 <LinkText>
                     <LinkTitle>{post.linkTitle}</LinkTitle>

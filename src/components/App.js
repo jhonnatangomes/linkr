@@ -19,6 +19,7 @@ export default function App() {
                     <Route path="/signup" exact component={SignPage} />
                     <Route path="/timeline" exact component={Timeline} />
                     <Route path="/hashtag/:hashtag" exact component={Hashtag} />
+                    <Route path="/user/:id" exact component={null}/>
                     <Route path="/" exact component={SignPage} />
                     <Redirect to="/signup" />
                 </Switch>
