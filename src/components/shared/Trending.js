@@ -15,6 +15,7 @@ export default function Trending() {
             setTrending(res.data.hashtags);
         });
     }, []);
+    ReactTooltip.rebuild();
 
     return (
         <TrendingStyle>
