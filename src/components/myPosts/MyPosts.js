@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext.js';
 import { getUserPosts } from '../../services/userPostsApi.js';
-import MediaQuery from "react-responsive";
 import NavBar from "../navBar/NavBar";
 import Trending from '../timeline/Trending.js';
 import Post from '../shared/Post.js';
@@ -36,9 +35,7 @@ export default function MyPosts () {
                                 {myPosts.map((post, index) => <Post key={index} post={post} />)}
                             </Container>
                         </PostsListContainer>
-                        <MediaQuery minWidth={937}>
-                            <Trending />
-                        </MediaQuery>
+                        <Trending />
                     </MyPostsBodyContainer>
                 </div>
             </MyPostsContainer>
