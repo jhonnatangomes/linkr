@@ -8,9 +8,9 @@ import ReactTooltip from "react-tooltip";
 export default function Trending() {
     const { user } = useContext(UserContext);
     const [trending, setTrending] = useState([]);
-
+    ReactTooltip.rebuild();
+    
     useEffect(() => {
-        ReactTooltip.rebuild();
         const request = getTrending(user.token);
         request.then((res) => {
             setTrending(res.data.hashtags);
