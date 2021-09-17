@@ -7,13 +7,24 @@ import UserContext from "../contexts/UserContext";
 import SignPage from "./signPage/SignPage";
 import Timeline from "./timeline/Timeline";
 import Hashtag from "./hashtag/Hashtag";
-import Tooltip from "./shared/Tooltip";
+import ModalContext from '../contexts/ModalContext';
+
+import Modal from "./shared/modal/Modal.js";
+import Tooltip from "./shared/tooltip/Tooltip.js";
 
 export default function App() {
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+    const [modal, setModal] = useState({ modalIsOpen: false });
+    
+    const closeModal = () => {
+        setModal({ modalIsOpen: false });
+    }
 
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+		<UserContext.Provider value={{ user, setUser }}>
+            <ModalContext.Provider value={{ modal, setModal }}>
+                <Modal modal={modal} closeModal={closeModal} />
+                <Tooltip effect="solid" id="main"/>
             <BrowserRouter>
                 <GlobalStyle />
                 <Tooltip/>
@@ -25,7 +36,8 @@ export default function App() {
                     <Route path="/" exact component={SignPage} />
                     <Redirect to="/signup" />
                 </Switch>
-            </BrowserRouter>
+			</BrowserRouter>
+            </ModalContext.Provider>
         </UserContext.Provider>
     );
 }
