@@ -1,5 +1,5 @@
 import axios from "axios";
-const URL_API = "https://mock-api.bootcamp.respondeai.com.br/api/v2/linkr";
+const URL_API = "https://mock-api.bootcamp.respondeai.com.br/api/v3/linkr";
 
 function signIn(body) {
     const request = axios.post(`${URL_API}/sign-in`, body);
