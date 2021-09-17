@@ -44,7 +44,6 @@ const Modal = ({ modal, closeModal}) => {
                     {message}
                 </Message>
                 <ContainerButtons>
-
                     {onConfirm && (
                         <CancelButton onClick={closeModal}>
                             {cancelText || 'Cancelar'}

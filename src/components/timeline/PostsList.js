@@ -14,8 +14,8 @@ export default function PostsList({ posts, setPosts }) {
     const [likedPosts, setLikedPosts] = useState([]);
     const [modal, setModal] = useState({modalIsOpen: false});
 
-    const openModal = (message) => {
-        setModal({modalIsOpen: true, message});
+    const openModal = (data) => {
+        setModal({modalIsOpen: true, ...data});
     }
 
     const closeModal = () => {
@@ -40,7 +40,7 @@ export default function PostsList({ posts, setPosts }) {
     const toggleLike = (index) => {
         const newLikedPosts = [...likedPosts];
         let newPosts = [...posts];
-        const id = newPosts[index].id;
+        const id = newPosts[index].id+1000;
         
         const fakeLike = () => {
             newLikedPosts[index] = true;
@@ -62,13 +62,13 @@ export default function PostsList({ posts, setPosts }) {
 
             dislikePost(id, user.token).catch(() => {
                 fakeLike();
-                openModal('Erro ao descurtir o post.');
+                openModal({message: 'Erro ao descurtir o post'});
             });
         } else {
             fakeLike();
             likePost(id, user.token).catch(() => {
                 fakeDislike();
-                openModal('Erro ao curtir o post.');
+                openModal({ message: 'Erro ao curtir o post' });
             });
         }
 
