@@ -2,7 +2,7 @@ import styled from "styled-components";
 import ReactModal from 'react-modal';
 ReactModal.setAppElement('#root');
 
-const Modal = ({ modal, closeModal}) => {
+const Modal = ({ modal, closeModal }) => {
 
     const { modalIsOpen, message, onConfirm, confirmText, loading, cancelText} = modal;
     let confirmFunction = onConfirm;
