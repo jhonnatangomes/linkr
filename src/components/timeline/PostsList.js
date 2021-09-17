@@ -22,18 +22,25 @@ export default function PostsList({ posts, setPosts }) {
     }, []);
 
     return (
-        <Container>
-            {posts.map((post) => (
+        <Container $loading={!posts.length}>
+            {posts.length ? posts.map((post) => (
                 <Post post={post} key={post.id} />
-            ))}
+            )) : <Loading>Carregando...</Loading>}
         </Container>
     );
 }
 
 const Container = styled.section`
     width: 611px;
+    text-align: ${({$loading}) => $loading ? "center" : "initial"};
 
     @media (max-width: 700px) {
         width: 100vw;
     }
 `;
+
+const Loading = styled.span`
+    font-size: 30px;
+    color: white;
+    font-weight: 700;
+`
