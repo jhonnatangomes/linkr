@@ -3,20 +3,27 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import UserContext from "../../contexts/UserContext.js";
+import ModalContext from "../../contexts/ModalContext.js";
 import { useContext, useState } from "react";
 import { likePost, dislikePost } from "../../services/likePostApi";
 import { deletePost } from "../../services/editPostApi";
 import ReactTooltip from 'react-tooltip';
 
-export default function Post({ post, openModal}) {
+export default function Post({ post }) {
     const { user } = useContext(UserContext);
+    const { setModal }  = useContext(ModalContext);
+
     const [isLiked, setIsLiked] = useState(Boolean(post.likes.find(like => like.userId === user.id)));
     const [isDeleted, setIsDeleted] = useState(false);
 
     const likedBy = [...post.likes
-            .filter(like => like.userId !== user.id)
-            .map(like => like['user.username'])
+        .filter(like => like.userId !== user.id)
+        .map(like => like['user.username'])
     ];
+
+    const openModal = (data) => {
+        setModal({ modalIsOpen: true, ...data });
+    }
 
     const openDeletePostDialog = () => {
         const onConfirm = () => {
@@ -97,7 +104,40 @@ export default function Post({ post, openModal}) {
     );
 }
 
-const HeartIcon = ({ likedBy, isLiked, toggleLike }) => {
+const HeartIcon = ({ isLiked, toggleLike }) => {
+
+    return (
+        <div onClick={toggleLike}>
+            {isLiked ? (
+                <FillHeart />
+            ) : (
+                <OutlineHeart />
+            )}
+        </div>
+    )
+}
+
+function PostLeftBox({ post, isLiked, likedBy, toggleLike, userId }) {
+    return (
+        <LeftBox>
+            <UserImg>
+                <img src={post.user.avatar} alt="Nome do usuário" />
+            </UserImg>
+            <HeartIcon
+                likedBy={likedBy}
+                isLiked={isLiked}
+                toggleLike={toggleLike}
+                userId={userId}
+            />
+            <LikeCounter 
+                likedBy={likedBy}
+                isLiked={isLiked}
+            />
+        </LeftBox>
+    );
+}
+
+const LikeCounter = ({ likedBy, isLiked }) => {
 
     let toolTipMessage = '';
     const otherLikesNames = likedBy;
@@ -130,35 +170,15 @@ const HeartIcon = ({ likedBy, isLiked, toggleLike }) => {
         }
     }
 
-    return (
-        <div data-tip={toolTipMessage} onClick={toggleLike}>
-            {isLiked ? (
-                <FillHeart />
-            ) : (
-                <OutlineHeart />
-            )}
-        </div>
-    )
-}
-
-function PostLeftBox({ post, isLiked, likedBy, toggleLike, userId }) {
     const likeCount = isLiked ? likedBy.length + 1 : likedBy.length;
+
     return (
-        <LeftBox>
-            <UserImg>
-                <img src={post.user.avatar} alt="Nome do usuário" />
-            </UserImg>
-            <HeartIcon
-                likedBy={likedBy}
-                isLiked={isLiked}
-                toggleLike={toggleLike}
-                userId={userId}
-            />
+        <div data-tip={toolTipMessage} data-for="main">
             {likeCount === 1
                 ? likeCount + " like"
                 : likeCount + " likes"}
-        </LeftBox>
-    );
+        </div>
+    )
 }
 
 function PostInfo({ post }) {
