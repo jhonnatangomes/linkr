@@ -40,7 +40,7 @@ export default function PostsList({ posts, setPosts }) {
     const toggleLike = (index) => {
         const newLikedPosts = [...likedPosts];
         let newPosts = [...posts];
-        const id = newPosts[index].id+1000;
+        const id = newPosts[index].id;
         
         const fakeLike = () => {
             newLikedPosts[index] = true;
