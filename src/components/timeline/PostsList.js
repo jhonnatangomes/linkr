@@ -5,21 +5,20 @@ import Post from "../shared/Post.js";
 import Modal from "../shared/modal/Modal.js";
 import { useEffect, useContext, useState } from "react";
 import { useHistory } from "react-router";
-import {likePost, dislikePost} from "../../services/likePostApi";
+
 import ReactTooltip from 'react-tooltip';
 
 export default function PostsList({ posts, setPosts }) {
     const { user } = useContext(UserContext);
     const history = useHistory();
-    const [likedPosts, setLikedPosts] = useState([]);
     const [modal, setModal] = useState({modalIsOpen: false});
 
     const openModal = (data) => {
-        setModal({modalIsOpen: true, ...data});
+        setModal({ modalIsOpen: true, ...data });
     }
 
     const closeModal = () => {
-        setModal({modalIsOpen: false});
+        setModal({ modalIsOpen: false });
     }
 
     useEffect(() => {
@@ -27,54 +26,12 @@ export default function PostsList({ posts, setPosts }) {
             const request = getPosts(user.token);
             request.then((res) => {
                 setPosts(res.data.posts);
-                setLikedPosts(res.data.posts.map((post) =>
-                    Boolean(post.likes.find(like => like.userId === user.id)))
-                );
             });
         } else {
             alert("Você não está logado!");
             history.push("/");
         }
     }, []);
-
-    const toggleLike = (index) => {
-        const newLikedPosts = [...likedPosts];
-        let newPosts = [...posts];
-        const id = newPosts[index].id;
-        
-        const fakeLike = () => {
-            newLikedPosts[index] = true;
-            newPosts[index].likes.push({
-                'userId': user.id,
-                'user.username': user.username,
-            })
-        }
-
-        const fakeDislike = () => {
-            newLikedPosts[index] = false;
-            newPosts[index].likes = newPosts[index].likes.filter((like) =>
-                like.userId !== user.id
-            )
-        }
-
-        if (newLikedPosts[index]) {
-            fakeDislike();
-
-            dislikePost(id, user.token).catch(() => {
-                fakeLike();
-                openModal({message: 'Erro ao descurtir o post'});
-            });
-        } else {
-            fakeLike();
-            likePost(id, user.token).catch(() => {
-                fakeDislike();
-                openModal({ message: 'Erro ao curtir o post' });
-            });
-        }
-
-        setPosts(newPosts);
-        setLikedPosts(newLikedPosts);
-    }
 
     ReactTooltip.rebuild();
 
@@ -85,6 +42,7 @@ export default function PostsList({ posts, setPosts }) {
                 place="bottom" 
                 effect="solid" 
             />
+
             <Modal 
                 modal={modal} 
                 closeModal={closeModal}
@@ -92,11 +50,11 @@ export default function PostsList({ posts, setPosts }) {
 
             {posts.map((post, i) => (
                 <Post 
-                    isLiked={likedPosts[i]}
-                    toggleLike={() => toggleLike(i)}
-                    userId={user.id}
+                    openModal={openModal}
+                    closeModal={closeModal}
                     post={post} 
-                    key={post.id} />
+                    key={post.id} 
+                />
             ))}
         </Container>
     );
