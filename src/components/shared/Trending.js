@@ -26,7 +26,7 @@ export default function Trending() {
                     <Link to={`/hashtag/${topic.name}`} key={topic.id}>
                         <p
                             key={topic.id}
-                            data-tip={topic.name}
+                            data-tip={"#" + topic.name}
                             data-for="hashtag-tooltip"
                         >
                             #{topic.name}

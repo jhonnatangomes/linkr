@@ -12,8 +12,12 @@ export default function Publish({ posts, setPosts }) {
     function publish(e) {
         e.preventDefault();
         setLoading(true);
+        const formatArray = formatText(text).map((sentence) =>
+            sentence[0] === "#" ? sentence.toLowerCase() : sentence
+        );
+        let formattedText = formatArray.join("");
         const body = {
-            text,
+            text: formattedText,
             link,
         };
 
@@ -28,6 +32,23 @@ export default function Publish({ posts, setPosts }) {
             setLoading(false);
             alert("Houve um erro ao publicar seu link");
         });
+    }
+
+    function formatText(text) {
+        const newText = [""];
+        let isHashtag = false;
+        for (let char of text) {
+            if (char === "#") {
+                newText.push("");
+                isHashtag = true;
+            }
+            if (isHashtag && char === " ") {
+                isHashtag = false;
+                newText.push("");
+            }
+            newText[newText.length - 1] += char;
+        }
+        return newText;
     }
 
     return (
