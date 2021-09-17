@@ -16,7 +16,7 @@ export default function Trending() {
             ReactTooltip.rebuild();
         });
     }, []);
-    
+
     return (
         <TrendingStyle>
             <p>trending</p>
@@ -24,11 +24,21 @@ export default function Trending() {
             <HashtagContainer>
                 {trending.map((topic) => (
                     <Link to={`/hashtag/${topic.name}`} key={topic.id}>
-                        <p key={topic.id} data-tip={topic.name}>#{topic.name}</p>
+                        <p
+                            key={topic.id}
+                            data-tip={topic.name}
+                            data-for="hashtag-tooltip"
+                        >
+                            #{topic.name}
+                        </p>
                     </Link>
                 ))}
             </HashtagContainer>
-            <StyledReactTooltip arrowColor="rgba(255, 255, 255, 0.9)" place="bottom" />
+            <StyledReactTooltip
+                backgroundColor="rgba(255, 255, 255, 0.9)"
+                place="bottom"
+                id="hashtag-tooltip"
+            />
         </TrendingStyle>
     );
 }
@@ -38,7 +48,7 @@ const TrendingStyle = styled.div`
     height: 100%;
     background: #171717;
     border-radius: 16px;
-    
+
     & > p {
         padding: 9px 16px 12px 16px;
         font-family: "Oswald", sans-serif;
@@ -77,10 +87,8 @@ const HashtagContainer = styled.div`
 `;
 
 const StyledReactTooltip = styled(ReactTooltip)`
-    background-color: rgba(255, 255, 255, 0.9) !important;
     color: #505050 !important;
     font-weight: bold !important;
     font-size: 11px !important;
     font-family: Lato !important;
-`
-;
+`;

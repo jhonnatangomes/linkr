@@ -7,6 +7,7 @@ import UserContext from "../contexts/UserContext";
 import SignPage from "./signPage/SignPage";
 import Timeline from "./timeline/Timeline";
 import Hashtag from "./hashtag/Hashtag";
+import Tooltip from "./shared/Tooltip";
 
 export default function App() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
@@ -15,6 +16,7 @@ export default function App() {
         <UserContext.Provider value={{ user, setUser }}>
             <BrowserRouter>
                 <GlobalStyle />
+                <Tooltip/>
                 <Switch>
                     <Route path="/signup" exact component={SignPage} />
                     <Route path="/timeline" exact component={Timeline} />
