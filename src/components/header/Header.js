@@ -11,11 +11,8 @@ export default function Header() {
     const [showMenu, setShowMenu] = useState(false);
     const history = useHistory();
     const node = useRef();
-    console.log(user);
 
-    const handleClick = e => {
-        if (node.current && !node.current.contains(e.target)) setShowMenu(false)
-    };
+    const handleClick = e => {if (node.current && !node.current.contains(e.target)) setShowMenu(false)};
 
     useEffect(() => { document.addEventListener("mousedown", handleClick) }, []);
 
@@ -25,10 +22,10 @@ export default function Header() {
             <Menu ref={node}>
                 {!showMenu && <StyledIcon onClick={() => setShowMenu(true)}><IoIosArrowDown/></StyledIcon>}
                 {showMenu && <StyledIcon onClick={() => setShowMenu(false)}><IoIosArrowUp/></StyledIcon>}
-                <img alt="Profile" src={user.user.avatar} onClick={() => setShowMenu(!showMenu)}></img>
+                <img alt="Profile" src={user.avatar} onClick={() => setShowMenu(!showMenu)}></img>
                 {showMenu && <MenuList>
-                    <StyledLink to="/my-posts">My posts</StyledLink>
-                    <StyledLink to="/my-likes">My likes</StyledLink>
+                    <StyledLink onClick={() => setShowMenu(false)} to="/my-posts">My posts</StyledLink>
+                    <StyledLink onClick={() => setShowMenu(false)} to="/my-likes">My likes</StyledLink>
                     <StyledLink to="/" onClick={()=>{localStorage.clear(); setUser(null)}}>Logout</StyledLink>
                 </MenuList>}
             </Menu>
@@ -47,6 +44,7 @@ const HeaderBox = styled.div`
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 5;
 `;
 
 const Logo = styled.div`

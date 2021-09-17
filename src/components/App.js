@@ -5,6 +5,7 @@ import { Redirect } from "react-router";
 
 import UserContext from '../contexts/UserContext';
 import SignPage from './signPage/SignPage';
+import Header from "./header/Header";
 import Timeline from './timeline/Timeline';
 import MyPosts from './myPosts/MyPosts';
 import MyLikes from './myLikes/MyLikes';
@@ -19,10 +20,22 @@ export default function App() {
                 <GlobalStyle />
                 <Switch>
                     <Route path="/signup" exact component={SignPage} />
-                    <Route path="/timeline" exact component={Timeline} />
-                    <Route path="/my-posts" exact component={MyPosts} />
-                    <Route path="/my-likes" exact component={MyLikes} />
-                    <Route path="/hashtag/:hashtag" exact component={Hashtag} />
+                    <Route path="/timeline" exact>
+                        <Header/>
+                        <Timeline/>
+                    </Route>
+                    <Route path="/my-posts" exact>
+                        <Header/>
+                        <MyPosts/>
+                    </Route>
+                    <Route path="/my-likes" exact>
+                        <Header/>
+                        <MyLikes/>
+                    </Route>
+                    <Route path="/hashtag/:hashtag" exact>
+                        <Header/>
+                        <Hashtag/>
+                    </Route>
                     <Route path="/" exact component={SignPage} />
                     <Redirect to="/signup" />
                 </Switch>
