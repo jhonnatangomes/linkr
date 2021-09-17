@@ -1,26 +1,147 @@
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
+import { FaTrash } from "react-icons/fa";
+import UserContext from "../../contexts/UserContext.js";
+import ModalContext from "../../contexts/ModalContext.js";
+import { useContext, useState } from "react";
+import { likePost, dislikePost } from "../../services/likePostApi";
+import { deletePost } from "../../services/editPostApi";
+import ReactTooltip from 'react-tooltip';
 
-export default function Post({ post, isLiked, toggleLike, userId }) {
+export default function Post({ post }) {
+    const { user } = useContext(UserContext);
+    const { setModal }  = useContext(ModalContext);
+
+    const [isLiked, setIsLiked] = useState(Boolean(post.likes.find(like => like.userId === user.id)));
+    const [isDeleted, setIsDeleted] = useState(false);
+
+    const likedBy = [...post.likes
+        .filter(like => like.userId !== user.id)
+        .map(like => like['user.username'])
+    ];
+
+    const openModal = (data) => {
+        setModal({ modalIsOpen: true, ...data });
+    }
+
+    const openDeletePostDialog = () => {
+        const onConfirm = () => {
+            openModal({
+                message: 'Deletando...',
+                loading: true
+            });
+
+            deletePost(post.id, user.token)
+            .then(() => {
+                setIsDeleted(true);
+                openModal({
+                    message: 'Post deletado com sucesso',
+                });
+            }).catch(() => {
+                setIsDeleted(true);
+                openModal({
+                    message: 'Erro ao deletar o post',
+                });
+            });
+        }
+        openModal({
+            message: 'Tem certeza que deseja excluir essa publicação?',
+            onConfirm,
+            confirmText: 'Sim, excluir',
+            cancelText: 'Não, voltar'
+        });
+    }
+
+    const toggleLike = () => {
+        const fakeLike = () => {
+            setIsLiked(true)
+        }
+
+        const fakeDislike = () => {
+            setIsLiked(false)
+        }
+
+        if (isLiked) {
+            fakeDislike();
+
+            dislikePost(post.id, user.token).catch(() => {
+                fakeLike();
+                openModal({ message: 'Erro ao descurtir o post' });
+            });
+        } else {
+            fakeLike();
+            likePost(post.id, user.token).catch(() => {
+                fakeDislike();
+                openModal({ message: 'Erro ao curtir o post' });
+            });
+        }
+    }
+
+    //Rebuilding after the component is redred
+    setTimeout(ReactTooltip.rebuild, 200);
+
     return (
-        <PostContainer>
-            <PostLeftBox 
-                isLiked={isLiked}
-                toggleLike={toggleLike}
-                userId={userId}
-                post={post} 
-            />
-            <PostInfo post={post} />
-        </PostContainer>
+        <>
+            {!isDeleted && (
+                <PostContainer>
+                    <PostLeftBox 
+                        isLiked={isLiked}
+                        likedBy={likedBy}
+                        toggleLike={toggleLike}
+                        userId={user.id}
+                        post={post} 
+                    />
+                    <PostInfo post={post} />
+                    {(post.user.id === user.id) && (
+                        <ContainerButtons>
+                            <TrashIcon onClick={openDeletePostDialog} />
+                        </ContainerButtons>
+                    )}
+                </PostContainer>
+            )}
+        </>
     );
 }
 
-const HeartIcon = ({ likes, isLiked, toggleLike, userId }) => {
+const HeartIcon = ({ isLiked, toggleLike }) => {
+
+    return (
+        <div onClick={toggleLike}>
+            {isLiked ? (
+                <FillHeart />
+            ) : (
+                <OutlineHeart />
+            )}
+        </div>
+    )
+}
+
+function PostLeftBox({ post, isLiked, likedBy, toggleLike, userId }) {
+    return (
+        <LeftBox>
+            <UserImg>
+                <img src={post.user.avatar} alt="Nome do usuário" />
+            </UserImg>
+            <HeartIcon
+                likedBy={likedBy}
+                isLiked={isLiked}
+                toggleLike={toggleLike}
+                userId={userId}
+            />
+            <LikeCounter 
+                likedBy={likedBy}
+                isLiked={isLiked}
+            />
+        </LeftBox>
+    );
+}
+
+const LikeCounter = ({ likedBy, isLiked }) => {
 
     let toolTipMessage = '';
-    const otherLikesNames = likes.filter(like => like.userId !== userId).map(like => like['user.username']);
-    const otherLikesCount = otherLikesNames.length;
+    const otherLikesNames = likedBy;
+    const otherLikesCount = likedBy.length;
 
     if (isLiked) {
         toolTipMessage += 'Você';
@@ -49,35 +170,15 @@ const HeartIcon = ({ likes, isLiked, toggleLike, userId }) => {
         }
     }
 
+    const likeCount = isLiked ? likedBy.length + 1 : likedBy.length;
+
     return (
-        <div data-tip={toolTipMessage} onClick={toggleLike}>
-            {isLiked ? (
-                <FillHeart />
-            ) : (
-                <OutlineHeart />
-            )}
+        <div data-tip={toolTipMessage} data-for="main">
+            {likeCount === 1
+                ? likeCount + " like"
+                : likeCount + " likes"}
         </div>
     )
-}
-
-function PostLeftBox({ post, isLiked, toggleLike, userId }) {
-    return (
-        <LeftBox>
-            <UserImg>
-                <img src={post.user.avatar} alt="Nome do usuário" />
-            </UserImg>
-            <HeartIcon
-                likes={post.likes}
-                postId={post.id}
-                isLiked={isLiked}
-                toggleLike={toggleLike}
-                userId={userId}
-            />
-            {post.likes.length === 1
-                ? post.likes.length + " like"
-                : post.likes.length + " likes"}
-        </LeftBox>
-    );
 }
 
 function PostInfo({ post }) {
@@ -129,6 +230,7 @@ function LinkInfo({ post }) {
 }
 
 const PostContainer = styled.div`
+    position: relative;
     width: 100%;
     display: flex;
     border-radius: 16px;
@@ -213,6 +315,21 @@ const FillHeart = styled(AiFillHeart)`
         font-size: 17px;
         margin-bottom: 12px;
     }
+`;
+
+const ContainerButtons = styled.div`
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-column-gap: 13px;
+`;
+
+const TrashIcon = styled(FaTrash)`
+    color: #FFFFFF;
+    font-size: 14px;
+    cursor: pointer;
 `;
 
 const Comment = styled.p`
