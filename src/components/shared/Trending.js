@@ -10,12 +10,13 @@ export default function Trending() {
     const [trending, setTrending] = useState([]);
 
     useEffect(() => {
+        ReactTooltip.rebuild();
         const request = getTrending(user.token);
         request.then((res) => {
             setTrending(res.data.hashtags);
         });
     }, []);
-    ReactTooltip.rebuild();
+    
 
     return (
         <TrendingStyle>
@@ -28,7 +29,7 @@ export default function Trending() {
                     </Link>
                 ))}
             </HashtagContainer>
-            <ReactTooltip place="bottom" />
+            <StyledReactTooltip arrowColor="rgba(255, 255, 255, 0.9)" place="bottom" />
         </TrendingStyle>
     );
 }
@@ -75,3 +76,12 @@ const HashtagContainer = styled.div`
         text-decoration: underline;
     }
 `;
+
+const StyledReactTooltip = styled(ReactTooltip)`
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: #505050 !important;
+    font-weight: bold !important;
+    font-size: 11px !important;
+    font-family: Lato !important;
+`
+;
