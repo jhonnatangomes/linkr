@@ -8,6 +8,7 @@ import ModalContext from '../contexts/ModalContext';
 
 import SignPage from './signPage/SignPage';
 import Timeline from './timeline/Timeline';
+import UserPosts from './userPosts/UserPosts.js';
 
 import Modal from "./shared/modal/Modal.js";
 import Tooltip from "./shared/tooltip/Tooltip.js";
@@ -30,6 +31,7 @@ export default function App() {
 				<Switch>
                     <Route path="/signup" exact component={SignPage} />
                     <Route path="/timeline" exact component={Timeline} />
+                    <Route path="/user/:id" exact component={UserPosts} />
                     <Route path="/" exact component={SignPage} />
                     <Redirect to="/signup" />
                 </Switch>
