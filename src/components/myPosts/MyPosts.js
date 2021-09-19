@@ -83,9 +83,12 @@ const PostsListContainer = styled.main`
     flex-direction: column;
     margin-right: 25px;
 
+    @media (max-width: 937px) {
+        margin-right: 0;
+    }
+
     @media (max-width: 700px) {
         width: 100%;
-        margin-right: 0;
     }
 `;
 

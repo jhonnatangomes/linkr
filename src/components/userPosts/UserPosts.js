@@ -20,6 +20,9 @@ export default function MyPosts () {
             getUserInfo(id, user.token)
                 .then((response) => {
                     setUsernamePosts(response.data.user.username);
+                    if (response.data.user.id === user.id) {
+                        history.push('/my-posts');
+                    }
                 })
                 .catch((error) => {
                     if(error.response.status === 500) {
@@ -104,7 +107,6 @@ const PostsListContainer = styled.main`
 
     @media (max-width: 700px) {
         width: 100%;
-        margin-right: 0;
     }
 `;
 
