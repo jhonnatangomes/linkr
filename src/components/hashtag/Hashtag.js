@@ -2,6 +2,7 @@ import NavBar from "../navBar/NavBar";
 import styled from "styled-components";
 import Post from "../shared/Post";
 import Trending from "../shared/Trending";
+import Loading from "../shared/Loading";
 import { useParams } from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { getHashtagPosts } from "../../services/trendingApi";
@@ -10,7 +11,7 @@ import UserContext from "../../contexts/UserContext";
 export default function Hashtag() {
     const { hashtag } = useParams();
     const { user } = useContext(UserContext);
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState(null);
 
     useEffect(() => {
         const request = getHashtagPosts(hashtag, user.token);
@@ -27,11 +28,11 @@ export default function Hashtag() {
                     <PageTitle># {hashtag}</PageTitle>
                     <HashtagBodyContainer>
                         <PostsListContainer>
-                            <div>
+                            {posts === null ? <Loading />:(<div>
                                 {posts.map((post) => (
                                     <Post post={post} key={post.id} />
                                 ))}
-                            </div>
+                            </div>)}
                         </PostsListContainer>
                         <Trending />
                     </HashtagBodyContainer>
