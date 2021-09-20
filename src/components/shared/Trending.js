@@ -44,6 +44,10 @@ const TrendingStyle = styled.div`
         line-height: 40px;
         color: white;
     }
+
+    @media (max-width: 937px) {
+        display: none;
+    }
 `;
 
 const DivisionLine = styled.div`

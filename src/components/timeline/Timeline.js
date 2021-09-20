@@ -20,9 +20,7 @@ export default function Timeline() {
                             <Publish posts={posts} setPosts={setPosts} />
                             <PostsList posts={posts} setPosts={setPosts} />
                         </PostsListContainer>
-                        <MediaQuery minWidth={937}>
-                            <Trending />
-                        </MediaQuery>
+                        <Trending />
                     </TimelineBodyContainer>
                 </div>
             </TimelineContainer>
@@ -71,8 +69,11 @@ const PostsListContainer = styled.main`
     flex-direction: column;
     margin-right: 25px;
 
+    @media (max-width: 937px) {
+        margin-right: 0;
+    }
+
     @media (max-width: 700px) {
         width: 100%;
-        margin-right: 0;
     }
 `;

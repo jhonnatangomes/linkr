@@ -1,27 +1,184 @@
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
+import { AiFillHeart } from "react-icons/ai";
+import { FaTrash } from "react-icons/fa";
+import UserContext from "../../contexts/UserContext.js";
+import ModalContext from "../../contexts/ModalContext.js";
+import { useContext, useState } from "react";
+import { likePost, dislikePost } from "../../services/likePostApi";
+import { deletePost } from "../../services/editPostApi";
+import ReactTooltip from 'react-tooltip';
 
 export default function Post({ post }) {
+    const { user } = useContext(UserContext);
+    const { setModal }  = useContext(ModalContext);
+
+    const [isLiked, setIsLiked] = useState(Boolean(post.likes.find(like => like.userId === user.id)));
+    const [isDeleted, setIsDeleted] = useState(false);
+
+    const likedBy = [...post.likes
+        .filter(like => like.userId !== user.id)
+        .map(like => like['user.username'])
+    ];
+
+    const openModal = (data) => {
+        setModal({ modalIsOpen: true, ...data });
+    }
+
+    const openDeletePostDialog = () => {
+        const onConfirm = () => {
+            openModal({
+                message: 'Deletando...',
+                loading: true
+            });
+
+            deletePost(post.id, user.token)
+            .then(() => {
+                setIsDeleted(true);
+                openModal({
+                    message: 'Post deletado com sucesso',
+                });
+            }).catch(() => {
+                setIsDeleted(true);
+                openModal({
+                    message: 'Erro ao deletar o post',
+                });
+            });
+        }
+        openModal({
+            message: 'Tem certeza que deseja excluir essa publicação?',
+            onConfirm,
+            confirmText: 'Sim, excluir',
+            cancelText: 'Não, voltar'
+        });
+    }
+
+    const toggleLike = () => {
+        const fakeLike = () => {
+            setIsLiked(true)
+        }
+
+        const fakeDislike = () => {
+            setIsLiked(false)
+        }
+
+        if (isLiked) {
+            fakeDislike();
+
+            dislikePost(post.id, user.token).catch(() => {
+                fakeLike();
+                openModal({ message: 'Erro ao descurtir o post' });
+            });
+        } else {
+            fakeLike();
+            likePost(post.id, user.token).catch(() => {
+                fakeDislike();
+                openModal({ message: 'Erro ao curtir o post' });
+            });
+        }
+    }
+
+    //Rebuilding after the component is redred
+    setTimeout(ReactTooltip.rebuild, 200);
+
     return (
-        <PostContainer>
-            <PostLeftBox post={post} />
-            <PostInfo post={post} />
-        </PostContainer>
+        <>
+            {!isDeleted && (
+                <PostContainer>
+                    <PostLeftBox 
+                        isLiked={isLiked}
+                        likedBy={likedBy}
+                        toggleLike={toggleLike}
+                        userId={user.id}
+                        post={post} 
+                    />
+                    <PostInfo post={post} />
+                    {(post.user.id === user.id) && (
+                        <ContainerButtons>
+                            <TrashIcon onClick={openDeletePostDialog} />
+                        </ContainerButtons>
+                    )}
+                </PostContainer>
+            )}
+        </>
     );
 }
 
-function PostLeftBox({ post }) {
+const HeartIcon = ({ isLiked, toggleLike }) => {
+
+    return (
+        <div onClick={toggleLike}>
+            {isLiked ? (
+                <FillHeart />
+            ) : (
+                <OutlineHeart />
+            )}
+        </div>
+    )
+}
+
+function PostLeftBox({ post, isLiked, likedBy, toggleLike, userId }) {
     return (
         <LeftBox>
             <UserImg>
                 <img src={post.user.avatar} alt="Nome do usuário" />
             </UserImg>
-            <HeartIcon />
-            {post.likes.length === 1
-                ? post.likes.length + " like"
-                : post.likes.length + " likes"}
+            <HeartIcon
+                likedBy={likedBy}
+                isLiked={isLiked}
+                toggleLike={toggleLike}
+                userId={userId}
+            />
+            <LikeCounter 
+                likedBy={likedBy}
+                isLiked={isLiked}
+            />
         </LeftBox>
     );
+}
+
+const LikeCounter = ({ likedBy, isLiked }) => {
+
+    let toolTipMessage = '';
+    const otherLikesNames = likedBy;
+    const otherLikesCount = likedBy.length;
+
+    if (isLiked) {
+        toolTipMessage += 'Você';
+
+        if (otherLikesCount >= 1) {
+            toolTipMessage += (otherLikesCount === 1) ? ' e ' : ', ';
+            toolTipMessage += otherLikesNames[0]
+        }
+
+        if (otherLikesCount >= 2) {
+            toolTipMessage += (otherLikesCount === 2) ? ` e outra pessoa` : ` e outras ${otherLikesCount - 1} pessoas`;
+        }
+
+    } else {
+        if (otherLikesCount >= 1) {
+            toolTipMessage += otherLikesNames[0]
+
+            if (otherLikesCount >= 2) {
+                toolTipMessage += (otherLikesCount === 2) ? ' e ' : ', ';
+                toolTipMessage += otherLikesNames[1]
+            }
+
+            if (otherLikesCount >= 3) {
+                toolTipMessage += (otherLikesCount === 3) ? ` e outra pessoa` : ` e outras ${otherLikesCount - 2} pessoas`;
+            }
+        }
+    }
+
+    const likeCount = isLiked ? likedBy.length + 1 : likedBy.length;
+
+    return (
+        <div data-tip={toolTipMessage} data-for="main">
+            {likeCount === 1
+                ? likeCount + " like"
+                : likeCount + " likes"}
+        </div>
+    )
 }
 
 function PostInfo({ post }) {
@@ -57,7 +214,7 @@ function PostInfo({ post }) {
 
 function LinkInfo({ post }) {
     return (
-        <a href={post.link}>
+        <a href={post.link} target="_blank">
             <LinkBox>
                 <LinkText>
                     <LinkTitle>{post.linkTitle}</LinkTitle>
@@ -73,6 +230,7 @@ function LinkInfo({ post }) {
 }
 
 const PostContainer = styled.div`
+    position: relative;
     width: 100%;
     display: flex;
     border-radius: 16px;
@@ -142,7 +300,7 @@ const Username = styled.h2`
     }
 `;
 
-const HeartIcon = styled(AiOutlineHeart)`
+const OutlineHeart = styled(AiOutlineHeart)`
     font-size: 20px;
     cursor: pointer;
     margin-bottom: 5px;
@@ -151,6 +309,32 @@ const HeartIcon = styled(AiOutlineHeart)`
         font-size: 17px;
         margin-bottom: 12px;
     }
+`;
+
+const FillHeart = styled(AiFillHeart)`
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    color: #AC0000;
+    @media (max-width: 700px) {
+        font-size: 17px;
+        margin-bottom: 12px;
+    }
+`;
+
+const ContainerButtons = styled.div`
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-column-gap: 13px;
+`;
+
+const TrashIcon = styled(FaTrash)`
+    color: #FFFFFF;
+    font-size: 14px;
+    cursor: pointer;
 `;
 
 const Comment = styled.p`
@@ -191,29 +375,40 @@ const LinkText = styled.div`
     }
 `;
 
-const LinkTitle = styled.h3`
+const LinkTitle = styled.div`
     color: #cecece;
     font-size: 16px;
     margin-bottom: 5px;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 
     @media (max-width: 700px) {
         font-size: 11px;
     }
 `;
 
-const LinkDescription = styled.p`
+const LinkDescription = styled.div`
     font-size: 11px;
     color: #9b9595;
     margin-bottom: 15px;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 
     @media (max-width: 700px) {
         font-size: 9px;
     }
 `;
 
-const LinkRef = styled.span`
+const LinkRef = styled.p`
     color: #cecece;
     font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     @media (max-width: 700px) {
         font-size: 9px;
