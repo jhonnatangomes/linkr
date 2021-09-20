@@ -36,9 +36,7 @@ export default function MyPosts () {
                                 {myLikes.map((post, index) => <Post key={index} post={post} />)}
                             </Container>
                         </PostsListContainer>
-                        <MediaQuery minWidth={937}>
-                            <Trending />
-                        </MediaQuery>
+                        <Trending />
                     </MyLikesBodyContainer>
                 </div>
             </MyLikesContainer>
