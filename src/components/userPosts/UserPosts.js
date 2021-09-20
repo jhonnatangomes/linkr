@@ -16,14 +16,15 @@ export default function MyPosts () {
     const [userPosts, setUserPosts] = useState(null);
     const history = useHistory();
 
+    if (Number(id) === Number(user.id)) {
+        history.push('/my-posts');
+    }
+
     useEffect(() => {
         if (user) {
             getUserInfo(id, user.token)
                 .then((response) => {
                     setUsernamePosts(response.data.user.username);
-                    if (response.data.user.id === user.id) {
-                        history.push('/my-posts');
-                    }
                 })
                 .catch((error) => {
                     if(error.response.status === 500) {
