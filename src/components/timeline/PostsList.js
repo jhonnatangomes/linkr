@@ -15,12 +15,6 @@ export default function PostsList({ posts, setPosts }) {
             const request = getPosts(user.token);
             request.then((res) => {
                 setPosts(res.data.posts);
-                setServerResponded(true);
-            });
-            request.catch(() => {
-                setErrorMessage(
-                    "Houve uma falha ao obter os posts, por favor atualize a página"
-                );
             });
         } else {
             alert("Você não está logado!");
@@ -44,16 +38,8 @@ export default function PostsList({ posts, setPosts }) {
 
 const Container = styled.section`
     width: 611px;
-    text-align: ${({ $loading }) => ($loading ? "center" : "initial")};
 
     @media (max-width: 700px) {
         width: 100vw;
     }
-`;
-
-const Span = styled.span`
-    font-size: 30px;
-    color: white;
-    font-weight: 700;
-    display: ${({ invisible }) => (invisible ? "none" : "block")};
 `;
