@@ -50,7 +50,7 @@ export default function App() {
                         <Header/>
                         <Hashtag/>
                     </Route>
-                    <Route path="user/:id">
+                    <Route path="/user/:id" exact>
                         <Header />
                         <UserPosts />
                     </Route>
