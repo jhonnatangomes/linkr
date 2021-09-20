@@ -1,17 +1,15 @@
 import styled from "styled-components";
 import { FiEdit2 } from "react-icons/fi";
 
-const EditButton = ({ isEditing, setIsEditing, setEditText, postText, editPostRequest}) => {
+const EditButton = ({ isEditing, setIsEditing, setEditText, postText, editPostRequest, setIsEditLoading}) => {
     const toggleIsEditing = () => {
-
         if (isEditing) {
+            setIsEditLoading(true);
             editPostRequest();
         } else {
             setEditText(postText)
+            setIsEditing(true);
         }
-
-        setIsEditing(!isEditing);
-
     }
 
     return (

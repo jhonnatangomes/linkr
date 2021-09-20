@@ -2,11 +2,12 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import UserContext from "../../../contexts/UserContext.js";
 import ModalContext from "../../../contexts/ModalContext.js";
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import LikeButton from "./LikeButton.js"
 import DeleteButton from "./DeleteButton.js";
 import EditButton from "./EditButton.js"
+import EditInput from "./EditInput.js"
 import { editPost } from "../../../services/editPostApi";
 
 export default function Post({ post }) {
@@ -17,18 +18,10 @@ export default function Post({ post }) {
     const [editText, setEditText] = useState("");
     const [isEditLoading, setIsEditLoading] = useState(false);
     const [postText, setPostText] = useState(post.text)
-    const inputRef = useRef(null);
 
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
-
-    useEffect(() => {
-        if (isEditing) {
-            inputRef.current.focus();
-        }
-    }, [isEditing]);
-
 
     const editPostRequest = () => {
         editPost(editText, post.id, user.token)
@@ -44,27 +37,7 @@ export default function Post({ post }) {
                 });
             });
     }
-
-    const checkKey = (e) => {
-        if (isEditLoading) {
-            e.preventDefault();
-            return;
-        }
-        const key = e.key;
-
-        if (key === "Enter") {
-            e.preventDefault();
-            setIsEditLoading(true);
-            editPostRequest();
-        }
-
-        if (key === "Escape") {
-            e.preventDefault();
-            setIsEditLoading(false);
-            setIsEditing(false);
-        }
-    }
-
+    
     function formatText(text) {
         const newText = [""];
         let isHashtag = false;
@@ -108,13 +81,13 @@ export default function Post({ post }) {
                         </Username>
                         {isEditing ? (
                             <Comment>
-                                <TextArea
-                                    value={editText}
-                                    onChange={(e) => setEditText(e.target.value)}
-                                    ref={inputRef}
-                                    onKeyDown={checkKey}
-                                    disabled={isEditLoading}
-                                    maxLength={50000}
+                                <EditInput 
+                                    editPostRequest={editPostRequest}
+                                    isEditLoading={isEditLoading}
+                                    setIsEditLoading={setIsEditLoading}
+                                    setIsEditing={setIsEditing}
+                                    editText={editText}
+                                    setEditText={setEditText}
                                 />
                             </Comment>
                         ) : (
@@ -152,6 +125,7 @@ export default function Post({ post }) {
                                 setIsEditing={setIsEditing}
                                 setEditText={setEditText}
                                 editPostRequest={editPostRequest}
+                                setIsEditLoading={setIsEditLoading}
                             />
                             <DeleteButton
                                 setIsDeleted={setIsDeleted}
@@ -166,22 +140,6 @@ export default function Post({ post }) {
         </>
     );
 }
-
-const TextArea = styled.textarea`
-    width: 100%;
-    background: #FFFFFF;
-    border-radius: 7px;
-    border: none;
-    outline: none;
-    margin-bottom: 5px;
-    padding-left: 13px;
-    font-size: 15px;
-    line-height: 18px;
-    padding: 8px 13px;
-    resize: none;
-    min-height: 66px;
-`;
-
 
 const PostContainer = styled.div`
     position: relative;

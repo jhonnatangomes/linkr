@@ -61,13 +61,12 @@ const LikeButton = ({post, user, openModal}) => {
 
     return (
         <>
-            <div onClick={toggleLike}>
-                {isLiked ? (
-                    <FillHeart />
-                ) : (
-                    <OutlineHeart />
-                )}
-            </div>
+            {isLiked ? (
+                <FillHeart onClick={toggleLike} />
+            ) : (
+                <OutlineHeart onClick={toggleLike} />
+            )}
+
             <LikeCounter data-tip={toolTipMessage} data-for="main">
             {likeCount === 1
                 ? likeCount + " like"
@@ -80,9 +79,9 @@ const LikeButton = ({post, user, openModal}) => {
 const OutlineHeart = styled(AiOutlineHeart)`
     font-size: 20px;
     cursor: pointer;
+
     @media (max-width: 700px) {
         font-size: 17px;
-        margin-bottom: 12px;
     }
 `;
 
@@ -90,9 +89,9 @@ const FillHeart = styled(AiFillHeart)`
     font-size: 20px;
     cursor: pointer;
     color: #AC0000;
+
     @media (max-width: 700px) {
         font-size: 17px;
-        margin-bottom: 12px;
     }
 `;
 
