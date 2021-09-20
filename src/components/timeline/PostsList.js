@@ -4,6 +4,7 @@ import UserContext from "../../contexts/UserContext.js";
 import Post from "../shared/Post.js";
 import { useEffect, useContext } from "react";
 import { useHistory } from "react-router";
+import Loading from "../shared/Loading";
 
 export default function PostsList({ posts, setPosts }) {
     const { user } = useContext(UserContext);
@@ -22,14 +23,16 @@ export default function PostsList({ posts, setPosts }) {
     }, []);
 
     return (
-        <Container>
-            {posts.map((post) => (
-                <Post 
-                    post={post} 
-                    key={post.id} 
-                />
-            ))}
-        </Container>
+        <>
+            {posts === null ? <Loading />:(<Container>
+                {posts.map((post) => (
+                    <Post 
+                        post={post} 
+                        key={post.id} 
+                    />
+                ))}
+            </Container>)}
+        </>
     );
 }
 

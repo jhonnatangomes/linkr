@@ -5,12 +5,12 @@ import UserContext from '../../contexts/UserContext.js';
 import { getUserPosts } from '../../services/userPostsApi.js';
 import NavBar from "../navBar/NavBar";
 import Trending from '../shared/Trending.js';
-
+import Loading from '../shared/Loading.js';
 import Post from '../shared/Post.js';
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
-    const [myPosts, setMyPosts] = useState([]);
+    const [myPosts, setMyPosts] = useState(null);
     const history = useHistory();
 
     useEffect(() => {
@@ -32,9 +32,9 @@ export default function MyPosts () {
                     <PageTitle>my posts</PageTitle>
                     <MyPostsBodyContainer>
                         <PostsListContainer>
-                            <Container>
+                            {myPosts === null ? <Loading />:(<Container>
                                 {myPosts.map((post, index) => <Post key={index} post={post} />)}
-                            </Container>
+                            </Container>)}
                         </PostsListContainer>
                         <Trending />
                     </MyPostsBodyContainer>

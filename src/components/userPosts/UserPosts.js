@@ -7,12 +7,13 @@ import { getUserInfo } from '../../services/userInfoApi.js';
 import NavBar from "../navBar/NavBar";
 import Trending from "../shared/Trending";
 import Post from '../shared/Post.js';
+import Loading from '../shared/Loading.js';
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
     const { id } = useParams();
     const [usernamePosts, setUsernamePosts] = useState("");
-    const [userPosts, setUserPosts] = useState([]);
+    const [userPosts, setUserPosts] = useState(null);
     const history = useHistory();
 
     useEffect(() => {
@@ -52,9 +53,9 @@ export default function MyPosts () {
                     <PageTitle>{usernamePosts}'s posts</PageTitle>
                     <UserPostsBodyContainer>
                         <PostsListContainer>
-                            <Container>
+                            {userPosts === null ? <Loading />:<Container>
                                 {userPosts.map((post, index) => <Post key={index} post={post} />)}
-                            </Container>
+                            </Container>}
                         </PostsListContainer>
                         <Trending />
                     </UserPostsBodyContainer>
