@@ -72,6 +72,7 @@ export default function Publish({ posts, setPosts }) {
                     disabled={loading}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
+                    maxLength={50000}
                 />
                 <button type="submit" disabled={loading}>
                     {loading ? "Publicando..." : "Publicar"}
