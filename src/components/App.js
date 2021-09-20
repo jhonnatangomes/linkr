@@ -11,6 +11,7 @@ import ModalContext from "../contexts/ModalContext";
 import SignPage from './signPage/SignPage';
 import Header from "./header/Header";
 import Timeline from './timeline/Timeline';
+import UserPosts from './userPosts/UserPosts.js';
 import MyPosts from './myPosts/MyPosts';
 import Modal from "./shared/modal/Modal.js";
 import Tooltip from "./shared/tooltip/Tooltip.js";
@@ -53,6 +54,7 @@ export default function App() {
                     </Route>
                     <Route path="/user/:id" exact>
                         <Header />
+                        <UserPosts />
                     </Route>
                     <Route path="/" exact component={SignPage} />
                     <Redirect to="/signup" />
