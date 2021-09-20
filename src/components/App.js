@@ -33,6 +33,7 @@ export default function App() {
             <Tooltip effect="solid" id="main" />
             <BrowserRouter>
                 <GlobalStyle />
+                <Tooltip/>
                 <Switch>
                     <Route path="/signup" exact component={SignPage} />
                     <Route path="/timeline" exact>

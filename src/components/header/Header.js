@@ -18,7 +18,7 @@ export default function Header() {
 
     return(
         <HeaderBox>
-            <Logo onClick={() => {history.push('/timeline')}}>linkr</Logo>
+            <Logo onClick={() => {history.push('/timeline'); window.scrollTo(0, 0);}}>linkr</Logo>
             <Menu ref={node}>
                 {!showMenu && <StyledIcon onClick={() => setShowMenu(true)}><IoIosArrowDown/></StyledIcon>}
                 {showMenu && <StyledIcon onClick={() => setShowMenu(false)}><IoIosArrowUp/></StyledIcon>}
