@@ -12,7 +12,6 @@ import Timeline from './timeline/Timeline';
 import MyPosts from './myPosts/MyPosts';
 import Modal from "./shared/modal/Modal.js";
 import Tooltip from "./shared/tooltip/Tooltip.js";
-
 import MyLikes from './myLikes/MyLikes';
 import Hashtag from "./hashtag/Hashtag";
 
