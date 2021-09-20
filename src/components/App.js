@@ -3,8 +3,10 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { useState } from "react";
 import { Redirect } from "react-router";
 
-import UserContext from '../contexts/UserContext';
-import ModalContext from '../contexts/ModalContext';
+import Hashtag from "./hashtag/Hashtag";
+
+import UserContext from "../contexts/UserContext";
+import ModalContext from "../contexts/ModalContext";
 
 import SignPage from './signPage/SignPage';
 import Header from "./header/Header";
@@ -13,7 +15,6 @@ import MyPosts from './myPosts/MyPosts';
 import Modal from "./shared/modal/Modal.js";
 import Tooltip from "./shared/tooltip/Tooltip.js";
 import MyLikes from './myLikes/MyLikes';
-import Hashtag from "./hashtag/Hashtag";
 
 export default function App() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
