@@ -238,6 +238,7 @@ const PostContainer = styled.div`
     background-color: #171717;
     overflow: hidden;
     margin-bottom: 15px;
+    overflow-wrap: break-word;
 
     @media (max-width: 700px) {
         border-radius: 0;
@@ -283,6 +284,10 @@ const UserImg = styled.div`
 const Info = styled.div`
     width: 90%;
     height: 100%;
+
+    @media (max-width: 700px) {
+        width: 75vw;
+    }
 `;
 
 const Username = styled.h2`
@@ -348,7 +353,7 @@ const Comment = styled.p`
 `;
 
 const LinkBox = styled.div`
-    width: 100%;
+    width: 503px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -357,7 +362,7 @@ const LinkBox = styled.div`
     overflow: hidden;
 
     @media (max-width: 700px) {
-        width: 93%;
+        width: 75vw;
     }
 `;
 
@@ -420,5 +425,7 @@ const LinkImg = styled.div`
 
     & img {
         height: 100%;
+        width: 100%;
+        object-fit: cover;
     }
 `;

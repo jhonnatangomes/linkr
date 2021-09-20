@@ -2,7 +2,7 @@ import NavBar from "../navBar/NavBar";
 import styled from "styled-components";
 import Publish from "./Publish";
 import PostsList from "./PostsList";
-import Trending from "./Trending";
+import Trending from "../shared/Trending";
 import { useState } from "react";
 
 export default function Timeline() {
@@ -34,8 +34,8 @@ const TimelineContainer = styled.div`
     margin-top: 53px;
 
     @media (max-width: 700px) {
-        margin-top: 0px;
         width: 100%;
+        margin-top: 0px;
 
         & > div {
             width: 100%;
@@ -49,6 +49,7 @@ const PageTitle = styled.h1`
     font-weight: 700;
     color: #ffffff;
     margin-bottom: 43px;
+    
 
     @media (max-width: 700px) {
         margin: 19px 17px;
