@@ -22,7 +22,9 @@ export default function Header() {
             <Menu ref={node}>
                 {!showMenu && <StyledIcon onClick={() => setShowMenu(true)}><IoIosArrowDown/></StyledIcon>}
                 {showMenu && <StyledIcon onClick={() => setShowMenu(false)}><IoIosArrowUp/></StyledIcon>}
+                <StyledImg>
                 <img alt="Profile" src={user.avatar} onClick={() => setShowMenu(!showMenu)}></img>
+                </StyledImg>
                 {showMenu && <MenuList>
                     <StyledLink onClick={() => setShowMenu(false)} to="/my-posts">My posts</StyledLink>
                     <StyledLink onClick={() => setShowMenu(false)} to="/my-likes">My likes</StyledLink>
@@ -60,12 +62,20 @@ const Logo = styled.div`
 const Menu = styled.div`
     display: flex;
     align-items: center;
-    img {
-        width: 53px;
-        height: 53px;
-        border-radius: 26.5px;
-        margin: 0 0 0 16px;
-        cursor: pointer;
+`;
+
+const StyledImg = styled.div`
+    width: 53px;
+    height: 53px;
+    border-radius: 26.5px;
+    margin: 0 0 0 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    & img {
+        height: 100%;
     }
 `;
 

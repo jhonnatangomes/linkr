@@ -1,7 +1,7 @@
 import ReactTooltip from 'react-tooltip';
 import styled from "styled-components";
 
-const Tooltip = ({effect, id}) => (
+const Tooltip = () => (
     <StyledReactTooltip
         backgroundColor="rgba(255, 255, 255, 0.9)"
         textColor='#505050'
@@ -9,8 +9,8 @@ const Tooltip = ({effect, id}) => (
         fontSize="11px"
         fontFamily="Lato"
         place="bottom"
-        id={id || ''}
-        effect={effect || 'float'}
+        id="main"
+        effect="solid"
     />
 );
 

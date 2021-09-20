@@ -5,9 +5,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: #333333;
     font-family: 'Lato', sans-serif;
   }
+`
 
-  * {
-    box-sizing: border-box;
-  }
-`;
+>>>>>>> main
 export default GlobalStyle;
