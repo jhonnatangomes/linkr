@@ -3,14 +3,14 @@ import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext.js';
 import { getUserLikes } from '../../services/userLikesApi.js';
-import MediaQuery from "react-responsive";
+import Loading from "../shared/Loading";
 import NavBar from "../navBar/NavBar";
 import Trending from '../shared/Trending';
 import Post from '../shared/Post.js';
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
-    const [myLikes, setMyLikes] = useState([]);
+    const [myLikes, setMyLikes] = useState(null);
     const history = useHistory();
 
     useEffect(() => {
@@ -32,9 +32,9 @@ export default function MyPosts () {
                     <PageTitle>my likes</PageTitle>
                     <MyLikesBodyContainer>
                         <PostsListContainer>
-                            <Container>
+                            {myLikes === null ? <Loading />:(<Container>
                                 {myLikes.map((post, index) => <Post key={index} post={post} />)}
-                            </Container>
+                            </Container>)}
                         </PostsListContainer>
                         <Trending />
                     </MyLikesBodyContainer>
