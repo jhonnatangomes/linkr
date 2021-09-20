@@ -2,7 +2,6 @@ import NavBar from "../navBar/NavBar";
 import styled from "styled-components";
 import Post from "../shared/Post";
 import Trending from "../shared/Trending";
-import MediaQuery from "react-responsive";
 import { useParams } from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { getHashtagPosts } from "../../services/trendingApi";
@@ -34,9 +33,7 @@ export default function Hashtag() {
                                 ))}
                             </div>
                         </PostsListContainer>
-                        <MediaQuery minWidth={937}>
-                            <Trending />
-                        </MediaQuery>
+                        <Trending />
                     </HashtagBodyContainer>
                 </div>
             </HashtagContainer>

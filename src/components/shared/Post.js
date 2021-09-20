@@ -177,7 +177,9 @@ const LikeCounter = ({ likedBy, isLiked }) => {
 
     return (
         <div data-tip={toolTipMessage} data-for="main">
-            {likeCount === 1 ? likeCount + " like" : likeCount + " likes"}
+            {likeCount === 1
+                ? likeCount + " like"
+                : likeCount + " likes"}
         </div>
     );
 };
@@ -372,7 +374,7 @@ const LinkBox = styled.div`
     overflow: hidden;
 
     @media (max-width: 700px) {
-        width: 75vw;
+        width: 100%;
     }
 `;
 
@@ -385,29 +387,40 @@ const LinkText = styled.div`
     }
 `;
 
-const LinkTitle = styled.h3`
+const LinkTitle = styled.div`
     color: #cecece;
     font-size: 16px;
     margin-bottom: 5px;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 
     @media (max-width: 700px) {
         font-size: 11px;
     }
 `;
 
-const LinkDescription = styled.p`
+const LinkDescription = styled.div`
     font-size: 11px;
     color: #9b9595;
     margin-bottom: 15px;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 
     @media (max-width: 700px) {
         font-size: 9px;
     }
 `;
 
-const LinkRef = styled.span`
+const LinkRef = styled.p`
     color: #cecece;
     font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     @media (max-width: 700px) {
         font-size: 9px;

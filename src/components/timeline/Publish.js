@@ -2,6 +2,7 @@ import styled from "styled-components";
 import UserContext from "../../contexts/UserContext";
 import { useContext, useState } from "react";
 import { createPost } from "../../services/api";
+import { Link } from "react-router-dom";
 
 export default function Publish({ posts, setPosts }) {
     const { user } = useContext(UserContext);
@@ -76,9 +77,11 @@ export default function Publish({ posts, setPosts }) {
                     {loading ? "Publicando..." : "Publicar"}
                 </button>
             </Form>
-            <UserImg>
-                {user ? <img src={user.avatar} alt="avatar do usuário" /> : ""}
-            </UserImg>
+            <Link to="/my-posts">
+                <UserImg>
+                    {user ? <img src={user.avatar} alt="avatar do usuário" /> : ""}
+                </UserImg>
+            </Link>
         </PublishStyle>
     );
 }
@@ -197,6 +200,7 @@ const UserImg = styled.div`
 
     & img {
         height: 100%;
+        cursor: pointer;
     }
 
     @media (max-width: 700px) {

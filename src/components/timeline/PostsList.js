@@ -5,8 +5,6 @@ import Post from "../shared/Post.js";
 import { useEffect, useContext, useState } from "react";
 import { useHistory } from "react-router";
 
-import ReactTooltip from "react-tooltip";
-
 export default function PostsList({ posts, setPosts }) {
     const { user } = useContext(UserContext);
     const [serverResponded, setServerResponded] = useState(false);
