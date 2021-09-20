@@ -45,6 +45,8 @@ const TrendingStyle = styled.div`
   height: 100%;
   background: #171717;
   border-radius: 16px;
+  position: sticky;
+  top: 90px;
 
   & > p {
     padding: 9px 16px 12px 16px;
