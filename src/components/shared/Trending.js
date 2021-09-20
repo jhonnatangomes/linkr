@@ -25,7 +25,7 @@ export default function Trending() {
       <HashtagContainer>
         {trending.map((topic) => (
           <Link to={`/hashtag/${topic.name}`} key={topic.id}>
-            <p data-tip={"#" + topic.name}>#{topic.name}</p>
+            <p data-tip={"#" + topic.name} data-for="hashtag-tooltip">#{topic.name}</p>
           </Link>
         ))}
       </HashtagContainer>
@@ -35,7 +35,7 @@ export default function Trending() {
         backgroundColor="rgba(255, 255, 255, 0.9)"
         textColor="#505050"
         effect="float"
-        
+        id="hashtag-tooltip"
       />
     </TrendingStyle>
   );
