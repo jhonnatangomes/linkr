@@ -62,6 +62,11 @@ const PageTitle = styled.h1`
     color: #ffffff;
     margin-bottom: 43px;
     margin-top: 53px;
+    width: 937px;
+    height: 53px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     @media (max-width: 700px) {
         margin: 19px 17px;

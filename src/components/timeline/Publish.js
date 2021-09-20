@@ -2,6 +2,7 @@ import styled from "styled-components";
 import UserContext from "../../contexts/UserContext";
 import { useContext, useState } from "react";
 import { createPost } from "../../services/api";
+import { Link } from "react-router-dom";
 
 export default function Publish({ posts, setPosts }) {
     const { user } = useContext(UserContext);
@@ -12,8 +13,12 @@ export default function Publish({ posts, setPosts }) {
     function publish(e) {
         e.preventDefault();
         setLoading(true);
+        const formatArray = formatText(text).map((sentence) =>
+            sentence[0] === "#" ? sentence.toLowerCase() : sentence
+        );
+        let formattedText = formatArray.join("");
         const body = {
-            text,
+            text: formattedText,
             link,
         };
 
@@ -28,6 +33,23 @@ export default function Publish({ posts, setPosts }) {
             setLoading(false);
             alert("Houve um erro ao publicar seu link");
         });
+    }
+
+    function formatText(text) {
+        const newText = [""];
+        let isHashtag = false;
+        for (let char of text) {
+            if (char === "#") {
+                newText.push("");
+                isHashtag = true;
+            }
+            if (isHashtag && char === " ") {
+                isHashtag = false;
+                newText.push("");
+            }
+            newText[newText.length - 1] += char;
+        }
+        return newText;
     }
 
     return (
@@ -55,9 +77,11 @@ export default function Publish({ posts, setPosts }) {
                     {loading ? "Publicando..." : "Publicar"}
                 </button>
             </Form>
-            <UserImg>
-                {user ? <img src={user.avatar} alt="avatar do usuário" /> : ""}
-            </UserImg>
+            <Link to="/my-posts">
+                <UserImg>
+                    {user ? <img src={user.avatar} alt="avatar do usuário" /> : ""}
+                </UserImg>
+            </Link>
         </PublishStyle>
     );
 }
@@ -176,6 +200,7 @@ const UserImg = styled.div`
 
     & img {
         height: 100%;
+        cursor: pointer;
     }
 
     @media (max-width: 700px) {

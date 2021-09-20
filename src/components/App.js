@@ -32,6 +32,7 @@ export default function App() {
             <Tooltip effect="solid" id="main" />
             <BrowserRouter>
                 <GlobalStyle />
+                <Tooltip/>
                 <Switch>
                     <Route path="/signup" exact component={SignPage} />
                     <Route path="/timeline" exact>
@@ -49,6 +50,9 @@ export default function App() {
                     <Route path="/hashtag/:hashtag" exact>
                         <Header/>
                         <Hashtag/>
+                    </Route>
+                    <Route path="/user/:id" exact>
+                        <Header />
                     </Route>
                     <Route path="/" exact component={SignPage} />
                     <Redirect to="/signup" />

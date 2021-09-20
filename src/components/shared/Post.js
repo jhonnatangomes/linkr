@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { AiOutlineHeart } from "react-icons/ai";
+import { Link } from "react-router-dom";
 import { AiFillHeart } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import UserContext from "../../contexts/UserContext.js";
@@ -7,76 +8,80 @@ import ModalContext from "../../contexts/ModalContext.js";
 import { useContext, useState } from "react";
 import { likePost, dislikePost } from "../../services/likePostApi";
 import { deletePost } from "../../services/editPostApi";
-import ReactTooltip from 'react-tooltip';
+import ReactTooltip from "react-tooltip";
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
-    const { setModal }  = useContext(ModalContext);
+    const { setModal } = useContext(ModalContext);
 
-    const [isLiked, setIsLiked] = useState(Boolean(post.likes.find(like => like.userId === user.id)));
+    const [isLiked, setIsLiked] = useState(
+        Boolean(post.likes.find((like) => like.userId === user.id))
+    );
     const [isDeleted, setIsDeleted] = useState(false);
 
-    const likedBy = [...post.likes
-        .filter(like => like.userId !== user.id)
-        .map(like => like['user.username'])
+    const likedBy = [
+        ...post.likes
+            .filter((like) => like.userId !== user.id)
+            .map((like) => like["user.username"]),
     ];
 
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
-    }
+    };
 
     const openDeletePostDialog = () => {
         const onConfirm = () => {
             openModal({
-                message: 'Deletando...',
-                loading: true
+                message: "Deletando...",
+                loading: true,
             });
 
             deletePost(post.id, user.token)
-            .then(() => {
-                setIsDeleted(true);
-                openModal({
-                    message: 'Post deletado com sucesso',
+                .then(() => {
+                    setIsDeleted(true);
+                    openModal({
+                        message: "Post deletado com sucesso",
+                    });
+                })
+                .catch(() => {
+                    setIsDeleted(true);
+                    openModal({
+                        message: "Erro ao deletar o post",
+                    });
                 });
-            }).catch(() => {
-                setIsDeleted(true);
-                openModal({
-                    message: 'Erro ao deletar o post',
-                });
-            });
-        }
+        };
         openModal({
-            message: 'Tem certeza que deseja excluir essa publicação?',
+            message: "Tem certeza que deseja excluir essa publicação?",
             onConfirm,
-            confirmText: 'Sim, excluir',
-            cancelText: 'Não, voltar'
+            confirmText: "Sim, excluir",
+            cancelText: "Não, voltar",
         });
-    }
+    };
 
     const toggleLike = () => {
         const fakeLike = () => {
-            setIsLiked(true)
-        }
+            setIsLiked(true);
+        };
 
         const fakeDislike = () => {
-            setIsLiked(false)
-        }
+            setIsLiked(false);
+        };
 
         if (isLiked) {
             fakeDislike();
 
             dislikePost(post.id, user.token).catch(() => {
                 fakeLike();
-                openModal({ message: 'Erro ao descurtir o post' });
+                openModal({ message: "Erro ao descurtir o post" });
             });
         } else {
             fakeLike();
             likePost(post.id, user.token).catch(() => {
                 fakeDislike();
-                openModal({ message: 'Erro ao curtir o post' });
+                openModal({ message: "Erro ao curtir o post" });
             });
         }
-    }
+    };
 
     //Rebuilding after the component is redred
     setTimeout(ReactTooltip.rebuild, 200);
@@ -85,15 +90,15 @@ export default function Post({ post }) {
         <>
             {!isDeleted && (
                 <PostContainer>
-                    <PostLeftBox 
+                    <PostLeftBox
                         isLiked={isLiked}
                         likedBy={likedBy}
                         toggleLike={toggleLike}
                         userId={user.id}
-                        post={post} 
+                        post={post}
                     />
                     <PostInfo post={post} />
-                    {(post.user.id === user.id) && (
+                    {post.user.id === user.id && (
                         <ContainerButtons>
                             <TrashIcon onClick={openDeletePostDialog} />
                         </ContainerButtons>
@@ -105,67 +110,65 @@ export default function Post({ post }) {
 }
 
 const HeartIcon = ({ isLiked, toggleLike }) => {
-
     return (
         <div onClick={toggleLike}>
-            {isLiked ? (
-                <FillHeart />
-            ) : (
-                <OutlineHeart />
-            )}
+            {isLiked ? <FillHeart /> : <OutlineHeart />}
         </div>
-    )
-}
+    );
+};
 
 function PostLeftBox({ post, isLiked, likedBy, toggleLike, userId }) {
     return (
         <LeftBox>
-            <UserImg>
-                <img src={post.user.avatar} alt="Nome do usuário" />
-            </UserImg>
+            <Link to={`/user/${post.user.id}`}>
+                <UserImg>
+                    <img src={post.user.avatar} alt="Nome do usuário" />
+                </UserImg>
+            </Link>
             <HeartIcon
                 likedBy={likedBy}
                 isLiked={isLiked}
                 toggleLike={toggleLike}
                 userId={userId}
             />
-            <LikeCounter 
-                likedBy={likedBy}
-                isLiked={isLiked}
-            />
+            <LikeCounter likedBy={likedBy} isLiked={isLiked} />
         </LeftBox>
     );
 }
 
 const LikeCounter = ({ likedBy, isLiked }) => {
-
-    let toolTipMessage = '';
+    let toolTipMessage = "";
     const otherLikesNames = likedBy;
     const otherLikesCount = likedBy.length;
 
     if (isLiked) {
-        toolTipMessage += 'Você';
+        toolTipMessage += "Você";
 
         if (otherLikesCount >= 1) {
-            toolTipMessage += (otherLikesCount === 1) ? ' e ' : ', ';
-            toolTipMessage += otherLikesNames[0]
+            toolTipMessage += otherLikesCount === 1 ? " e " : ", ";
+            toolTipMessage += otherLikesNames[0];
         }
 
         if (otherLikesCount >= 2) {
-            toolTipMessage += (otherLikesCount === 2) ? ` e outra pessoa` : ` e outras ${otherLikesCount - 1} pessoas`;
+            toolTipMessage +=
+                otherLikesCount === 2
+                    ? ` e outra pessoa`
+                    : ` e outras ${otherLikesCount - 1} pessoas`;
         }
-
     } else {
         if (otherLikesCount >= 1) {
-            toolTipMessage += otherLikesNames[0]
+            toolTipMessage += otherLikesNames[0];
 
             if (otherLikesCount >= 2) {
-                toolTipMessage += (otherLikesCount === 2) ? ' e ' : ', ';
-                toolTipMessage += otherLikesNames[1]
+                toolTipMessage += otherLikesCount === 2 ? " e " : ", ";
+                toolTipMessage += otherLikesNames[1];
             }
 
             if (otherLikesCount >= 3) {
-                toolTipMessage += (otherLikesCount === 3) ? ` e outra pessoa` : ` e outras ${otherLikesCount - 2} pessoas`;
+                toolTipMessage +=
+                    otherLikesCount === 3
+                        ? ` e outra pessoa`
+                        : ` e outras ${otherLikesCount - 2} pessoas`;
             }
         }
     }
@@ -178,8 +181,8 @@ const LikeCounter = ({ likedBy, isLiked }) => {
                 ? likeCount + " like"
                 : likeCount + " likes"}
         </div>
-    )
-}
+    );
+};
 
 function PostInfo({ post }) {
     function formatText(text) {
@@ -201,10 +204,18 @@ function PostInfo({ post }) {
 
     return (
         <Info>
-            <Username>{post.user.username}</Username>
+            <Username>
+                <Link to={`/user/${post.user.id}`}>{post.user.username}</Link>
+            </Username>
             <Comment>
                 {formatText(post.text).map((text, i) =>
-                    text[0] === "#" ? <span key={i}>{text}</span> : text
+                    text[0] === "#" ? (
+                        <Link to={`/hashtag/${text.slice(1)}`} key={i}>
+                            <span>{text}</span>
+                        </Link>
+                    ) : (
+                        text
+                    )
                 )}
             </Comment>
             <LinkInfo post={post} />
@@ -294,6 +305,7 @@ const Username = styled.h2`
     color: #ffffff;
     font-size: 20px;
     margin-bottom: 10px;
+    width: fit-content;
 
     @media (max-width: 700px) {
         font-size: 17px;
@@ -315,7 +327,7 @@ const FillHeart = styled(AiFillHeart)`
     font-size: 20px;
     cursor: pointer;
     margin-bottom: 5px;
-    color: #AC0000;
+    color: #ac0000;
     @media (max-width: 700px) {
         font-size: 17px;
         margin-bottom: 12px;
@@ -332,7 +344,7 @@ const ContainerButtons = styled.div`
 `;
 
 const TrashIcon = styled(FaTrash)`
-    color: #FFFFFF;
+    color: #ffffff;
     font-size: 14px;
     cursor: pointer;
 `;
@@ -362,7 +374,7 @@ const LinkBox = styled.div`
     overflow: hidden;
 
     @media (max-width: 700px) {
-        width: 75vw;
+        width: 100%;
     }
 `;
 
