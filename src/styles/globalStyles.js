@@ -7,5 +7,4 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
->>>>>>> main
 export default GlobalStyle;
