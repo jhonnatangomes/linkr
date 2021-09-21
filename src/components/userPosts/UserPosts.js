@@ -76,10 +76,16 @@ export default function MyPosts () {
 }
 
 const UserPostsContainer = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 53px;
+
+    > div {
+        width: 937px;
+    }
+
     @media (max-width: 700px) {
         margin-top: 0px;
         width: 100%;
@@ -89,16 +95,27 @@ const UserPostsContainer = styled.div`
     }
 `;
 
-const UserInfoBox = styled.div`
-    display: flex;
-`;
-
 const TitleContainer = styled.div`
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 43px;
+
+    @media (max-width: 700px) {
+        margin: 19px 17px;
+        width: calc(100% - 34px);
+    }
+`;
+
+const UserInfoBox = styled.div`
+    display: flex;
+    width: 837px;
+    align-items: center;
+
+    @media (max-width: 700px) {
+        width: calc(100% - 100px);
+    }
 `;
 
 const UserImg = styled.div`
@@ -114,11 +131,6 @@ const UserImg = styled.div`
     & img {
         height: 100%;
     }
-
-    @media (max-width: 700px) {
-        width: 40px;
-        height: 40px;
-    }
 `;
 
 const Title = styled.h1`
@@ -126,8 +138,12 @@ const Title = styled.h1`
     font-size: 45px;
     font-weight: 700;
     color: #ffffff;
+    width: calc(100% - 60px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     @media (max-width: 700px) {
-        margin: 19px 17px;
         font-size: 33px;
         line-height: 49px;
     }
