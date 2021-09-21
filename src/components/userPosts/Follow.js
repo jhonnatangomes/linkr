@@ -1,38 +1,49 @@
 import styled from "styled-components";
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { changeFollowOnUser } from '../../services/changeFollowOnUser.js';
 
+import FollowingContext from '../../contexts/FollowingContext.js';
+
 export default function Follow ({ userId, token }) {
+    const { followingUsers, setFollowingUsers } = useContext(FollowingContext);
     const [disabled, setDisabled] = useState(false);
-    const [buttonText, setButtonText] = useState("Follow");
+    const [isFollowing, setIsFollowing] = useState(followingUsers.includes(Number(userId)));
 
     function changeFollow () {
         setDisabled(true);
-        const requestType = buttonText === "Follow" ? 'follow':'unfollow';
+        const requestType = isFollowing ? 'unfollow':'follow';
 
         changeFollowOnUser(userId, requestType, token)
             .then(() => {
-                setButtonText(buttonText === "Follow" ? 'Unfollow':'Follow');
+                if (requestType === 'unfollow') {
+                    setFollowingUsers(followingUsers.filter((followingUser) => followingUser !== userId));
+                    setIsFollowing(false);
+                } else {
+                    setFollowingUsers([...followingUsers, userId]);
+                    setIsFollowing(true);
+                }
                 setDisabled(false);
             })
             .catch(() => {
-                alert("Deu ruim!");
+                alert("Ocorreu algum erro!");
                 setDisabled(false);
             });
     }
 
     return (
-        <FollowButton onClick={changeFollow} disabled={disabled}>{buttonText}</FollowButton>
+        <FollowButton onClick={changeFollow} followed={isFollowing} disabled={disabled}>
+            {isFollowing ? "Unfollow":"Follow"}
+            </FollowButton>
     );
 }
 
 const FollowButton = styled.button`
     width: 100px;
     height: 30px;
-    background-color: #1877f2;
+    background-color: ${({ followed }) => followed ? '#ffffff':'#1877f2'};
     border: none;
     border-radius: 5px;
-    color: #ffffff;
+    color: ${({ followed }) => followed ? '#1877f2':'#ffffff'};
     font-size: 14px;
     font-weight: 700;
     cursor: ${({ disabled }) => disabled ? 'not-allowed':'pointer'};
