@@ -6,7 +6,7 @@ import { getUserLikes } from '../../services/userLikesApi.js';
 import Loading from "../shared/Loading";
 import NavBar from "../navBar/NavBar";
 import Trending from '../shared/Trending';
-import Post from '../shared/Post.js';
+import Post from '../shared/post/Post.js';
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);

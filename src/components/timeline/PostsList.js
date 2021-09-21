@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { getPosts } from "../../services/api.js";
 import UserContext from "../../contexts/UserContext.js";
-import Post from "../shared/Post.js";
-import { useEffect, useContext, useState } from "react";
+import Post from "../shared/post/Post.js";
+import { useEffect, useContext } from "react";
 import { useHistory } from "react-router";
 import Loading from "../shared/Loading";
 

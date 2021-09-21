@@ -1,6 +1,6 @@
 import NavBar from "../navBar/NavBar";
 import styled from "styled-components";
-import Post from "../shared/Post";
+import Post from "../shared/post/Post";
 import Trending from "../shared/Trending";
 import Loading from "../shared/Loading";
 import { useParams } from "react-router";
