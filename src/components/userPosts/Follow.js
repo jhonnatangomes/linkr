@@ -15,9 +15,9 @@ export default function Follow ({ userId, token }) {
         changeFollowOnUser(userId, requestType, token)
             .then(() => {
                 if (requestType === 'unfollow') {
-                    setFollowingUsers(followingUsers.filter((followingUser) => followingUser !== userId));
+                    setFollowingUsers(followingUsers.filter((followingUser) => followingUser !== Number(userId)));
                 } else {
-                    setFollowingUsers([...followingUsers, userId]);
+                    setFollowingUsers([...followingUsers, Number(userId)]);
                 }
                 setDisabled(false);
             })
