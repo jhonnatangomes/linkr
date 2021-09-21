@@ -7,6 +7,7 @@ import { getUserInfo } from '../../services/userInfoApi.js';
 import NavBar from "../navBar/NavBar";
 import Trending from "../shared/Trending";
 import Post from '../shared/Post.js';
+import Follow from './Follow.js';
 import Loading from '../shared/Loading.js';
 
 export default function MyPosts () {
@@ -58,7 +59,7 @@ export default function MyPosts () {
                             </UserImg>
                             <Title>{userInfo.username}'s posts</Title>
                         </UserInfoBox>
-                        <FollowButton>Follow</FollowButton>
+                        <Follow />
                     </TitleContainer>
                     <UserPostsBodyContainer>
                         <PostsListContainer>
@@ -130,18 +131,6 @@ const Title = styled.h1`
         font-size: 33px;
         line-height: 49px;
     }
-`;
-
-const FollowButton = styled.button`
-    width: 100px;
-    height: 30px;
-    background-color: #1877f2;
-    border: none;
-    border-radius: 5px;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
 `;
 
 const UserPostsBodyContainer = styled.div`
