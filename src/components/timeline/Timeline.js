@@ -3,10 +3,21 @@ import styled from "styled-components";
 import Publish from "./Publish";
 import PostsList from "./PostsList";
 import Trending from "../shared/Trending";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import UserContext from "../../contexts/UserContext.js";
+import FollowingContext from '../../contexts/FollowingContext.js';
+import { getFollowingList } from '../../services/getFollowingList.js';
 
 export default function Timeline() {
+    const { user } = useContext(UserContext);
+    const { setFollowingUsers } = useContext(FollowingContext);
     const [posts, setPosts] = useState(null);
+    
+    useEffect(() => {
+        getFollowingList(user.token)
+            .then((res) => setFollowingUsers(res.data.users.map((user) => user.id)))
+            .catch(() => alert("Ocorreu algum erro!"));
+    },[]);
 
     return (
         <>

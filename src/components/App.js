@@ -7,7 +7,7 @@ import Hashtag from "./hashtag/Hashtag";
 
 import UserContext from "../contexts/UserContext";
 import ModalContext from "../contexts/ModalContext";
-import FollowingUsers from "../contexts/FollowingUsers.js";
+import FollowingContext from "../contexts/FollowingContext.js";
 
 import SignPage from './signPage/SignPage';
 import Header from "./header/Header";
@@ -30,7 +30,7 @@ export default function App() {
     return (
         <UserContext.Provider value={{ user, setUser }}>
             <ModalContext.Provider value={{ modal, setModal }}>
-                <FollowingUsers.Provider value={{ followingUsers, setFollowingUsers }}>
+                <FollowingContext.Provider value={{ followingUsers, setFollowingUsers }}>
                     <Modal modal={modal} closeModal={closeModal} />
                     <Tooltip effect="solid" id="main" />
                     <BrowserRouter>
@@ -62,7 +62,7 @@ export default function App() {
                             <Redirect to="/signup" />
                         </Switch>
                     </BrowserRouter>
-                </FollowingUsers.Provider>
+                </FollowingContext.Provider>
             </ModalContext.Provider>
         </UserContext.Provider>
     );
