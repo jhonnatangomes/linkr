@@ -6,7 +6,7 @@ import { getUserPosts } from '../../services/userPostsApi.js';
 import NavBar from "../navBar/NavBar";
 import Trending from '../shared/Trending.js';
 import Loading from '../shared/Loading.js';
-import Post from '../shared/Post.js';
+import Post from '../shared/post/Post.js';
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);

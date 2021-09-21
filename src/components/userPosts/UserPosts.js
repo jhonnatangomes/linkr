@@ -6,8 +6,8 @@ import { getUserPosts } from '../../services/userPostsApi.js';
 import { getUserInfo } from '../../services/userInfoApi.js';
 import NavBar from "../navBar/NavBar";
 import Trending from "../shared/Trending";
-import Post from '../shared/Post.js';
 import Follow from './Follow.js';
+import Post from '../shared/post/Post.js';
 import Loading from '../shared/Loading.js';
 
 export default function MyPosts () {
