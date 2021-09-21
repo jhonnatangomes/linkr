@@ -12,7 +12,7 @@ import Loading from '../shared/Loading.js';
 export default function MyPosts () {
     const { user } = useContext(UserContext);
     const { id } = useParams();
-    const [usernamePosts, setUsernamePosts] = useState("");
+    const [userInfo, setUserInfo] = useState("");
     const [userPosts, setUserPosts] = useState(null);
     const history = useHistory();
 
@@ -24,7 +24,7 @@ export default function MyPosts () {
         if (user) {
             getUserInfo(id, user.token)
                 .then((response) => {
-                    setUsernamePosts(response.data.user.username);
+                    setUserInfo(response.data.user);
                 })
                 .catch((error) => {
                     if(error.response.status === 500) {
@@ -51,7 +51,15 @@ export default function MyPosts () {
         <NavBar />
             <UserPostsContainer>
                 <div>
-                    <PageTitle>{usernamePosts}'s posts</PageTitle>
+                    <TitleContainer>
+                        <UserInfoBox>
+                            <UserImg>
+                                <img src={userInfo.avatar} alt={userInfo.username} />
+                            </UserImg>
+                            <Title>{userInfo.username}'s posts</Title>
+                        </UserInfoBox>
+                        <FollowButton>Follow</FollowButton>
+                    </TitleContainer>
                     <UserPostsBodyContainer>
                         <PostsListContainer>
                             {userPosts === null ? <Loading />:<Container>
@@ -80,17 +88,60 @@ const UserPostsContainer = styled.div`
     }
 `;
 
-const PageTitle = styled.h1`
+const UserInfoBox = styled.div`
+    display: flex;
+`;
+
+const TitleContainer = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 43px;
+`;
+
+const UserImg = styled.div`
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 10px;
+
+    & img {
+        height: 100%;
+    }
+
+    @media (max-width: 700px) {
+        width: 40px;
+        height: 40px;
+    }
+`;
+
+const Title = styled.h1`
     font-family: "Oswald", sans-serif;
     font-size: 45px;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 43px;
     @media (max-width: 700px) {
         margin: 19px 17px;
         font-size: 33px;
         line-height: 49px;
     }
+`;
+
+const FollowButton = styled.button`
+    width: 100px;
+    height: 30px;
+    background-color: #1877f2;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
 `;
 
 const UserPostsBodyContainer = styled.div`
