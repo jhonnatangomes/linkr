@@ -24,11 +24,15 @@ export default function App() {
     const [followingUsers, setFollowingUsers] = useState(null);
     const [modal, setModal] = useState({ modalIsOpen: false });
 
+    const openModal = (data) => {
+        setModal({ modalIsOpen: true, ...data });
+    };
+
     useEffect(() => {
         if (user !== null ) {
         getFollowingList(user.token)
             .then((res) => setFollowingUsers(res.data.users.map((user) => user.id)))
-            .catch(() => alert("Ocorreu algum erro!"));
+            .catch(() => openModal({message: "Ocorreu algum erro!"}));
         }
     },[]);
 

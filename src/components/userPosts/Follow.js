@@ -3,10 +3,16 @@ import { useState, useContext } from 'react';
 import { changeFollowOnUser } from '../../services/changeFollowOnUser.js';
 
 import FollowingContext from '../../contexts/FollowingContext.js';
+import ModalContext from "../../contexts/ModalContext.js";
 
 export default function Follow ({ userId, token }) {
     const { followingUsers, setFollowingUsers } = useContext(FollowingContext);
+    const { setModal } = useContext(ModalContext);
     const [disabled, setDisabled] = useState(false);
+
+    const openModal = (data) => {
+        setModal({ modalIsOpen: true, ...data });
+    };
 
     function changeFollow () {
         setDisabled(true);
@@ -22,7 +28,7 @@ export default function Follow ({ userId, token }) {
                 setDisabled(false);
             })
             .catch(() => {
-                alert("Ocorreu algum erro!");
+                openModal({message: "Ocorreu algum erro!"});
                 setDisabled(false);
             });
     }
