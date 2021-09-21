@@ -1,7 +1,8 @@
 import GlobalStyle from "../styles/globalStyles";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Redirect } from "react-router";
+import { getFollowingList } from '../services/getFollowingList.js';
 
 import Hashtag from "./hashtag/Hashtag";
 
@@ -22,6 +23,16 @@ export default function App() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
     const [followingUsers, setFollowingUsers] = useState([]);
     const [modal, setModal] = useState({ modalIsOpen: false });
+
+    useEffect(() => {
+        if (user !== null ) {
+        getFollowingList(user.token)
+            .then((res) => setFollowingUsers(res.data.users.map((user) => user.id)))
+            .catch(() => alert("Ocorreu algum erro!"));
+        }
+    },[]);
+
+    console.log(followingUsers);
 
     const closeModal = () => {
         setModal({ modalIsOpen: false });

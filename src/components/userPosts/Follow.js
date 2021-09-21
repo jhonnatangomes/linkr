@@ -7,20 +7,17 @@ import FollowingContext from '../../contexts/FollowingContext.js';
 export default function Follow ({ userId, token }) {
     const { followingUsers, setFollowingUsers } = useContext(FollowingContext);
     const [disabled, setDisabled] = useState(false);
-    const [isFollowing, setIsFollowing] = useState(followingUsers.includes(Number(userId)));
 
     function changeFollow () {
         setDisabled(true);
-        const requestType = isFollowing ? 'unfollow':'follow';
+        const requestType = followingUsers.includes(Number(userId)) ? 'unfollow':'follow';
 
         changeFollowOnUser(userId, requestType, token)
             .then(() => {
                 if (requestType === 'unfollow') {
                     setFollowingUsers(followingUsers.filter((followingUser) => followingUser !== userId));
-                    setIsFollowing(false);
                 } else {
                     setFollowingUsers([...followingUsers, userId]);
-                    setIsFollowing(true);
                 }
                 setDisabled(false);
             })
@@ -31,8 +28,8 @@ export default function Follow ({ userId, token }) {
     }
 
     return (
-        <FollowButton onClick={changeFollow} followed={isFollowing} disabled={disabled}>
-            {isFollowing ? "Unfollow":"Follow"}
+        <FollowButton onClick={changeFollow} followed={followingUsers.includes(Number(userId))} disabled={disabled}>
+            {followingUsers.includes(Number(userId)) ? "Unfollow":"Follow"}
             </FollowButton>
     );
 }
