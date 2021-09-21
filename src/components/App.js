@@ -21,7 +21,7 @@ import MyLikes from './myLikes/MyLikes';
 
 export default function App() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-    const [followingUsers, setFollowingUsers] = useState([]);
+    const [followingUsers, setFollowingUsers] = useState(null);
     const [modal, setModal] = useState({ modalIsOpen: false });
 
     useEffect(() => {

@@ -28,9 +28,11 @@ export default function Follow ({ userId, token }) {
     }
 
     return (
-        <FollowButton onClick={changeFollow} followed={followingUsers.includes(Number(userId))} disabled={disabled}>
-            {followingUsers.includes(Number(userId)) ? "Unfollow":"Follow"}
-            </FollowButton>
+        <>
+            {followingUsers === null ? "":(<FollowButton onClick={changeFollow} followed={followingUsers.includes(Number(userId))} disabled={disabled}>
+                {followingUsers.includes(Number(userId)) ? "Unfollow":"Follow"}
+            </FollowButton>)}
+        </>
     );
 }
 
