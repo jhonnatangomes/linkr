@@ -7,6 +7,7 @@ import Hashtag from "./hashtag/Hashtag";
 
 import UserContext from "../contexts/UserContext";
 import ModalContext from "../contexts/ModalContext";
+import FollowingUsers from "../contexts/FollowingUsers.js";
 
 import SignPage from './signPage/SignPage';
 import Header from "./header/Header";
@@ -19,6 +20,7 @@ import MyLikes from './myLikes/MyLikes';
 
 export default function App() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+    const [followingUsers, setFollowingUsers] = useState([]);
     const [modal, setModal] = useState({ modalIsOpen: false });
 
     const closeModal = () => {
@@ -28,38 +30,39 @@ export default function App() {
     return (
         <UserContext.Provider value={{ user, setUser }}>
             <ModalContext.Provider value={{ modal, setModal }}>
-
-            <Modal modal={modal} closeModal={closeModal} />
-            <Tooltip effect="solid" id="main" />
-            <BrowserRouter>
-                <GlobalStyle />
-                <Tooltip/>
-                <Switch>
-                    <Route path="/signup" exact component={SignPage} />
-                    <Route path="/timeline" exact>
-                        <Header/>
-                        <Timeline/>
-                    </Route>
-                    <Route path="/my-posts" exact>
-                        <Header/>
-                        <MyPosts/>
-                    </Route>
-                    <Route path="/my-likes" exact>
-                        <Header/>
-                        <MyLikes/>
-                    </Route>
-                    <Route path="/hashtag/:hashtag" exact>
-                        <Header/>
-                        <Hashtag/>
-                    </Route>
-                    <Route path="/user/:id" exact>
-                        <Header />
-                        <UserPosts />
-                    </Route>
-                    <Route path="/" exact component={SignPage} />
-                    <Redirect to="/signup" />
-                </Switch>
-            </BrowserRouter>
+                <FollowingUsers.Provider value={{ followingUsers, setFollowingUsers }}>
+                    <Modal modal={modal} closeModal={closeModal} />
+                    <Tooltip effect="solid" id="main" />
+                    <BrowserRouter>
+                        <GlobalStyle />
+                        <Tooltip/>
+                        <Switch>
+                            <Route path="/signup" exact component={SignPage} />
+                            <Route path="/timeline" exact>
+                                <Header/>
+                                <Timeline/>
+                            </Route>
+                            <Route path="/my-posts" exact>
+                                <Header/>
+                                <MyPosts/>
+                            </Route>
+                            <Route path="/my-likes" exact>
+                                <Header/>
+                                <MyLikes/>
+                            </Route>
+                            <Route path="/hashtag/:hashtag" exact>
+                                <Header/>
+                                <Hashtag/>
+                            </Route>
+                            <Route path="/user/:id" exact>
+                                <Header />
+                                <UserPosts />
+                            </Route>
+                            <Route path="/" exact component={SignPage} />
+                            <Redirect to="/signup" />
+                        </Switch>
+                    </BrowserRouter>
+                </FollowingUsers.Provider>
             </ModalContext.Provider>
         </UserContext.Provider>
     );
