@@ -59,7 +59,7 @@ export default function MyPosts () {
                             </UserImg>
                             <Title>{userInfo.username}'s posts</Title>
                         </UserInfoBox>
-                        <Follow />
+                        <Follow userId={id} token={user.token} />
                     </TitleContainer>
                     <UserPostsBodyContainer>
                         <PostsListContainer>
