@@ -250,6 +250,10 @@ const ContainerButtons = styled.div`
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
     grid-column-gap: 13px;
+
+    @media (max-width: 700px) {
+        right: 5%;
+    }
 `;
 
 const Comment = styled.p`
