@@ -84,6 +84,15 @@ const UserPostsContainer = styled.div`
 
     > div {
         width: 937px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    @media (max-width: 937px) {
+        > div {
+            width: 100%;
+        }
     }
 
     @media (max-width: 700px) {
@@ -101,6 +110,11 @@ const TitleContainer = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-bottom: 43px;
+    overflow: hidden;
+
+    @media (max-width: 937px) {
+        width: 611px;
+    }
 
     @media (max-width: 700px) {
         margin: 19px 17px;
@@ -112,6 +126,10 @@ const UserInfoBox = styled.div`
     display: flex;
     width: 837px;
     align-items: center;
+
+    @media (max-width: 937px) {
+        width: calc(611px - 100px);
+    }
 
     @media (max-width: 700px) {
         width: calc(100% - 100px);
@@ -152,6 +170,7 @@ const Title = styled.h1`
 const UserPostsBodyContainer = styled.div`
     display: flex;
     width: 100%;
+    justify-content: center;
 `;
 
 const PostsListContainer = styled.main`

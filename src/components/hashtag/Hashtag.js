@@ -54,6 +54,12 @@ const HashtagContainer = styled.div`
         width: 937px;
     }
 
+    @media (max-width: 937px) {
+        & > div {
+            width: 611px;
+        }
+    }
+
     @media (max-width: 700px) {
         width: 100%;
 
