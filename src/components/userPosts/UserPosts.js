@@ -6,6 +6,7 @@ import { getUserPosts } from '../../services/userPostsApi.js';
 import { getUserInfo } from '../../services/userInfoApi.js';
 import NavBar from "../navBar/NavBar";
 import Trending from "../shared/Trending";
+import Follow from './Follow.js';
 import Post from '../shared/post/Post.js';
 import Loading from '../shared/Loading.js';
 import Search from "../shared/search/Search";
@@ -13,9 +14,11 @@ import Search from "../shared/search/Search";
 export default function MyPosts () {
     const { user } = useContext(UserContext);
     const { id } = useParams();
-    const [usernamePosts, setUsernamePosts] = useState("");
+    const [userInfo, setUserInfo] = useState("");
     const [userPosts, setUserPosts] = useState(null);
     const history = useHistory();
+
+    console.log(userInfo);
 
     if (Number(id) === Number(user.id)) {
         history.push('/my-posts');
@@ -25,7 +28,7 @@ export default function MyPosts () {
         if (user) {
             getUserInfo(id, user.token)
                 .then((response) => {
-                    setUsernamePosts(response.data.user.username);
+                    setUserInfo(response.data.user);
                 })
                 .catch((error) => {
                     if(error.response.status === 500) {
@@ -53,7 +56,15 @@ export default function MyPosts () {
         <Search layout="mobile" />
             <UserPostsContainer>
                 <div>
-                    <PageTitle>{usernamePosts}'s posts</PageTitle>
+                    <TitleContainer>
+                        <UserInfoBox>
+                            <UserImg>
+                                <img src={userInfo.avatar} alt={userInfo.username} />
+                            </UserImg>
+                            <Title>{userInfo.username}'s posts</Title>
+                        </UserInfoBox>
+                        <Follow userId={id} token={user.token} />
+                    </TitleContainer>
                     <UserPostsBodyContainer>
                         <PostsListContainer>
                             {userPosts === null ? <Loading />:<Container>
@@ -69,10 +80,25 @@ export default function MyPosts () {
 }
 
 const UserPostsContainer = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 53px;
+
+    > div {
+        width: 937px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    @media (max-width: 937px) {
+        > div {
+            width: 100%;
+        }
+    }
+
     @media (max-width: 700px) {
         margin-top: 0px;
         width: 100%;
@@ -82,30 +108,73 @@ const UserPostsContainer = styled.div`
     }
 `;
 
-const PageTitle = styled.h1`
-    font-family: "Oswald", sans-serif;
-    font-size: 45px;
-    font-weight: 700;
-    color: #ffffff;
+const TitleContainer = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 43px;
-    width: 937px;
+    overflow: hidden;
 
     @media (max-width: 937px) {
         width: 611px;
     }
 
     @media (max-width: 700px) {
-        padding: 19px 17px;
+        margin: 19px 17px;
+        width: calc(100% - 34px);
+    }
+`;
+
+const UserInfoBox = styled.div`
+    display: flex;
+    width: 837px;
+    align-items: center;
+
+    @media (max-width: 937px) {
+        width: calc(611px - 100px);
+    }
+
+    @media (max-width: 700px) {
+        width: calc(100% - 100px);
+    }
+`;
+
+const UserImg = styled.div`
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 10px;
+
+    & img {
+        height: 100%;
+    }
+`;
+
+const Title = styled.h1`
+    font-family: "Oswald", sans-serif;
+    font-size: 45px;
+    font-weight: 700;
+    color: #ffffff;
+    width: calc(100% - 60px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: 700px) {
         font-size: 33px;
         line-height: 49px;
-        width: 100%;
-        margin: 0;
     }
 `;
 
 const UserPostsBodyContainer = styled.div`
     display: flex;
     width: 100%;
+    justify-content: center;
 `;
 
 const PostsListContainer = styled.main`

@@ -47,9 +47,20 @@ export default function Hashtag() {
 }
 
 const HashtagContainer = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    > div {
+        width: 937px;
+    }
+
+    @media (max-width: 937px) {
+        & > div {
+            width: 611px;
+        }
+    }
 
     @media (max-width: 700px) {
         width: 100%;

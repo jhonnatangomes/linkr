@@ -12,6 +12,7 @@ export default function Publish({ posts, setPosts }) {
     const [text, setText] = useState("");
     const [link, setLink] = useState("");
 
+    console.log(posts);
     function openModal(data) {
         setModal({ modalIsOpen: true, ...data });
     }

@@ -9,18 +9,17 @@ import Loading from "../shared/Loading";
 export default function PostsList({ posts, setPosts }) {
     const { user } = useContext(UserContext);
     const history = useHistory();
-    const [serverResponded, setServerResponded] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
 
     useEffect(() => {
         if (user) {
             const request = getPosts(user.token);
             request.then((res) => {
                 setPosts(res.data.posts);
-                setServerResponded(true);
             });
             request.catch(() => {
-                setServerResponded(true);
+                setPosts([]);
                 setErrorMessage("Houve uma falha ao obter os posts, por favor atualize a página");
             })
         } else {
@@ -31,15 +30,15 @@ export default function PostsList({ posts, setPosts }) {
 
     return (
         <>
-            {!serverResponded ? <Loading />:(<Container>
-                {posts.map((post, index) => (
+            {posts === null ? <Loading />:(<Container>
+                {posts.map((post) => (
                     <Post 
                         post={post} 
-                        key={index} 
+                        key={post.id} 
                     />
                 ))}
             </Container>)}
-            {serverResponded && posts.length === 0 && !errorMessage ? <Span>Nenhum post encontrado</Span> : ""}
+            {posts !== null && posts.length === 0 && !errorMessage ? <Span>Nenhum post encontrado</Span> : ""}
             {errorMessage ? <Span>{errorMessage}</Span> : ""}
         </>
     );
@@ -56,7 +55,6 @@ const Container = styled.section`
 const Span = styled.span`
     color: white;
     font-size: 25px;
-    font-weight: 700;
     width: 611px;
     text-align: center;
 `;

@@ -7,7 +7,7 @@ import { useState } from "react";
 import Search from "../shared/search/Search";
 
 export default function Timeline() {
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState(null);
 
     return (
         <>
