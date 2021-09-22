@@ -2,22 +2,22 @@ import styled from "styled-components";
 import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext.js';
-import { getUserPosts } from '../../services/userPostsApi.js';
+import { getUserLikes } from '../../services/userLikesApi.js';
+import Loading from "../shared/Loading";
 import NavBar from "../navBar/NavBar";
-import Trending from '../shared/Trending.js';
-import Loading from '../shared/Loading.js';
+import Trending from '../shared/Trending';
 import Post from '../shared/post/Post.js';
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
-    const [myPosts, setMyPosts] = useState(null);
+    const [myLikes, setMyLikes] = useState(null);
     const history = useHistory();
 
     useEffect(() => {
         if (user) {
-            getUserPosts(user.id, user.token)
-                .then((response) => setMyPosts(response.data.posts))
-                .catch(() => alert("Ocorreu algum erro!"));
+            getUserLikes(user.token)
+                .then((response) => setMyLikes(response.data.posts))
+                .catch(() => alert("Ocorreu um erro!"));
         } else {
             alert("Você não está logado!");
             history.push("/");
@@ -27,24 +27,24 @@ export default function MyPosts () {
     return (
         <>
         <NavBar />
-            <MyPostsContainer>
+            <MyLikesContainer>
                 <div>
-                    <PageTitle>my posts</PageTitle>
-                    <MyPostsBodyContainer>
+                    <PageTitle>my likes</PageTitle>
+                    <MyLikesBodyContainer>
                         <PostsListContainer>
-                            {myPosts === null ? <Loading />:(<Container>
-                                {myPosts.map((post, index) => <Post key={index} post={post} />)}
+                            {myLikes === null ? <Loading />:(<Container>
+                                {myLikes.map((post, index) => <Post key={index} post={post} />)}
                             </Container>)}
                         </PostsListContainer>
                         <Trending />
-                    </MyPostsBodyContainer>
+                    </MyLikesBodyContainer>
                 </div>
-            </MyPostsContainer>
+            </MyLikesContainer>
         </>
     );
 }
 
-const MyPostsContainer = styled.div`
+const MyLikesContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -74,7 +74,7 @@ const PageTitle = styled.h1`
     }
 `;
 
-const MyPostsBodyContainer = styled.div`
+const MyLikesBodyContainer = styled.div`
     display: flex;
     width: 100%;
 `;
@@ -84,12 +84,9 @@ const PostsListContainer = styled.main`
     flex-direction: column;
     margin-right: 25px;
 
-    @media (max-width: 937px) {
-        margin-right: 0;
-    }
-
     @media (max-width: 700px) {
         width: 100%;
+        margin-right: 0;
     }
 `;
 

@@ -8,12 +8,13 @@ import ReactTooltip from "react-tooltip";
 export default function Trending() {
   const { user } = useContext(UserContext);
   const [trending, setTrending] = useState([]);
-  ReactTooltip.rebuild();
+  
 
   useEffect(() => {
     const request = getTrending(user.token);
     request.then((res) => {
       setTrending(res.data.hashtags);
+      ReactTooltip.rebuild();
     });
   }, []);
 
@@ -24,7 +25,7 @@ export default function Trending() {
       <HashtagContainer>
         {trending.map((topic) => (
           <Link to={`/hashtag/${topic.name}`} key={topic.id}>
-            <p data-tip={"#" + topic.name}>#{topic.name}</p>
+            <p data-tip={"#" + topic.name} data-for="hashtag-tooltip">#{topic.name}</p>
           </Link>
         ))}
       </HashtagContainer>
@@ -34,7 +35,7 @@ export default function Trending() {
         backgroundColor="rgba(255, 255, 255, 0.9)"
         textColor="#505050"
         effect="float"
-        
+        id="hashtag-tooltip"
       />
     </TrendingStyle>
   );
@@ -45,6 +46,8 @@ const TrendingStyle = styled.div`
   height: 100%;
   background: #171717;
   border-radius: 16px;
+  position: sticky;
+  top: 90px;
 
   & > p {
     padding: 9px 16px 12px 16px;

@@ -6,7 +6,7 @@ import Trending from "../shared/Trending";
 import { useState } from "react";
 
 export default function Timeline() {
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState(null);
 
     return (
         <>

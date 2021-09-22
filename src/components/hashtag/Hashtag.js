@@ -1,7 +1,8 @@
 import NavBar from "../navBar/NavBar";
 import styled from "styled-components";
-import Post from "../shared/Post";
+import Post from "../shared/post/Post";
 import Trending from "../shared/Trending";
+import Loading from "../shared/Loading";
 import { useParams } from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { getHashtagPosts } from "../../services/trendingApi";
@@ -10,9 +11,11 @@ import UserContext from "../../contexts/UserContext";
 export default function Hashtag() {
     const { hashtag } = useParams();
     const { user } = useContext(UserContext);
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState(null);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+        setPosts(null);
         const request = getHashtagPosts(hashtag, user.token);
         request.then((res) => {
             setPosts(res.data.posts);
@@ -27,11 +30,11 @@ export default function Hashtag() {
                     <PageTitle># {hashtag}</PageTitle>
                     <HashtagBodyContainer>
                         <PostsListContainer>
-                            <div>
+                            {posts === null ? <Loading />:(<div>
                                 {posts.map((post) => (
                                     <Post post={post} key={post.id} />
                                 ))}
-                            </div>
+                            </div>)}
                         </PostsListContainer>
                         <Trending />
                     </HashtagBodyContainer>
@@ -62,6 +65,11 @@ const PageTitle = styled.h1`
     color: #ffffff;
     margin-bottom: 43px;
     margin-top: 53px;
+    width: 937px;
+    height: 53px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     @media (max-width: 700px) {
         margin: 19px 17px;

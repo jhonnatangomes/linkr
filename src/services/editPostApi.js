@@ -11,5 +11,6 @@ const getConfig = (token) => {
 
 const deletePost = (id, token) => axios.delete(`${URL_API}/posts/${id}`, getConfig(token));
 
+const editPost = (text, id, token) => axios.put(`${URL_API}/posts/${id}`, { text }, getConfig(token));
 
-export { deletePost };
+export { deletePost, editPost };
