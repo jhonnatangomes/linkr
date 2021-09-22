@@ -8,6 +8,7 @@ import NavBar from "../navBar/NavBar";
 import Trending from "../shared/Trending";
 import Post from '../shared/post/Post.js';
 import Loading from '../shared/Loading.js';
+import NoPostsMessage from "../../styles/NoPostsMessage";
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
@@ -55,7 +56,7 @@ export default function MyPosts () {
                     <UserPostsBodyContainer>
                         <PostsListContainer>
                             {userPosts === null ? <Loading />:<Container>
-                                {userPosts.map((post, index) => <Post key={index} post={post} />)}
+                                {userPosts.length === 0 ? <NoPosts />: userPosts.map((post, index) => <Post key={index} post={post} />)}
                             </Container>}
                         </PostsListContainer>
                         <Trending />
@@ -65,6 +66,15 @@ export default function MyPosts () {
         </>
     );
 }
+
+function NoPosts () {
+    return (
+        <NoPostsMessage>
+            Este usuário não postou nada ainda!
+        </NoPostsMessage>
+    );
+}
+
 
 const UserPostsContainer = styled.div`
     display: flex;

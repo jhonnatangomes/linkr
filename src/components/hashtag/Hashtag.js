@@ -7,6 +7,7 @@ import { useParams } from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { getHashtagPosts } from "../../services/trendingApi";
 import UserContext from "../../contexts/UserContext";
+import NoPostsMessage from "../../styles/NoPostsMessage";
 
 export default function Hashtag() {
     const { hashtag } = useParams();
@@ -31,7 +32,7 @@ export default function Hashtag() {
                     <HashtagBodyContainer>
                         <PostsListContainer>
                             {posts === null ? <Loading />:(<div>
-                                {posts.map((post) => (
+                                {posts.length === 0 ? <NoPosts />:posts.map((post) => (
                                     <Post post={post} key={post.id} />
                                 ))}
                             </div>)}
@@ -41,6 +42,14 @@ export default function Hashtag() {
                 </div>
             </HashtagContainer>
         </>
+    );
+}
+
+function NoPosts () {
+    return (
+        <NoPostsMessage>
+            Não há ninguém falando sobre esse assunto!
+        </NoPostsMessage>
     );
 }
 
