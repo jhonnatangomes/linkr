@@ -7,6 +7,7 @@ import { useParams } from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { getHashtagPosts } from "../../services/trendingApi";
 import UserContext from "../../contexts/UserContext";
+import Search from "../shared/search/Search";
 
 export default function Hashtag() {
     const { hashtag } = useParams();
@@ -25,6 +26,7 @@ export default function Hashtag() {
     return (
         <>
             <NavBar />
+            <Search layout="mobile" />
             <HashtagContainer>
                 <div>
                     <PageTitle># {hashtag}</PageTitle>
@@ -70,6 +72,10 @@ const PageTitle = styled.h1`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    @media (max-width: 937px) {
+        width: 611px;
+    }
 
     @media (max-width: 700px) {
         margin: 19px 17px;

@@ -8,6 +8,7 @@ import NavBar from "../navBar/NavBar";
 import Trending from "../shared/Trending";
 import Post from '../shared/post/Post.js';
 import Loading from '../shared/Loading.js';
+import Search from "../shared/search/Search";
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
@@ -49,6 +50,7 @@ export default function MyPosts () {
     return (
         <>
         <NavBar />
+        <Search layout="mobile" />
             <UserPostsContainer>
                 <div>
                     <PageTitle>{usernamePosts}'s posts</PageTitle>
@@ -87,6 +89,10 @@ const PageTitle = styled.h1`
     color: #ffffff;
     margin-bottom: 43px;
     width: 937px;
+
+    @media (max-width: 937px) {
+        width: 611px;
+    }
 
     @media (max-width: 700px) {
         padding: 19px 17px;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useContext, useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-
+import Search from '../shared/search/Search';
 import UserContext from '../../contexts/UserContext';
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
@@ -19,6 +19,7 @@ export default function Header() {
     return(
         <HeaderBox>
             <Logo onClick={() => {history.push('/timeline'); window.scrollTo(0, 0);}}>linkr</Logo>
+            <Search layout="desktop"/>
             <Menu ref={node}>
                 {!showMenu && <StyledIcon onClick={() => setShowMenu(true)}><IoIosArrowDown/></StyledIcon>}
                 {showMenu && <StyledIcon onClick={() => setShowMenu(false)}><IoIosArrowUp/></StyledIcon>}

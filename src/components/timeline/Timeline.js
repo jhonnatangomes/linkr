@@ -4,13 +4,15 @@ import Publish from "./Publish";
 import PostsList from "./PostsList";
 import Trending from "../shared/Trending";
 import { useState } from "react";
+import Search from "../shared/search/Search";
 
 export default function Timeline() {
-    const [posts, setPosts] = useState(null);
+    const [posts, setPosts] = useState([]);
 
     return (
         <>
             <NavBar />
+            <Search layout="mobile" />
             <TimelineContainer>
                 <div>
                     <PageTitle>timeline</PageTitle>

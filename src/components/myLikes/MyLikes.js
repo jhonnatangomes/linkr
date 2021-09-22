@@ -7,6 +7,7 @@ import Loading from "../shared/Loading";
 import NavBar from "../navBar/NavBar";
 import Trending from '../shared/Trending';
 import Post from '../shared/post/Post.js';
+import Search from "../shared/search/Search";
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
@@ -27,6 +28,7 @@ export default function MyPosts () {
     return (
         <>
         <NavBar />
+        <Search layout="mobile" />
             <MyLikesContainer>
                 <div>
                     <PageTitle>my likes</PageTitle>
