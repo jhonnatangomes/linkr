@@ -19,7 +19,6 @@ export default function Post({ post }) {
     const [editText, setEditText] = useState("");
     const [isEditLoading, setIsEditLoading] = useState(false);
     const [postText, setPostText] = useState(post.text);
-
     const videoId = getYouTubeID(post.link)
     const isVideo = Boolean(videoId);
 
@@ -67,11 +66,11 @@ export default function Post({ post }) {
             {!isDeleted && (
                 <PostContainer>
                     <LeftBox>
-                        <Link to={`/user/${post.user.id}`}>
                             <UserImg>
-                                <img src={post.user.avatar} alt="Nome do usuário" />
+                                <Link to={`/user/${post.user.id}`}>
+                                    <img src={post.user.avatar} alt="Nome do usuário" />
+                                </Link>
                             </UserImg>
-                        </Link>
                         <LikeButton
                             openModal={openModal}
                             post={post}
@@ -92,6 +91,7 @@ export default function Post({ post }) {
                                     setIsEditing={setIsEditing}
                                     editText={editText}
                                     setEditText={setEditText}
+                                    postText={postText}
                                 />
                             </Comment>
                         ) : (
@@ -152,6 +152,7 @@ export default function Post({ post }) {
                                 postText={postText}
                                 isEditing={isEditing}
                                 setIsEditing={setIsEditing}
+                                editText={editText}
                                 setEditText={setEditText}
                                 editPostRequest={editPostRequest}
                                 setIsEditLoading={setIsEditLoading}
@@ -212,7 +213,7 @@ const UserImg = styled.div`
     cursor: pointer;
     margin-bottom: 20px;
 
-    & img {
+    & img,a {
         height: 100%;
     }
 

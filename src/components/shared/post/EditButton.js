@@ -1,11 +1,16 @@
 import styled from "styled-components";
-import { FiEdit2 } from "react-icons/fi";
+import { ReactComponent as EditSvg } from '../../../assets/icons/edit.svg';
 
-const EditButton = ({ isEditing, setIsEditing, setEditText, postText, editPostRequest, setIsEditLoading}) => {
+const EditButton = ({ isEditing, setIsEditing, editText, setEditText, postText, editPostRequest, setIsEditLoading}) => {
     const toggleIsEditing = () => {
         if (isEditing) {
-            setIsEditLoading(true);
-            editPostRequest();
+            if (editText === postText) {
+                setIsEditLoading(false);
+                setIsEditing(false);
+            } else {
+                setIsEditLoading(true);
+                editPostRequest();
+            }
         } else {
             setEditText(postText)
             setIsEditing(true);
@@ -17,9 +22,9 @@ const EditButton = ({ isEditing, setIsEditing, setEditText, postText, editPostRe
     );
 }
 
-const EditIcon = styled(FiEdit2)`
+const EditIcon = styled(EditSvg)`
     color: #FFFFFF;
-    font-size: 14px;
+    font-size: 20px;
     cursor: pointer;
 `;
 

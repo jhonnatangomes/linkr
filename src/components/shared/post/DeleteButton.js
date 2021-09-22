@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FaTrash } from "react-icons/fa";
+import { ReactComponent as TrashSvg } from '../../../assets/icons/delete.svg';
 import { deletePost } from "../../../services/editPostApi";
 
 const DeleteButton = ({ setIsDeleted, openModal, post, user }) => {
@@ -38,7 +38,7 @@ const DeleteButton = ({ setIsDeleted, openModal, post, user }) => {
 }
 
 
-const TrashIcon = styled(FaTrash)`
+const TrashIcon = styled(TrashSvg)`
     color: #FFFFFF;
     font-size: 14px;
     cursor: pointer;
