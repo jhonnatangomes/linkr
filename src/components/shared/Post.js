@@ -9,6 +9,8 @@ import { useContext, useState } from "react";
 import { likePost, dislikePost } from "../../services/likePostApi";
 import { deletePost } from "../../services/editPostApi";
 import ReactTooltip from "react-tooltip";
+import standardProfilePicture from '../assets/imgs/profile-standard.jpg';
+import noPreviewImg from '../assets/imgs/no-image.png';
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -118,11 +120,13 @@ const HeartIcon = ({ isLiked, toggleLike }) => {
 };
 
 function PostLeftBox({ post, isLiked, likedBy, toggleLike, userId }) {
+    function addDefaultSrc(ev) { ev.target.src = standardProfilePicture };
+
     return (
         <LeftBox>
             <Link to={`/user/${post.user.id}`}>
                 <UserImg>
-                    <img src={post.user.avatar} alt="Nome do usuário" />
+                    <img onError={(e) => addDefaultSrc(e)} src={post.user.avatar} alt="Nome do usuário" />
                 </UserImg>
             </Link>
             <HeartIcon
@@ -224,6 +228,8 @@ function PostInfo({ post }) {
 }
 
 function LinkInfo({ post }) {
+    function addDefaultSrc(ev) { ev.target.src = noPreviewImg };
+
     return (
         <a href={post.link} target="_blank">
             <LinkBox>
@@ -233,7 +239,7 @@ function LinkInfo({ post }) {
                     <LinkRef>{post.link}</LinkRef>
                 </LinkText>
                 <LinkImg>
-                    <img src={post.linkImage} alt="" />
+                    <img onError={(e) => addDefaultSrc(e)} src={post.linkImage} alt="" />
                 </LinkImg>
             </LinkBox>
         </a>

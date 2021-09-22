@@ -5,6 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext';
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
+import standardProfilePicture from '../assets/imgs/profile-standard.jpg';
 
 export default function Header() {
     const { user, setUser } = useContext(UserContext);
@@ -23,7 +24,7 @@ export default function Header() {
                 {!showMenu && <StyledIcon onClick={() => setShowMenu(true)}><IoIosArrowDown/></StyledIcon>}
                 {showMenu && <StyledIcon onClick={() => setShowMenu(false)}><IoIosArrowUp/></StyledIcon>}
                 <StyledImg>
-                <img alt="Profile" src={user.avatar} onClick={() => setShowMenu(!showMenu)}></img>
+                    <img alt="Profile" src={user.avatar} onClick={() => setShowMenu(!showMenu)}></img>
                 </StyledImg>
                 {showMenu && <MenuList>
                     <StyledLink onClick={() => setShowMenu(false)} to="/my-posts">My posts</StyledLink>
@@ -74,6 +75,8 @@ const StyledImg = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    background: url(${standardProfilePicture});
+    background-size: contain;
     & img {
         height: 100%;
     }
