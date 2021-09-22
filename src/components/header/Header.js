@@ -17,6 +17,8 @@ export default function Header() {
 
     useEffect(() => { document.addEventListener("mousedown", handleClick) }, []);
 
+    function addDefaultProfileImgSrc(ev) { ev.target.src = standardProfilePicture };
+
     return(
         <HeaderBox>
             <Logo onClick={() => {history.push('/timeline'); window.scrollTo(0, 0);}}>linkr</Logo>
@@ -24,7 +26,7 @@ export default function Header() {
                 {!showMenu && <StyledIcon onClick={() => setShowMenu(true)}><IoIosArrowDown/></StyledIcon>}
                 {showMenu && <StyledIcon onClick={() => setShowMenu(false)}><IoIosArrowUp/></StyledIcon>}
                 <StyledImg>
-                    <img alt="Profile" src={user.avatar} onClick={() => setShowMenu(!showMenu)}></img>
+                    <img onError={(e) => addDefaultProfileImgSrc(e)} alt="Profile" src={user.avatar} onClick={() => setShowMenu(!showMenu)}></img>
                 </StyledImg>
                 {showMenu && <MenuList>
                     <StyledLink onClick={() => setShowMenu(false)} to="/my-posts">My posts</StyledLink>
@@ -75,8 +77,6 @@ const StyledImg = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background: url(${standardProfilePicture});
-    background-size: contain;
     & img {
         height: 100%;
     }
