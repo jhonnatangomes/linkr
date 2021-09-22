@@ -164,6 +164,7 @@ const UserImg = styled.div`
 const Title = styled.h1`
     font-family: "Oswald", sans-serif;
     font-size: 45px;
+    height: 53px;
     font-weight: 700;
     color: #ffffff;
     width: calc(100% - 60px);
