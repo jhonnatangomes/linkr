@@ -45,9 +45,20 @@ export default function Hashtag() {
 }
 
 const HashtagContainer = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    > div {
+        width: 937px;
+    }
+
+    @media (max-width: 937px) {
+        & > div {
+            width: 611px;
+        }
+    }
 
     @media (max-width: 700px) {
         width: 100%;
@@ -65,7 +76,6 @@ const PageTitle = styled.h1`
     color: #ffffff;
     margin-bottom: 43px;
     margin-top: 53px;
-    width: 937px;
     height: 53px;
     white-space: nowrap;
     overflow: hidden;
