@@ -14,7 +14,7 @@ export default function PostsList({ posts, setPosts }) {
         if (user) {
             const request = getPosts(user.token);
             request.then((res) => {
-                setPosts(res.data.posts);
+                setPosts(res.data.posts.filter((post) => post.user.id !== user.id));
             });
         } else {
             alert("Você não está logado!");
