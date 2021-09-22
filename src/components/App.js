@@ -5,7 +5,6 @@ import { Redirect } from "react-router";
 import { getFollowingList } from '../services/getFollowingList.js';
 
 import Hashtag from "./hashtag/Hashtag";
-
 import UserContext from "../contexts/UserContext";
 import ModalContext from "../contexts/ModalContext";
 import FollowingContext from "../contexts/FollowingContext.js";

@@ -9,6 +9,7 @@ import DeleteButton from "./DeleteButton.js";
 import EditButton from "./EditButton.js"
 import EditInput from "./EditInput.js"
 import { editPost } from "../../../services/editPostApi";
+import getYouTubeID from "get-youtube-id";
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -17,7 +18,10 @@ export default function Post({ post }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState("");
     const [isEditLoading, setIsEditLoading] = useState(false);
-    const [postText, setPostText] = useState(post.text)
+    const [postText, setPostText] = useState(post.text);
+
+    const videoId = getYouTubeID(post.link)
+    const isVideo = Boolean(videoId);
 
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
@@ -103,18 +107,43 @@ export default function Post({ post }) {
                                 )}
                             </Comment>
                         )}
-                        <a href={post.link} target="_blank" rel="noreferrer">
-                            <LinkBox>
-                                <LinkText>
-                                    <LinkTitle>{post.linkTitle}</LinkTitle>
-                                    <LinkDescription>{post.linkDescription}</LinkDescription>
-                                    <LinkRef>{post.link}</LinkRef>
-                                </LinkText>
-                                <LinkImg>
-                                    <img src={post.linkImage} alt="" />
-                                </LinkImg>
-                            </LinkBox>
-                        </a>
+
+                        {isVideo? (
+                            <>
+                                <VideoBox>
+                                    <iframe 
+                                        id="ytplayer"
+                                        title="ytplayer"
+                                        type="text/html" 
+                                        width="640" 
+                                        height="283"
+                                        allow="fullscreen; accelerometer; loop; encrypted-media; gyroscope; picture-in-picture"
+                                        src={`https://www.youtube.com/embed/${videoId}?origin=http://linkr.com`}
+                                        frameBorder="0"
+                                    />
+                                </VideoBox>
+                                <VideoLink>
+                                    <a href={post.link} target="_blank" rel="noreferrer">
+                                        {post.link} 
+                                    </a>
+                                </VideoLink>
+                            </>
+
+                        ) : (
+                            <a href={post.link} target="_blank" rel="noreferrer">
+                                <LinkBox>
+                                    <LinkText>
+                                        <LinkTitle>{post.linkTitle}</LinkTitle>
+                                        <LinkDescription>{post.linkDescription}</LinkDescription>
+                                        <LinkRef>{post.link}</LinkRef>
+                                    </LinkText>
+                                    <LinkImg>
+                                        <img src={post.linkImage} alt="" />
+                                    </LinkImg>
+                                </LinkBox>
+                            </a>
+                        )}
+
                     </Info>
 
                     {(post.user.id === user.id) && (
@@ -198,7 +227,7 @@ const Info = styled.div`
     height: 100%;
 
     @media (max-width: 700px) {
-        width: 75vw;
+        width: 85%;
     }
 `;
 
@@ -221,6 +250,10 @@ const ContainerButtons = styled.div`
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
     grid-column-gap: 13px;
+
+    @media (max-width: 700px) {
+        right: 5%;
+    }
 `;
 
 const Comment = styled.p`
@@ -249,6 +282,19 @@ const LinkBox = styled.div`
     align-items: center;
     border: 1px solid #4d4d4d;
     border-radius: 11px;
+    overflow: hidden;
+
+    @media (max-width: 700px) {
+        width: 100%;
+    }
+`;
+
+const VideoBox = styled.div`
+    width: 98%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
 
     @media (max-width: 700px) {
@@ -305,6 +351,19 @@ const LinkRef = styled.p`
     }
 `;
 
+const VideoLink = styled.p`
+    color: #B7B7B7;
+    font-size: 17px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 6px;
+    width: 98%;
+
+    @media (max-width: 700px) {
+        font-size: 13px;
+    }
+`;
 const LinkImg = styled.div`
     width: 35%;
     height: 150px;
