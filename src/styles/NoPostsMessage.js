@@ -2,8 +2,9 @@ import styled from "styled-components";
 
 const NoPostsMessage = styled.p`
     font-size: 30px;
-    color: #b7b7b7;
+    color: #ffffff;
     text-align: center;
+    margin-bottom: 20px;
 
     @media (max-width: 700px) {
         margin-left: 20px;

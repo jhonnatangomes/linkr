@@ -17,7 +17,7 @@ export default function PostsList({ posts, setPosts }) {
         if (user) {
             const request = getPosts(user.token);
             request.then((res) => {
-                setPosts(res.data.posts.filter((post) => post.user.id !== user.id));
+                setPosts(res.data.posts);
             });
         } else {
             alert("Você não está logado!");
@@ -27,13 +27,14 @@ export default function PostsList({ posts, setPosts }) {
 
     return (
         <>
-            {posts === null ? <Loading />:(<Container>
-                {followingUsers.length === 0 && posts.length === 0 ? <NoPostsMessage>Você não segue ninguém ainda, procure por perfis na busca</NoPostsMessage>:(posts.length === 0 ? <NoPostsMessage>Nenhuma publicação encontrada</NoPostsMessage>:posts.map((post) => (
+            {posts === null || followingUsers === null ? <Loading />:(<Container>
+                {followingUsers.length === 0 ? <NoPostsMessage>Você não segue ninguém ainda, procure por perfis na busca</NoPostsMessage>:""}
+                {posts.length === 0 && followingUsers.length !== 0 ? <NoPostsMessage>Nenhuma publicação encontrada</NoPostsMessage>:posts.map((post) => (
                     <Post 
                         post={post} 
                         key={post.id} 
                     />
-                )))}
+                ))}
             </Container>)}
         </>
     );
