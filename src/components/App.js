@@ -2,12 +2,9 @@ import GlobalStyle from "../styles/globalStyles";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { useState } from "react";
 import { Redirect } from "react-router";
-
 import Hashtag from "./hashtag/Hashtag";
-
 import UserContext from "../contexts/UserContext";
 import ModalContext from "../contexts/ModalContext";
-
 import SignPage from './signPage/SignPage';
 import Header from "./header/Header";
 import Timeline from './timeline/Timeline';
