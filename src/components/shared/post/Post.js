@@ -22,7 +22,7 @@ export default function Post({ post }) {
 
     const videoId = getYouTubeID(post.link)
     const isVideo = Boolean(videoId);
-
+    
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
@@ -67,11 +67,11 @@ export default function Post({ post }) {
             {!isDeleted && (
                 <PostContainer>
                     <LeftBox>
-                        <Link to={`/user/${post.user.id}`}>
                             <UserImg>
-                                <img src={post.user.avatar} alt="Nome do usuário" />
+                                <Link to={`/user/${post.user.id}`}>
+                                    <img src={post.user.avatar} alt="Nome do usuário" />
+                                </Link>
                             </UserImg>
-                        </Link>
                         <LikeButton
                             openModal={openModal}
                             post={post}
@@ -212,7 +212,7 @@ const UserImg = styled.div`
     cursor: pointer;
     margin-bottom: 20px;
 
-    & img {
+    & img,a {
         height: 100%;
     }
 

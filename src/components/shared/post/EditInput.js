@@ -5,9 +5,13 @@ const EditInput = ({ editPostRequest, isEditLoading, setIsEditLoading, isEditing
     const inputRef = useRef(null);
 
     useEffect(() => {
-        if (isEditing) {
-            inputRef.current.focus();
-        }
+        setTimeout(() => {
+            if (!isEditing) {
+                setEditText('');
+                inputRef.current.focus();
+                setEditText(editText);
+            }
+        }, 1)
     }, [isEditing]);
 
     const checkKey = (e) => {

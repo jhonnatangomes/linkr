@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { AiOutlineHeart } from "react-icons/ai";
-import { AiFillHeart } from "react-icons/ai";
+import { ReactComponent as OutlineHeartSvg } from '../../../assets/icons/outline-heart.svg';
+import { ReactComponent as FilledHeartSvg } from '../../../assets/icons/filled-heart.svg';
+
 import { useState } from "react";
 import { likePost, dislikePost } from "../../../services/likePostApi";
 
@@ -10,6 +11,12 @@ const LikeButton = ({post, user, openModal}) => {
     const likedBy = [...post.likes
         .filter(like => like.userId !== user.id)
         .map(like => like['user.username'])
+        .map(like => {
+            if (like.length > 512) {
+                like = like.substring(0, 512) + '...';
+            }
+            return like;
+        })
     ];
 
     const toggleLike = () => {
@@ -76,7 +83,7 @@ const LikeButton = ({post, user, openModal}) => {
     )
 }
 
-const OutlineHeart = styled(AiOutlineHeart)`
+const OutlineHeart = styled(OutlineHeartSvg)`
     font-size: 20px;
     cursor: pointer;
 
@@ -85,7 +92,7 @@ const OutlineHeart = styled(AiOutlineHeart)`
     }
 `;
 
-const FillHeart = styled(AiFillHeart)`
+const FillHeart = styled(FilledHeartSvg)`
     font-size: 20px;
     cursor: pointer;
     color: #AC0000;
