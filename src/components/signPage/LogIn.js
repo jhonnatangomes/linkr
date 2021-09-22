@@ -2,11 +2,14 @@ import styled from "styled-components"
 import { useState, useContext } from "react";
 import { Link, useHistory } from 'react-router-dom';
 import { signIn } from "../../services/api";
+import { getFollowingList } from '../../services/getFollowingList.js';
 
 import UserContext from "../../contexts/UserContext";
+import FollowingContext from "../../contexts/FollowingContext.js";
 
 export default function LogIn() {
     const { setUser } = useContext(UserContext);
+    const { setFollowingUsers } = useContext(FollowingContext);
     const [isLoading, setIsLoading] = useState(false);
     const history = useHistory();
     const [email, setEmail] = useState("");
@@ -25,6 +28,9 @@ export default function LogIn() {
                     token: res.data.token
                 }));
                 setUser(JSON.parse(localStorage.getItem('user')));
+                getFollowingList(res.data.token)
+                    .then((response) => setFollowingUsers(response.data.users.map((user) => user.id)))
+                    .catch(() => alert("Ocorreu algum erro!"));
                 history.push('/timeline');
             }
         });
