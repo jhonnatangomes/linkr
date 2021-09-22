@@ -4,6 +4,7 @@ import ModalContext from "../../contexts/ModalContext";
 import { useContext, useState } from "react";
 import { createPost } from "../../services/api";
 import { Link } from "react-router-dom";
+import standardProfilePicture from '../assets/imgs/profile-standard.jpg';
 
 export default function Publish({ posts, setPosts }) {
     const { user } = useContext(UserContext);
@@ -205,6 +206,8 @@ const UserImg = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    background: url(${standardProfilePicture});
+    background-size: contain;
 
     & img {
         height: 100%;

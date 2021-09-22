@@ -10,6 +10,8 @@ import EditButton from "./EditButton.js";
 import EditInput from "./EditInput.js";
 import { editPost } from "../../../services/editPostApi";
 import getYouTubeID from "get-youtube-id";
+import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
+import noPreviewImg from '../../assets/imgs/no-image.png';
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -62,6 +64,9 @@ export default function Post({ post }) {
     //Rebuilding after the component is redred
     setTimeout(ReactTooltip.rebuild, 200);
 
+    function addDefaultProfileImgSrc(ev) { ev.target.src = standardProfilePicture };
+    function addDefaultPostImgSrc(ev) { ev.target.src = noPreviewImg };
+
     return (
         <>
             <StyledReactTooltip
@@ -74,15 +79,11 @@ export default function Post({ post }) {
             {!isDeleted && (
                 <PostContainer>
                     <LeftBox>
-                        <UserImg>
-                            <Link to={`/user/${post.user.id}`}>
-                                <img
-                                    src={post.user.avatar}
-                                    alt="Nome do usuário"
-                                />
-                            </Link>
-                        </UserImg>
-
+                            <UserImg>
+                                <Link to={`/user/${post.user.id}`}>
+                                    <img onError={(e) => addDefaultProfileImgSrc(e)} src={post.user.avatar} alt="Nome do usuário" />
+                                </Link>
+                            </UserImg>
                         <LikeButton
                             openModal={openModal}
                             post={post}
@@ -109,6 +110,7 @@ export default function Post({ post }) {
                                     setIsEditing={setIsEditing}
                                     editText={editText}
                                     setEditText={setEditText}
+                                    postText={postText}
                                 />
                             </Comment>
                         ) : (
@@ -167,7 +169,7 @@ export default function Post({ post }) {
                                         <LinkRef>{post.link}</LinkRef>
                                     </LinkText>
                                     <LinkImg>
-                                        <img src={post.linkImage} alt="" />
+                                        <img onError={(e) => addDefaultPostImgSrc(e)} src={post.linkImage} alt="" />
                                     </LinkImg>
                                 </LinkBox>
                             </a>
@@ -180,6 +182,7 @@ export default function Post({ post }) {
                                 postText={postText}
                                 isEditing={isEditing}
                                 setIsEditing={setIsEditing}
+                                editText={editText}
                                 setEditText={setEditText}
                                 editPostRequest={editPostRequest}
                                 setIsEditLoading={setIsEditLoading}

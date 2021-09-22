@@ -3,6 +3,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { useContext, useState } from "react";
 import UserContext from "../../../contexts/UserContext";
 import searchUser from "../../../services/searchApi";
+import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
 
 export default function Search({ layout }) {
     const { user } = useContext(UserContext);
@@ -21,6 +22,8 @@ export default function Search({ layout }) {
         }
     }
 
+    function addDefaultProfileImgSrc(ev) { ev.target.src = standardProfilePicture };
+
     return (
         <>
             {layout === "desktop" ? (
@@ -36,6 +39,7 @@ export default function Search({ layout }) {
                         {searchResults.map((result) => (
                             <SearchResult>
                                 <img
+                                    onError={(e) => addDefaultProfileImgSrc(e)}
                                     src={result.avatar}
                                     alt={result.username}
                                 />

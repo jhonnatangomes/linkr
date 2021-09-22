@@ -7,7 +7,8 @@ import Loading from "../shared/Loading";
 import NavBar from "../navBar/NavBar";
 import Trending from '../shared/Trending';
 import Post from '../shared/post/Post.js';
-import Search from "../shared/search/Search";
+import Search from "../shared/search/Search.js";
+import NoPostsMessage from "../../styles/NoPostsMessage";
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
@@ -35,7 +36,7 @@ export default function MyPosts () {
                     <MyLikesBodyContainer>
                         <PostsListContainer>
                             {myLikes === null ? <Loading />:(<Container>
-                                {myLikes.map((post, index) => <Post key={index} post={post} />)}
+                                {myLikes.length === 0 ? <NoPosts />:myLikes.map((post, index) => <Post key={index} post={post} />)}
                             </Container>)}
                         </PostsListContainer>
                         <Trending />
@@ -43,6 +44,14 @@ export default function MyPosts () {
                 </div>
             </MyLikesContainer>
         </>
+    );
+}
+
+function NoPosts () {
+    return (
+        <NoPostsMessage>
+            Você não curtiu nenhum post ainda!
+        </NoPostsMessage>
     );
 }
 

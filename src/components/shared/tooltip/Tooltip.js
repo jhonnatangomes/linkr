@@ -16,6 +16,10 @@ const Tooltip = () => (
 
 const StyledReactTooltip = styled(ReactTooltip)`
     font-weight: bold;
+    word-wrap: break-word;
+    width: auto;
+    max-width: 60%;
+    line-height: 1.1em;
 `;
 
 export default Tooltip;

@@ -10,6 +10,7 @@ import Follow from './Follow.js';
 import Post from '../shared/post/Post.js';
 import Loading from '../shared/Loading.js';
 import Search from "../shared/search/Search";
+import NoPostsMessage from "../../styles/NoPostsMessage";
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
@@ -68,7 +69,7 @@ export default function MyPosts () {
                     <UserPostsBodyContainer>
                         <PostsListContainer>
                             {userPosts === null ? <Loading />:<Container>
-                                {userPosts.map((post, index) => <Post key={index} post={post} />)}
+                                {userPosts.length === 0 ? <NoPosts />: userPosts.map((post, index) => <Post key={index} post={post} />)}
                             </Container>}
                         </PostsListContainer>
                         <Trending />
@@ -78,6 +79,15 @@ export default function MyPosts () {
         </>
     );
 }
+
+function NoPosts () {
+    return (
+        <NoPostsMessage>
+            Este usuário não postou nada ainda!
+        </NoPostsMessage>
+    );
+}
+
 
 const UserPostsContainer = styled.div`
     width: 100%;
@@ -158,6 +168,7 @@ const UserImg = styled.div`
 const Title = styled.h1`
     font-family: "Oswald", sans-serif;
     font-size: 45px;
+    height: 53px;
     font-weight: 700;
     color: #ffffff;
     width: calc(100% - 60px);

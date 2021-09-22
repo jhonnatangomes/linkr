@@ -1,13 +1,17 @@
 import styled from "styled-components";
 import { useEffect, useRef } from "react";
 
-const EditInput = ({ editPostRequest, isEditLoading, setIsEditLoading, isEditing, setIsEditing, editText, setEditText }) => {
+const EditInput = ({ editPostRequest, isEditLoading, setIsEditLoading, isEditing, setIsEditing, editText, setEditText, postText }) => {
     const inputRef = useRef(null);
 
     useEffect(() => {
-        if (isEditing) {
-            inputRef.current.focus();
-        }
+        setTimeout(() => {
+            if (!isEditing) {
+                setEditText('');
+                inputRef.current.focus();
+                setEditText(editText);
+            }
+        }, 10)
     }, [isEditing]);
 
     const checkKey = (e) => {
@@ -19,8 +23,14 @@ const EditInput = ({ editPostRequest, isEditLoading, setIsEditLoading, isEditing
 
         if (key === "Enter") {
             e.preventDefault();
-            setIsEditLoading(true);
-            editPostRequest();
+
+            if (editText === postText) {
+                setIsEditLoading(false);
+                setIsEditing(false);
+            } else {
+                setIsEditLoading(true);
+                editPostRequest();
+            }
         }
 
         if (key === "Escape") {
