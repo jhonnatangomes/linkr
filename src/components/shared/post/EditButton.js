@@ -1,11 +1,16 @@
 import styled from "styled-components";
 import { ReactComponent as EditSvg } from '../../../assets/icons/edit.svg';
 
-const EditButton = ({ isEditing, setIsEditing, setEditText, postText, editPostRequest, setIsEditLoading}) => {
+const EditButton = ({ isEditing, setIsEditing, editText, setEditText, postText, editPostRequest, setIsEditLoading}) => {
     const toggleIsEditing = () => {
         if (isEditing) {
-            setIsEditLoading(true);
-            editPostRequest();
+            if (editText === postText) {
+                setIsEditLoading(false);
+                setIsEditing(false);
+            } else {
+                setIsEditLoading(true);
+                editPostRequest();
+            }
         } else {
             setEditText(postText)
             setIsEditing(true);
@@ -13,7 +18,7 @@ const EditButton = ({ isEditing, setIsEditing, setEditText, postText, editPostRe
     }
 
     return (
-        <EditIcon onClick={toggleIsEditing} />      
+        <EditIcon onClick={toggleIsEditing} />
     );
 }
 

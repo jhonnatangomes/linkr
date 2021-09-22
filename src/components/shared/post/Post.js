@@ -19,10 +19,9 @@ export default function Post({ post }) {
     const [editText, setEditText] = useState("");
     const [isEditLoading, setIsEditLoading] = useState(false);
     const [postText, setPostText] = useState(post.text);
-
     const videoId = getYouTubeID(post.link)
     const isVideo = Boolean(videoId);
-    
+
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
@@ -92,6 +91,7 @@ export default function Post({ post }) {
                                     setIsEditing={setIsEditing}
                                     editText={editText}
                                     setEditText={setEditText}
+                                    postText={postText}
                                 />
                             </Comment>
                         ) : (
@@ -152,6 +152,7 @@ export default function Post({ post }) {
                                 postText={postText}
                                 isEditing={isEditing}
                                 setIsEditing={setIsEditing}
+                                editText={editText}
                                 setEditText={setEditText}
                                 editPostRequest={editPostRequest}
                                 setIsEditLoading={setIsEditLoading}
