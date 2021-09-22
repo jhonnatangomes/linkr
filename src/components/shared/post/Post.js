@@ -10,8 +10,8 @@ import EditButton from "./EditButton.js"
 import EditInput from "./EditInput.js"
 import { editPost } from "../../../services/editPostApi";
 import getYouTubeID from "get-youtube-id";
-import standardProfilePicture from '../assets/imgs/profile-standard.jpg';
-import noPreviewImg from '../assets/imgs/no-image.png';
+import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
+import noPreviewImg from '../../assets/imgs/no-image.png';
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
