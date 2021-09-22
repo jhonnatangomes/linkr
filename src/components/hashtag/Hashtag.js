@@ -1,12 +1,13 @@
 import NavBar from "../navBar/NavBar";
 import styled from "styled-components";
-import Post from "../shared/Post";
+import Post from "../shared/post/Post";
 import Trending from "../shared/Trending";
 import Loading from "../shared/Loading";
 import { useParams } from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { getHashtagPosts } from "../../services/trendingApi";
 import UserContext from "../../contexts/UserContext";
+import NoPostsMessage from "../../styles/NoPostsMessage";
 
 export default function Hashtag() {
     const { hashtag } = useParams();
@@ -31,7 +32,7 @@ export default function Hashtag() {
                     <HashtagBodyContainer>
                         <PostsListContainer>
                             {posts === null ? <Loading />:(<div>
-                                {posts.map((post) => (
+                                {posts.length === 0 ? <NoPosts />:posts.map((post) => (
                                     <Post post={post} key={post.id} />
                                 ))}
                             </div>)}
@@ -44,10 +45,29 @@ export default function Hashtag() {
     );
 }
 
+function NoPosts () {
+    return (
+        <NoPostsMessage>
+            Não há ninguém falando sobre esse assunto!
+        </NoPostsMessage>
+    );
+}
+
 const HashtagContainer = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    > div {
+        width: 937px;
+    }
+
+    @media (max-width: 937px) {
+        & > div {
+            width: 611px;
+        }
+    }
 
     @media (max-width: 700px) {
         width: 100%;
@@ -65,7 +85,6 @@ const PageTitle = styled.h1`
     color: #ffffff;
     margin-bottom: 43px;
     margin-top: 53px;
-    width: 937px;
     height: 53px;
     white-space: nowrap;
     overflow: hidden;
