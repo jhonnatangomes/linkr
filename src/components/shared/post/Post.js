@@ -5,6 +5,7 @@ import ModalContext from "../../../contexts/ModalContext.js";
 import { useContext, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import LikeButton from "./LikeButton.js";
+import ShareButton from "./ShareButton.js";
 import DeleteButton from "./DeleteButton.js";
 import EditButton from "./EditButton.js";
 import EditInput from "./EditInput.js";
@@ -12,6 +13,7 @@ import { editPost } from "../../../services/editPostApi";
 import getYouTubeID from "get-youtube-id";
 import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
 import noPreviewImg from '../../assets/imgs/no-image.png';
+import { ImLoop } from "react-icons/im";
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -78,6 +80,12 @@ export default function Post({ post }) {
                 id="name-tooltip"
             />
             {!isDeleted && (
+                <>
+                {post.repostedBy && <SharedBy>
+                    <ShareIcon/>
+                    <h1>Re-posted by <span>{post.repostedBy.id === user.id ? 'you' : post.repostedBy.username}</span></h1>
+                </SharedBy>}
+
                 <PostContainer>
                     <LeftBox>
                             <UserImg>
@@ -85,19 +93,12 @@ export default function Post({ post }) {
                                     <img onError={(e) => addDefaultProfileImgSrc(e)} src={post.user.avatar} alt="Nome do usuário" />
                                 </Link>
                             </UserImg>
-                        <LikeButton
-                            openModal={openModal}
-                            post={post}
-                            user={user}
-                        />
+                        <LikeButton openModal={openModal} post={post} user={user} />
+                        <ShareButton openModal={openModal} post={post} user={user}/>
                     </LeftBox>
 
                     <Info>
-                        <Username
-                            $isUser={post.user.id === user.id}
-                            data-tip={post.user.username}
-                            data-for="name-tooltip"
-                        >
+                        <Username $isUser={post.user.id === user.id} data-tip={post.user.username} data-for="name-tooltip">
                             <Link to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}>
                                 {post.user.username}
                             </Link>
@@ -118,15 +119,10 @@ export default function Post({ post }) {
                             <Comment>
                                 {formatText(postText).map((text, i) =>
                                     text[0] === "#" ? (
-                                        <Link
-                                            to={`/hashtag/${text.slice(1)}`}
-                                            key={i}
-                                        >
+                                        <Link to={`/hashtag/${text.slice(1)}`} key={i}>
                                             <span>{text}</span>
                                         </Link>
-                                    ) : (
-                                        text
-                                    )
+                                    ) : (text)
                                 )}
                             </Comment>
                         )}
@@ -197,6 +193,7 @@ export default function Post({ post }) {
                         </ContainerButtons>
                     )}
                 </PostContainer>
+                </>
             )}
         </>
     );
@@ -422,4 +419,30 @@ const LinkImg = styled.div`
 const StyledReactTooltip = styled(ReactTooltip)`
     font-weight: bold;
     font-family: "Lato", sans-serif;
+`;
+
+const SharedBy = styled.div`
+    height: 65px;
+    width: 100%;
+    background: #1E1E1E;
+    border-radius: 16px;
+    margin: 0 0 -32px 0;
+    display: flex;
+    align-items: center;
+    padding: 0 0 32px 15px;
+    h1 {
+        font-family: Lato;
+        font-size: 11px;
+        line-height: 13px;
+        color: #FFFFFF;
+        span {
+            font-weight: 700;
+        }
+    }
+`;
+
+const ShareIcon = styled(ImLoop)`
+    color: #FFFFFF;
+    margin: 0 12px 0 0;
+    font-size: 16px;
 `;
