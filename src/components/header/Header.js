@@ -16,6 +16,11 @@ export default function Header() {
     const handleClick = e => {if (node.current && !node.current.contains(e.target)) setShowMenu(false)};
 
     useEffect(() => { document.addEventListener("mousedown", handleClick) }, []);
+    
+    if(!user) {
+        history.push("/");
+        return null;
+    }
 
     function addDefaultProfileImgSrc(ev) { ev.target.src = standardProfilePicture };
 

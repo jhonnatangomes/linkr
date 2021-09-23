@@ -25,6 +25,7 @@ export default function Post({ post }) {
     const videoId = getYouTubeID(post.link);
     const isVideo = Boolean(videoId);
 
+
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
@@ -80,7 +81,7 @@ export default function Post({ post }) {
                 <PostContainer>
                     <LeftBox>
                             <UserImg>
-                                <Link to={`/user/${post.user.id}`}>
+                                <Link to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}>
                                     <img onError={(e) => addDefaultProfileImgSrc(e)} src={post.user.avatar} alt="Nome do usuário" />
                                 </Link>
                             </UserImg>
@@ -97,7 +98,7 @@ export default function Post({ post }) {
                             data-tip={post.user.username}
                             data-for="name-tooltip"
                         >
-                            <Link to={`/user/${post.user.id}`}>
+                            <Link to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}>
                                 {post.user.username}
                             </Link>
                         </Username>

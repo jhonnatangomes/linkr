@@ -11,7 +11,6 @@ export default function PostsList({ posts, setPosts }) {
     const history = useHistory();
     const [errorMessage, setErrorMessage] = useState("");
 
-
     useEffect(() => {
         if (user) {
             const request = getPosts(user.token);
@@ -34,7 +33,7 @@ export default function PostsList({ posts, setPosts }) {
                 {posts.map((post) => (
                     <Post 
                         post={post} 
-                        key={post.id} 
+                        key={post.repostCount ? post.repostId : post.id}
                     />
                 ))}
             </Container>)}

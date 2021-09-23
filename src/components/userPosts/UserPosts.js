@@ -19,12 +19,6 @@ export default function MyPosts () {
     const [userPosts, setUserPosts] = useState(null);
     const history = useHistory();
 
-    console.log(userInfo);
-
-    if (Number(id) === Number(user.id)) {
-        history.push('/my-posts');
-    }
-
     useEffect(() => {
         if (user) {
             getUserInfo(id, user.token)
@@ -49,7 +43,12 @@ export default function MyPosts () {
             alert("Você não está logado!");
             history.push("/");
         }
-    }, []);
+    }, [id]);
+
+    if (Number(id) === Number(user.id)) {
+        history.push('/my-posts');
+        return null;
+    }
 
     return (
         <>
