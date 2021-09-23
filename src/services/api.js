@@ -11,14 +11,14 @@ function signUp(body) {
     return request;
 }
 
-function getPosts(token) {
+function getPosts(token, queryString = "") {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
         },
     };
 
-    const request = axios.get(`${URL_API}/posts`, config);
+    const request = axios.get(`${URL_API}/following/posts${queryString}`, config);
     return request;
 }
 

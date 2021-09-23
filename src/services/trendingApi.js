@@ -12,14 +12,14 @@ function getTrending(token) {
     return request;
 }
 
-function getHashtagPosts(hashtag, token) {
+function getHashtagPosts(hashtag, token, queryString="") {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
         },
     };
 
-    const request = axios.get(`${URL_API}/hashtags/${hashtag}/posts`, config);
+    const request = axios.get(`${URL_API}/hashtags/${hashtag}/posts${queryString}`, config);
     return request;
 }
 
