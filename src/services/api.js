@@ -18,7 +18,7 @@ function getPosts(token) {
         },
     };
 
-    const request = axios.get(`${URL_API}/posts`, config);
+    const request = axios.get(`${URL_API}/following/posts`, config);
     return request;
 }
 
