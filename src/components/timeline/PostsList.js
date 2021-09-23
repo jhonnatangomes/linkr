@@ -1,14 +1,20 @@
 import styled from "styled-components";
-import { getPosts } from "../../services/api.js";
+import { getPosts, getNewerPosts } from "../../services/api.js";
 import UserContext from "../../contexts/UserContext.js";
 import Post from "../shared/post/Post.js";
-import { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { useHistory } from "react-router";
 import Loading from "../shared/Loading";
 
 export default function PostsList({ posts, setPosts }) {
     const { user } = useContext(UserContext);
     const history = useHistory();
+    const [newerPost, setNewerPost] = useState({});
+
+    const useInterval = (() => {
+        const request = getNewerPosts(user.token, newerPost);
+        request.then((res) => {setPosts([...res.data.posts,...posts])});
+    }, 1500);
 
     useEffect(() => {
         if (user) {
@@ -21,6 +27,9 @@ export default function PostsList({ posts, setPosts }) {
             history.push("/");
         }
     }, []);
+
+    useEffect(() => {posts && setNewerPost(posts[0])}, [posts]);
+    console.log(newerPost);
 
     return (
         <>
