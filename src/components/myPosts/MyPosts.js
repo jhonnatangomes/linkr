@@ -7,6 +7,7 @@ import NavBar from "../navBar/NavBar";
 import Trending from '../shared/Trending.js';
 import Loading from '../shared/Loading.js';
 import Post from '../shared/post/Post.js';
+import Search from "../shared/search/Search";
 import NoPostsMessage from "../../styles/NoPostsMessage.js";
 
 export default function MyPosts () {
@@ -28,6 +29,7 @@ export default function MyPosts () {
     return (
         <>
         <NavBar />
+        <Search layout="mobile" />
             <MyPostsContainer>
                 <div>
                     <PageTitle>my posts</PageTitle>

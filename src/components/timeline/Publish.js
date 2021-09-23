@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import UserContext from "../../contexts/UserContext";
+import ModalContext from "../../contexts/ModalContext";
 import { useContext, useState } from "react";
 import { createPost } from "../../services/api";
 import { Link } from "react-router-dom";
@@ -7,9 +8,14 @@ import standardProfilePicture from '../assets/imgs/profile-standard.jpg';
 
 export default function Publish({ posts, setPosts }) {
     const { user } = useContext(UserContext);
+    const { setModal } = useContext(ModalContext);
     const [loading, setLoading] = useState(false);
     const [text, setText] = useState("");
     const [link, setLink] = useState("");
+
+    function openModal(data) {
+        setModal({ modalIsOpen: true, ...data });
+    }
 
     function publish(e) {
         e.preventDefault();
@@ -32,7 +38,7 @@ export default function Publish({ posts, setPosts }) {
         });
         request.catch(() => {
             setLoading(false);
-            alert("Houve um erro ao publicar seu link");
+            openModal({message: "Houve um erro ao publicar seu link"});
         });
     }
 
@@ -73,6 +79,7 @@ export default function Publish({ posts, setPosts }) {
                     disabled={loading}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && link !== "" ? publish(e) : ""}
                     maxLength={50000}
                 />
                 <button type="submit" disabled={loading}>
@@ -133,6 +140,7 @@ const Form = styled.form`
         padding-left: 13px;
         font-size: 15px;
         line-height: 18px;
+        font-family: "Lato", sans-serif;
     }
 
     textarea {
