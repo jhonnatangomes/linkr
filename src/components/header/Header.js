@@ -5,6 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext';
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
+import standardProfilePicture from '../assets/imgs/profile-standard.jpg';
 
 export default function Header() {
     const { user, setUser } = useContext(UserContext);
@@ -16,6 +17,8 @@ export default function Header() {
 
     useEffect(() => { document.addEventListener("mousedown", handleClick) }, []);
 
+    function addDefaultProfileImgSrc(ev) { ev.target.src = standardProfilePicture };
+
     return(
         <HeaderBox>
             <Logo onClick={() => {history.push('/timeline'); window.scrollTo(0, 0);}}>linkr</Logo>
@@ -23,7 +26,7 @@ export default function Header() {
                 {!showMenu && <StyledIcon onClick={() => setShowMenu(true)}><IoIosArrowDown/></StyledIcon>}
                 {showMenu && <StyledIcon onClick={() => setShowMenu(false)}><IoIosArrowUp/></StyledIcon>}
                 <StyledImg>
-                <img alt="Profile" src={user.avatar} onClick={() => setShowMenu(!showMenu)}></img>
+                    <img onError={(e) => addDefaultProfileImgSrc(e)} alt="Profile" src={user.avatar} onClick={() => setShowMenu(!showMenu)}></img>
                 </StyledImg>
                 {showMenu && <MenuList>
                     <StyledLink onClick={() => setShowMenu(false)} to="/my-posts">My posts</StyledLink>

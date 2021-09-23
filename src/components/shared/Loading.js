@@ -18,6 +18,11 @@ export default function Loading () {
 const Container = styled.div`
     width: 611px;
     display: flex;
+    @media (max-width: 700px) {
+        width: 100vw;
+        margin-top: 20px;
+        justify-content: center;
+    }
 `
 
 const StyledLoader = styled(Loader)`
