@@ -7,7 +7,7 @@ const NoPostsMessage = styled.p`
     margin-bottom: 20px;
 
     @media (max-width: 700px) {
-        margin-left: 20px;
+        //margin-left: 20px;
         font-size: 20px;
     }
 `;
