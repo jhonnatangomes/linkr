@@ -79,6 +79,7 @@ export default function Publish({ posts, setPosts }) {
                     disabled={loading}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && link !== "" ? publish(e) : ""}
                     maxLength={50000}
                 />
                 <button type="submit" disabled={loading}>
@@ -139,6 +140,7 @@ const Form = styled.form`
         padding-left: 13px;
         font-size: 15px;
         line-height: 18px;
+        font-family: "Lato", sans-serif;
     }
 
     textarea {
