@@ -21,7 +21,7 @@ export default function Trending() {
         } else {
             history.push("/");
         }
-    }, []);
+    }, []);//eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <TrendingStyle>

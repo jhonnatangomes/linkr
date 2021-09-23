@@ -12,7 +12,7 @@ const EditInput = ({ editPostRequest, isEditLoading, setIsEditLoading, isEditing
                 setEditText(editText);
             }
         }, 10)
-    }, [isEditing]);
+    }, [isEditing]);//eslint-disable-line react-hooks/exhaustive-deps
 
     const checkKey = (e) => {
         if (isEditLoading) {
