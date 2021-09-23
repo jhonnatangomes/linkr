@@ -10,10 +10,16 @@ import FollowingContext from "../../../contexts/FollowingContext";
 
 export default function SearchContent({layout, displayResults, setDisplayResults}) {
     const { user } = useContext(UserContext);
+    const [search, setSearch] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const { followingUsers } = useContext(FollowingContext);
 
+    console.log(search);
+
     function getUser(e) {
+        if(e.target.value.length >= 3) {
+            setSearch(e.target.value);
+        }
         setDisplayResults(!!e.target.value);
         if (e.target.value) {
             const request = searchUser(e.target.value, user.token);
@@ -41,6 +47,7 @@ export default function SearchContent({layout, displayResults, setDisplayResults
                 placeholder="Search for people and friends"
                 layout={layout}
                 onChange={(e) => getUser(e)}
+                value={search}
                 minLength={3}
                 debounceTimeout={500}
             />
@@ -55,7 +62,10 @@ export default function SearchContent({layout, displayResults, setDisplayResults
                                     : `/user/${result.id}`
                             }
                             key={result.id}
-                            onClick={() => setDisplayResults(false)}
+                            onClick={() => {
+                                setDisplayResults(false);
+                                setSearch("");
+                            }}
                         >
                             <SearchResult layout={layout}>
                                 <img
