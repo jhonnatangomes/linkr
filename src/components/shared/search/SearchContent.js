@@ -57,7 +57,7 @@ export default function SearchContent({layout, displayResults, setDisplayResults
                             key={result.id}
                             onClick={() => setDisplayResults(false)}
                         >
-                            <SearchResult>
+                            <SearchResult layout={layout}>
                                 <img
                                     onError={(e) => addDefaultProfileImgSrc(e)}
                                     src={result.avatar}
@@ -152,7 +152,7 @@ const SearchResult = styled.div`
     }
 
     span:nth-child(2) {
-        max-width: 378px;
+        max-width: ${({layout}) => layout === "desktop" ? "378px" : "calc(93vw - 34px - 151px)"};
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
