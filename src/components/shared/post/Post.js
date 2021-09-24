@@ -31,7 +31,9 @@ export default function Post({ post }) {
     };
 
     const openMap = () => {
-        openModal({geolocation: post.geolocation})
+        openModal({
+            geolocation: post.geolocation, 
+            username: post.user.username})
     }
 
     const openPreview = (e) => {

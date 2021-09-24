@@ -74,8 +74,6 @@ export default function Publish({ posts, setPosts }) {
             };
         }
 
-        console.log(body)
-
         const request = createPost(body, user.token);
         request.then((res) => {
             setText("");

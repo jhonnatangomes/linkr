@@ -6,14 +6,26 @@ import Loading from "../Loading";
 import noPreviewImg from '../../assets/imgs/no-image.png';
 import { ReactComponent as CloseSvg } from '../../../assets/icons/close.svg';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import "leaflet/dist/leaflet.css";
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import L from 'leaflet';
 
 ReactModal.setAppElement('#root');
 
 const Modal = ({ modal, closeModal }) => {
 
+    delete L.Icon.Default.prototype._getIconUrl;
+
+    L.Icon.Default.mergeOptions({
+        iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png').default,
+        iconUrl: require('leaflet/dist/images/marker-icon.png').default,
+        shadowUrl: require('leaflet/dist/images/marker-shadow.png').default
+    });
+
     const [previewState, setPreviewState] = useState({available: true, loading: true});
     const [iframeVisibility, setIframeVisibility] = useState('none');
-    const { modalIsOpen, message, onConfirm, confirmText, loading, cancelText, preview, geolocation} = modal;
+    const { modalIsOpen, message, onConfirm, confirmText, loading, cancelText, preview, geolocation, username} = modal;
     let confirmFunction = onConfirm;
 
     if (!modal.onConfirm) {
@@ -49,31 +61,11 @@ const Modal = ({ modal, closeModal }) => {
         }
     }, [preview]);
 
-    const modalHeight = () => {
-        if (preview && previewState.loading) {
-            return '50vh';
-        }
-
-        if (preview && !previewState.loading && previewState.available) {
-            return '90vh';
-        }
-
-        if (preview && !previewState.loading && !previewState.available && preview.title) {
-            return 'fit-content';
-        }
-
-        if (preview && !previewState.loading && !previewState.available && !preview.title) {
-            return '30vh';
-        }
-
-        if (!preview) {
-            return '25vh'
-        }
-
-        return 'fit-content';
-    }
-
     const modalWidth = () => {
+
+        if (geolocation) {
+           return '790px'
+        }
 
         if (preview && previewState.loading) {
             return '55vw';
@@ -98,6 +90,36 @@ const Modal = ({ modal, closeModal }) => {
         return 'fit-content';
     }
 
+    const modalHeight = () => {
+        
+        if (geolocation) {
+            return '354px'
+        }
+
+        if (preview && previewState.loading) {
+            return '50vh';
+        }
+
+        if (preview && !previewState.loading && previewState.available) {
+            return '90vh';
+        }
+
+        if (preview && !previewState.loading && !previewState.available && preview.title) {
+            return 'fit-content';
+        }
+
+        if (preview && !previewState.loading && !previewState.available && !preview.title) {
+            return '30vh';
+        }
+
+        if (!preview) {
+            return '25vh'
+        }
+
+        return 'fit-content';
+    }
+
+ 
     const customStyles = {
         content: {
             top: 'calc(50% - 100px)',
@@ -108,8 +130,8 @@ const Modal = ({ modal, closeModal }) => {
             transform: 'translate(-50%, -50%)',
             background: '#333333',
             color: '#FFFFFF',
-            borderRadius: preview ? '20px' : '50px',
-            maxWidth: preview ? '1200px' : '597px',
+            borderRadius: (preview || geolocation) ? '20px' : '50px',
+            maxWidth: (preview || geolocation) ? '1200px' : '597px',
             width: 'fit-content',
             height: 'fit-content',
             display: 'flex',
@@ -160,17 +182,21 @@ const Modal = ({ modal, closeModal }) => {
                             </ContainerButtons>
                         </MessageContainer>
                     ) : (
-                            <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
-                                <TileLayer
-                                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                />
-                                <Marker position={position}>
-                                    <Popup>
-                                        A pretty CSS3 popup. <br /> Easily customizable.
-                                    </Popup>
-                                </Marker>
-                            </MapContainer>
+                        <GeolocationContainer>
+                                <PreviewButtonsContainer>
+                                    <LocationTitle> {username}'s location</LocationTitle>
+                                    <CloseIcon onClick={close} />
+                                </PreviewButtonsContainer>
+                                <Map center={position} zoom={13} scrollWheelZoom={true}>
+                                    <TileLayer
+                                        attribution='<a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    />
+                                    <Marker position={position}>
+
+                                    </Marker>
+                                </Map>
+                        </GeolocationContainer>
                     )
 
                 ) : (
@@ -227,6 +253,38 @@ const Modal = ({ modal, closeModal }) => {
         </ReactModal>
     )
 }
+
+const GeolocationContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 23px;
+
+    &> div {
+        justify-content: space-between;
+        width: 90%;
+    }
+`;
+
+const LocationTitle = styled.span`
+    font-family: Oswald;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 38px;
+    line-height: 56px;
+
+    color: #FFFFFF;
+`;
+
+const Map = styled(MapContainer)`
+    width: 100%;
+    height: 100%;
+    max-width: 713px;
+    max-height: 240px;
+`;
 
 const CloseIcon = styled(CloseSvg)`
     font-size: 30px;
