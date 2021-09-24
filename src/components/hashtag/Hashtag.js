@@ -19,6 +19,7 @@ export default function Hashtag() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        setHasMore(1);
         setPosts(null);
         const request = getHashtagPosts(hashtag, user.token);
         request.then((res) => {

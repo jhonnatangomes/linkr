@@ -28,6 +28,8 @@ export default function MyPosts() {
     };
 
     useEffect(() => {
+        setHasMore(1);
+        window.scrollTo(0, 0);
         if (user) {
             getUserInfo(id, user.token)
                 .then((response) => {
