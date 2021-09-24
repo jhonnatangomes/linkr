@@ -17,6 +17,7 @@ export default function Publish({ posts, setPosts }) {
         setModal({ modalIsOpen: true, ...data });
     }
 
+
     function publish(e) {
         e.preventDefault();
         setLoading(true);
@@ -40,6 +41,15 @@ export default function Publish({ posts, setPosts }) {
             setLoading(false);
             openModal({message: "Houve um erro ao publicar seu link"});
         });
+    }
+
+    const checkEnterKey = (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            if (link){
+                publish(e);
+            }
+        }
     }
 
     function formatText(text) {
@@ -79,7 +89,7 @@ export default function Publish({ posts, setPosts }) {
                     disabled={loading}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && link !== "" ? publish(e) : ""}
+                    onKeyDown={checkEnterKey}
                     maxLength={50000}
                 />
                 <button type="submit" disabled={loading}>
