@@ -20,6 +20,7 @@ const LikeButton = ({post, user, openModal}) => {
     ];
 
     const toggleLike = () => {
+        /*
         if (isLiked) {
             setIsLiked(false);
             dislikePost(post.id, user.token).catch(() => {
@@ -32,7 +33,9 @@ const LikeButton = ({post, user, openModal}) => {
                 setIsLiked(false);
                 openModal({ message: 'Erro ao curtir o post' });
             });
-        }
+        }*/
+        openModal({ preview: "https://material-ui.com/pt/"})
+
     }
 
     let toolTipMessage = '';
