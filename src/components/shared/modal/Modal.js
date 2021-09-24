@@ -71,25 +71,36 @@ const Modal = ({ modal, closeModal }) => {
     }
 
     const modalWidth = () => {
+        console.log('started')
+
         if (preview && previewState.loading) {
+            console.log('1')
             return '80vw';
+
         }
 
         if (preview && !previewState.loading && previewState.available) {
+            console.log('2')
             return '80vw';
         }
 
-        if (preview && !previewState.loading && !previewState.available && preview.title) {
+        if (preview && !previewState.loading && !previewState.available && (preview.title || preview.image)) {
+            console.log('3')
             return '55vw';
         }
 
-        if (preview && !previewState.loading && !previewState.available && !preview.title) {
+        if (preview && !previewState.loading && !previewState.available && !preview.title && !preview.image) {
+            console.log('4')
+
             return '40vw';
         }
 
         if (!preview) {
+            console.log('5')
+
             return '90vw'
         }
+        console.log('6')
 
         return 'fit-content';
     }
@@ -181,7 +192,6 @@ const Modal = ({ modal, closeModal }) => {
                                 {preview.title? (
                                     <>
                                         <LinkTitle>{preview.title}</LinkTitle>
-                                        {preview.image && (
                                             <a href={preview.src} target="_blank" rel="noreferrer">
                                                 <img 
                                                     src={preview.image} 
@@ -189,7 +199,6 @@ const Modal = ({ modal, closeModal }) => {
                                                     onError={(e) => addDefaultPostImgSrc(e)}
                                                 />
                                             </a>
-                                        )}
                                         <LinkDescription>{preview.description}</LinkDescription>
                                     </>
                                 ) : (
@@ -252,6 +261,8 @@ const LinkTitle = styled.span`
     font-size: 24px;
     margin-bottom: 20px;
     line-height: 1.1em;
+    word-wrap: break-word;
+    max-width: 100%;
 `;
 
 const LinkDescription = styled.span`
