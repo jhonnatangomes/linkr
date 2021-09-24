@@ -28,6 +28,12 @@ export default function Trending() {
             <p data-tip={"#" + topic.name} data-for="hashtag-tooltip">#{topic.name}</p>
           </Link>
         ))}
+        <SearchBox>
+          <Hashtag>
+            #
+          </Hashtag>
+          <SearchInput type="text" placeholder="type a hashtag" />
+        </SearchBox>
       </HashtagContainer>
       <StyledReactTooltip
         arrowColor="rgba(255, 255, 255, 0.9)"
@@ -87,6 +93,42 @@ const HashtagContainer = styled.div`
 
   & p:hover {
     text-decoration: underline;
+  }
+`;
+
+const SearchBox = styled.div`
+  width: 100%;
+  height: 35px;
+  position: relative;
+`;
+
+const Hashtag = styled.div`
+  position: absolute;
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 700;
+  top: 50%;
+  left: 10px;
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  height: 100%;
+  background-color: #252525;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Lato', sans-serif;
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 700;
+  padding-left: 25px;
+  margin-top: 10px;
+
+  ::placeholder {
+    font-size: 16px;
+    color: #575757;
+    font-weight: 400;
+    font-style: italic;
   }
 `;
 
