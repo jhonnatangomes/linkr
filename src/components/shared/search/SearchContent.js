@@ -47,7 +47,7 @@ export default function SearchContent({layout, displayResults, setDisplayResults
                 onChange={(e) => getUser(e)}
                 value={search}
                 minLength={3}
-                debounceTimeout={500}
+                debounceTimeout={300}
             />
             <SearchIcon />
             <SearchResults $display={displayResults}>
