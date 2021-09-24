@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { AiOutlineSearch } from "react-icons/ai";
-import { useContext, useState } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import UserContext from "../../../contexts/UserContext";
 import searchUser from "../../../services/searchApi";
 import standardProfilePicture from "../../assets/imgs/profile-standard.jpg";
@@ -8,14 +8,23 @@ import { Link } from "react-router-dom";
 import { DebounceInput } from "react-debounce-input";
 import FollowingContext from "../../../contexts/FollowingContext";
 
-export default function SearchContent({layout, displayResults, setDisplayResults}) {
+export default function SearchContent({
+    layout,
+    displayResults,
+    setDisplayResults,
+}) {
     const { user } = useContext(UserContext);
     const [search, setSearch] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const { followingUsers } = useContext(FollowingContext);
+    const node = useRef();
+
+    const handleClick = e => {if (node.current && !node.current.contains(e.target)) setDisplayResults(false)};
+
+    useEffect(() => { document.addEventListener("mousedown", handleClick) }, []);
 
     function getUser(e) {
-        if(e.target.value.length >= 3) {
+        if (e.target.value.length >= 3) {
             setSearch(e.target.value);
         }
         setDisplayResults(!!e.target.value);
@@ -23,14 +32,20 @@ export default function SearchContent({layout, displayResults, setDisplayResults
             const request = searchUser(e.target.value, user.token);
             request.then((res) => {
                 const orderedResults = res.data.users.sort((a, b) => {
-                    if(followingUsers.includes(a.id) && !followingUsers.includes(b.id)) {
+                    if (
+                        followingUsers.includes(a.id) &&
+                        !followingUsers.includes(b.id)
+                    ) {
                         return -1;
                     }
-                    if(!followingUsers.includes(a.id) && followingUsers.includes(b.id)) {
+                    if (
+                        !followingUsers.includes(a.id) &&
+                        followingUsers.includes(b.id)
+                    ) {
                         return 1;
                     }
                     return 0;
-                })
+                });
                 setSearchResults(orderedResults);
             });
         }
@@ -41,9 +56,14 @@ export default function SearchContent({layout, displayResults, setDisplayResults
     }
 
     function clickedInput(e) {
-        if(e.target.value.length >= 3) {
+        if (e.target.value.length >= 3) {
             setDisplayResults(true);
         }
+    }
+
+    function clickUser() {
+        setDisplayResults(false);
+        setSearch("");
     }
 
     return (
@@ -53,13 +73,12 @@ export default function SearchContent({layout, displayResults, setDisplayResults
                 layout={layout}
                 onChange={(e) => getUser(e)}
                 value={search}
-                onBlur={() => setDisplayResults(false)}
                 onFocus={(e) => clickedInput(e)}
                 minLength={3}
                 debounceTimeout={300}
             />
             <SearchIcon />
-            <SearchResults $display={displayResults}>
+            <SearchResults $display={displayResults} ref={node}>
                 {searchResults.length ? (
                     searchResults.map((result) => (
                         <Link
@@ -69,10 +88,7 @@ export default function SearchContent({layout, displayResults, setDisplayResults
                                     : `/user/${result.id}`
                             }
                             key={result.id}
-                            onClick={() => {
-                                setDisplayResults(false);
-                                setSearch("");
-                            }}
+                            onClick={clickUser}
                         >
                             <SearchResult layout={layout}>
                                 <img
@@ -150,7 +166,6 @@ const SearchResults = styled.div`
         width: 7px;
     }
 
-
     div {
         margin-bottom: 16px;
     }
@@ -185,7 +200,8 @@ const SearchResult = styled.div`
     }
 
     span:nth-child(2) {
-        max-width: ${({layout}) => layout === "desktop" ? "378px" : "calc(93vw - 34px - 151px)"};
+        max-width: ${({ layout }) =>
+            layout === "desktop" ? "378px" : "calc(93vw - 34px - 151px)"};
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
