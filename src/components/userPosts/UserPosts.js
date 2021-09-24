@@ -46,7 +46,7 @@ export default function MyPosts () {
                 .then((response) => {
                     setUserPosts(response.data.posts);
                 })
-                .catch(() => alert("Ocorreu algum erro!"));
+                .catch(() => openModal({message: "Ocorreu algum erro!"}));
         } else {
             alert("Você não está logado!");
             history.push("/");
