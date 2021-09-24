@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState, useEffect, useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext.js';
+import ModalContext from "../../contexts/ModalContext.js";
 import { getUserPosts } from '../../services/userPostsApi.js';
 import { getUserInfo } from '../../services/userInfoApi.js';
 import NavBar from "../navBar/NavBar";
@@ -14,10 +15,15 @@ import NoPostsMessage from "../../styles/NoPostsMessage";
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
+    const { setModal } = useContext(ModalContext);
     const { id } = useParams();
     const [userInfo, setUserInfo] = useState("");
     const [userPosts, setUserPosts] = useState(null);
     const history = useHistory();
+
+    const openModal = (data) => {
+        setModal({ modalIsOpen: true, ...data });
+    };
 
     useEffect(() => {
         if (user) {
@@ -27,9 +33,9 @@ export default function MyPosts () {
                 })
                 .catch((error) => {
                     if(error.response.status === 500) {
-                        alert("Este usuário não existe!")
+                        openModal({message: "Este usuário não existe!"});
                     } else {
-                        alert("Ocorreu algum erro!");
+                        openModal({message: "Ocorreu algum erro!"});
                     }
                     history.push("/timeline");
                 });
@@ -44,11 +50,6 @@ export default function MyPosts () {
             history.push("/");
         }
     }, [id]);
-
-    if (Number(id) === Number(user.id)) {
-        history.push('/my-posts');
-        return null;
-    }
 
     return (
         <>
