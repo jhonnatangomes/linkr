@@ -39,6 +39,13 @@ export default function SearchContent({layout, displayResults, setDisplayResults
     function addDefaultProfileImgSrc(ev) {
         ev.target.src = standardProfilePicture;
     }
+
+    function clickedInput(e) {
+        if(e.target.value.length >= 3) {
+            setDisplayResults(true);
+        }
+    }
+
     return (
         <>
             <SearchInput
@@ -46,6 +53,8 @@ export default function SearchContent({layout, displayResults, setDisplayResults
                 layout={layout}
                 onChange={(e) => getUser(e)}
                 value={search}
+                onBlur={() => setDisplayResults(false)}
+                onFocus={(e) => clickedInput(e)}
                 minLength={3}
                 debounceTimeout={300}
             />
@@ -125,6 +134,22 @@ const SearchResults = styled.div`
     overflow: auto;
     display: ${({ $display }) => ($display ? "block" : "none")};
     z-index: 10;
+    scrollbar-color: #888 #e7e7e7;
+
+    ::-webkit-scrollbar-track {
+        background: #e7e7e7;
+        border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar {
+        width: 7px;
+    }
+
 
     div {
         margin-bottom: 16px;
