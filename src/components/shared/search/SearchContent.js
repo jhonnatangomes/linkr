@@ -21,7 +21,7 @@ export default function SearchContent({
 
     const handleClick = e => {if (node.current && !node.current.contains(e.target)) setDisplayResults(false)};
 
-    useEffect(() => { document.addEventListener("mousedown", handleClick) }, []);
+    useEffect(() => { document.addEventListener("mousedown", handleClick) }, []);//eslint-disable-line react-hooks/exhaustive-deps
 
     function getUser(e) {
         if (e.target.value.length >= 3) {
