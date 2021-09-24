@@ -3,7 +3,7 @@ import { getPosts } from "../../services/api.js";
 import UserContext from "../../contexts/UserContext.js";
 import FollowingContext from "../../contexts/FollowingContext.js";
 import Post from "../shared/post/Post.js";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useHistory } from "react-router";
 import Loading from "../shared/Loading";
 import NoPostsMessage from "../../styles/NoPostsMessage";
@@ -12,6 +12,7 @@ export default function PostsList({ posts, setPosts }) {
     const { user } = useContext(UserContext);
     const { followingUsers } = useContext(FollowingContext);
     const history = useHistory();
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         if (user) {
@@ -19,6 +20,10 @@ export default function PostsList({ posts, setPosts }) {
             request.then((res) => {
                 setPosts(res.data.posts);
             });
+            request.catch(() => {
+                setPosts([]);
+                setErrorMessage("Houve uma falha ao obter os posts, por favor atualize a página");
+            })
         } else {
             alert("Você não está logado!");
             history.push("/");
@@ -32,10 +37,12 @@ export default function PostsList({ posts, setPosts }) {
                 {posts.length === 0 && followingUsers.length !== 0 ? <NoPostsMessage>Nenhuma publicação encontrada</NoPostsMessage>:posts.map((post) => (
                     <Post 
                         post={post} 
-                        key={post.id} 
+                        key={post.repostId ? post.repostId : post.id}
                     />
                 ))}
             </Container>)}
+            {posts !== null && posts.length === 0 && !errorMessage ? <Span>Nenhum post encontrado</Span> : ""}
+            {errorMessage ? <Span>{errorMessage}</Span> : ""}
         </>
     );
 }
@@ -46,4 +53,11 @@ const Container = styled.section`
     @media (max-width: 700px) {
         width: 100vw;
     }
+`;
+
+const Span = styled.span`
+    color: white;
+    font-size: 25px;
+    width: 611px;
+    text-align: center;
 `;

@@ -10,6 +10,7 @@ import Trending from "../shared/Trending";
 import Follow from './Follow.js';
 import Post from '../shared/post/Post.js';
 import Loading from '../shared/Loading.js';
+import Search from "../shared/search/Search";
 import NoPostsMessage from "../../styles/NoPostsMessage";
 
 export default function MyPosts () {
@@ -24,11 +25,9 @@ export default function MyPosts () {
         setModal({ modalIsOpen: true, ...data });
     };
 
-    if (Number(id) === Number(user.id)) {
-        history.push('/my-posts');
-    }
-
     useEffect(() => {
+        window.scrollTo(0, 0);
+        setUserPosts(null);
         if (user) {
             getUserInfo(id, user.token)
                 .then((response) => {
@@ -52,11 +51,12 @@ export default function MyPosts () {
             alert("Você não está logado!");
             history.push("/");
         }
-    }, []);
+    }, [id]);
 
     return (
         <>
         <NavBar />
+        <Search layout="mobile" />
             <UserPostsContainer>
                 <div>
                     <TitleContainer>
