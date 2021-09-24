@@ -44,7 +44,7 @@ export default function Publish({ posts, setPosts }) {
     }
 
     const checkEnterKey = (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
+        if (e.key === "Enter") {
             e.preventDefault();
             if (link){
                 publish(e);
