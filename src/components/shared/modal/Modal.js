@@ -48,7 +48,7 @@ const Modal = ({ modal, closeModal }) => {
 
     const modalHeight = () => {
         if (preview && previewState.loading) {
-            return '70vh';
+            return '50vh';
         }
 
         if (preview && !previewState.loading && previewState.available) {
@@ -64,43 +64,33 @@ const Modal = ({ modal, closeModal }) => {
         }
 
         if (!preview) {
-            return ''
+            return '25vh'
         }
 
         return 'fit-content';
     }
 
     const modalWidth = () => {
-        console.log('started')
 
         if (preview && previewState.loading) {
-            console.log('1')
-            return '80vw';
-
+            return '55vw';
         }
 
         if (preview && !previewState.loading && previewState.available) {
-            console.log('2')
             return '80vw';
         }
 
         if (preview && !previewState.loading && !previewState.available && (preview.title || preview.image)) {
-            console.log('3')
             return '55vw';
         }
 
         if (preview && !previewState.loading && !previewState.available && !preview.title && !preview.image) {
-            console.log('4')
-
             return '40vw';
         }
 
         if (!preview) {
-            console.log('5')
-
             return '90vw'
         }
-        console.log('6')
 
         return 'fit-content';
     }
@@ -276,6 +266,8 @@ const ModalContent = styled.div`
     max-height: 80vh;
     display: flex;
     justify-content: center;
+    display: flex;
+    overflow: hidden;
 
     & button {
         padding: 0 17px;
@@ -365,6 +357,9 @@ const MessageContainer = styled.div`
     width: 75%;
     margin-bottom: 46px;
     margin-top: 18px;
+    align-items: center;
+    justify-content: center;
+
 
     @media (max-width: 700px) {
          width: 90%;
