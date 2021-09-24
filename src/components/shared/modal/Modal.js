@@ -3,6 +3,9 @@ import ReactModal from 'react-modal';
 import { useState, useEffect } from "react";
 import { checkIframePermission } from "../../../services/iframeApi";
 import Loading from "../Loading";
+import noPreviewImg from '../../assets/imgs/no-image.png';
+import { ReactComponent as CloseSvg } from '../../../assets/icons/close.svg';
+
 ReactModal.setAppElement('#root');
 
 const Modal = ({ modal, closeModal }) => {
@@ -30,7 +33,7 @@ const Modal = ({ modal, closeModal }) => {
             setPreviewState({ available: true, loading: true });
             setTimeout(() =>{
                 setIframeVisibility('inherit');
-            }, 3000);
+            }, 2000);
 
             checkIframePermission(preview.src)
                 .then((isAvailable) => {
@@ -43,27 +46,52 @@ const Modal = ({ modal, closeModal }) => {
         }
     }, [preview]);
 
-    const checkIframeError = () => {
-        console.log('carregado');
-    }
-
-    console.log(preview);
-
     const modalHeight = () => {
-        console.log('teste')
         if (preview && previewState.loading) {
-            return '80vh';
+            return '70vh';
         }
 
         if (preview && !previewState.loading && previewState.available) {
-            return '80vh';
+            return '90vh';
         }
 
-        if (preview && !previewState.loading && !previewState.available) {
+        if (preview && !previewState.loading && !previewState.available && preview.title) {
             return 'fit-content';
         }
 
-        return '30vh';
+        if (preview && !previewState.loading && !previewState.available && !preview.title) {
+            return '30vh';
+        }
+
+        if (!preview) {
+            return ''
+        }
+
+        return 'fit-content';
+    }
+
+    const modalWidth = () => {
+        if (preview && previewState.loading) {
+            return '80vw';
+        }
+
+        if (preview && !previewState.loading && previewState.available) {
+            return '80vw';
+        }
+
+        if (preview && !previewState.loading && !previewState.available && preview.title) {
+            return '55vw';
+        }
+
+        if (preview && !previewState.loading && !previewState.available && !preview.title) {
+            return '40vw';
+        }
+
+        if (!preview) {
+            return '90vw'
+        }
+
+        return 'fit-content';
     }
 
     const customStyles = {
@@ -78,14 +106,14 @@ const Modal = ({ modal, closeModal }) => {
             color: '#FFFFFF',
             borderRadius: preview ? '20px' : '50px',
             maxWidth: preview ? '1200px' : '597px',
-            width: '90%',
+            width: 'fit-content',
             height: 'fit-content',
             display: 'flex',
             justifyContent: preview ? 'flex-start' : 'center',
             alignItems:  preview ? 'flex-start' : 'center',
             textAlign: 'center',
-            lineHeight: '1.1em',
-            padding: '15px 27px 21px 27px',
+            lineHeight: preview ? '1.1em' : '41px',
+            padding: preview? '15px 27px 21px 27px' : '',
             boxSizing: 'border-box',
             position: 'absolute',
         },
@@ -100,13 +128,15 @@ const Modal = ({ modal, closeModal }) => {
         },
     };
 
+    function addDefaultPostImgSrc(ev) { ev.target.src = noPreviewImg };
+
     return (
         <ReactModal
             isOpen={modalIsOpen}
             onRequestClose={close}
             style={customStyles}
         >  
-            <ModalContent modalHeight={modalHeight} >
+            <ModalContent modalHeight={modalHeight} modalWidth={modalWidth}>
                 {!preview? ( 
                     <MessageContainer>
                         <Message>
@@ -118,7 +148,7 @@ const Modal = ({ modal, closeModal }) => {
                                     {cancelText || 'Cancelar'}
                                 </CancelButton>
                             )}
-                            <ConfirmButton disabled={loading} onClick={confirmFunction}>
+                            <ConfirmButton width="134px" disabled={loading} onClick={confirmFunction}>
                                 {confirmText || 'OK'}
                             </ConfirmButton>
                         </ContainerButtons>
@@ -129,20 +159,13 @@ const Modal = ({ modal, closeModal }) => {
                             <a href={preview.src} target="_blank" rel="noreferrer">
                                 <ConfirmButton height="31px" fontSize="14px">
                                     Open in new tab
-                                </ConfirmButton>
+                                </ConfirmButton>                                
                             </a>
+                            <CloseIcon onClick={close} />
                         </PreviewButtonsContainer>
                         
-                        {((previewState.loading || iframeVisibility === 'none') && previewState.available) && (
-                            <LoadingContainer>
-                                <Loading />
-                            </LoadingContainer>
-                        )}
-
                         {(previewState.available) && (                      
                             <Preview
-                                onLoad={(e) => checkIframeError(e.currentTarget)}
-                                onError={() => alert('deu erro')}
                                 title="preview"
                                 type="text/html"
                                 allow="fullscreen; accelerometer; loop; encrypted-media; gyroscope; picture-in-picture"
@@ -155,10 +178,30 @@ const Modal = ({ modal, closeModal }) => {
 
                         {(!previewState.loading && !previewState.available) && (
                             <PreviewErrorContainer>
-                                <LinkTitle>{preview.title}</LinkTitle>
-                                <img src={preview.image} alt={preview.title} />
-                                <LinkDescription>{preview.description}</LinkDescription>
+                                {preview.title? (
+                                    <>
+                                        <LinkTitle>{preview.title}</LinkTitle>
+                                        {preview.image && (
+                                            <a href={preview.src} target="_blank" rel="noreferrer">
+                                                <img 
+                                                    src={preview.image} 
+                                                    alt={preview.title} 
+                                                    onError={(e) => addDefaultPostImgSrc(e)}
+                                                />
+                                            </a>
+                                        )}
+                                        <LinkDescription>{preview.description}</LinkDescription>
+                                    </>
+                                ) : (
+                                    <LinkTitle height="100%">A preview para este site não está disponível.</LinkTitle>
+                                )}
                             </PreviewErrorContainer>
+                        )}
+
+                        {((previewState.loading || iframeVisibility === 'none') && previewState.available) && (
+                            <LoadingContainer>
+                                <Loading />
+                            </LoadingContainer>
                         )}
                     </PreviewContainer>
                 )}
@@ -166,6 +209,11 @@ const Modal = ({ modal, closeModal }) => {
         </ReactModal>
     )
 }
+
+const CloseIcon = styled(CloseSvg)`
+    font-size: 30px;
+    cursor: pointer;
+`;
 
 const LoadingContainer = styled.div`
     position: absolute;
@@ -177,18 +225,25 @@ const LoadingContainer = styled.div`
     height: fit-content;
     width: 100px;
     display: flex;
+    z-index: -1;
 `;
+
 const PreviewErrorContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    align-text: center;
-
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    
     img {
-        width: 100%;
-        max-height: 60vh;
+        width: 80vw;
+        max-width: 100%;
+        max-height: 50vh;
         object-fit: cover;
+        background: #FFFFFF;
+        border-radius: 10px;
     }
 `;
 
@@ -196,6 +251,7 @@ const LinkTitle = styled.span`
     font-weight: bold;
     font-size: 24px;
     margin-bottom: 20px;
+    line-height: 1.1em;
 `;
 
 const LinkDescription = styled.span`
@@ -204,9 +260,11 @@ const LinkDescription = styled.span`
 
 const ModalContent = styled.div`
     position: relative;
-    width: 100%;
+    width: ${({ modalWidth }) => modalWidth};
     height: ${({ modalHeight }) => modalHeight};
     max-height: 80vh;
+    display: flex;
+    justify-content: center;
 
     & button {
         padding: 0 17px;
@@ -238,18 +296,21 @@ const Message = styled.span`
 const Preview = styled.iframe`
     width: 100%;
     height: 100%;
-    display: ${({ iframeVisibility }) => iframeVisibility}
+    display: ${({ iframeVisibility }) => iframeVisibility};
+    background-color: #FFFFFF;
+    border-radius: 10px;
 `;
 
 const PreviewContainer = styled.div`
     width: 100%;
     height: calc(100% - 50px)
-
 `;
 
 const PreviewButtonsContainer = styled.div`
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 16px;
 `;
 
@@ -270,6 +331,7 @@ const ConfirmButton = styled.button`
     background: #1877f2;
     color: #ffffff;
     height: ${({height}) => height || 'inherit'};
+    width: ${({ width }) => width || 'inherit'};
     font-size: ${({ fontSize }) => fontSize || 'inherit'};
 
     &:not([disabled]):hover {

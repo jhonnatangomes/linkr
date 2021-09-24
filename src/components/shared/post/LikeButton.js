@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { ReactComponent as OutlineHeartSvg } from '../../../assets/icons/outline-heart.svg';
 import { ReactComponent as FilledHeartSvg } from '../../../assets/icons/filled-heart.svg';
-
 import { useState } from "react";
 import { likePost, dislikePost } from "../../../services/likePostApi";
 
@@ -20,7 +19,6 @@ const LikeButton = ({post, user, openModal}) => {
     ];
 
     const toggleLike = () => {
-        /*
         if (isLiked) {
             setIsLiked(false);
             dislikePost(post.id, user.token).catch(() => {
@@ -33,9 +31,7 @@ const LikeButton = ({post, user, openModal}) => {
                 setIsLiked(false);
                 openModal({ message: 'Erro ao curtir o post' });
             });
-        }*/
-        openModal({ preview: "https://material-ui.com/pt/"})
-
+        }
     }
 
     let toolTipMessage = '';
