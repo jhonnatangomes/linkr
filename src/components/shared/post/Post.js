@@ -4,10 +4,10 @@ import UserContext from "../../../contexts/UserContext.js";
 import ModalContext from "../../../contexts/ModalContext.js";
 import { useContext, useState } from "react";
 import ReactTooltip from "react-tooltip";
-import LikeButton from "./LikeButton.js"
+import LikeButton from "./LikeButton.js";
 import DeleteButton from "./DeleteButton.js";
-import EditButton from "./EditButton.js"
-import EditInput from "./EditInput.js"
+import EditButton from "./EditButton.js";
+import EditInput from "./EditInput.js";
 import { editPost } from "../../../services/editPostApi";
 import getYouTubeID from "get-youtube-id";
 import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
@@ -21,8 +21,10 @@ export default function Post({ post }) {
     const [editText, setEditText] = useState("");
     const [isEditLoading, setIsEditLoading] = useState(false);
     const [postText, setPostText] = useState(post.text);
-    const videoId = getYouTubeID(post.link)
+
+    const videoId = getYouTubeID(post.link);
     const isVideo = Boolean(videoId);
+
 
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
@@ -50,11 +52,11 @@ export default function Post({ post }) {
             .catch(() => {
                 setIsEditLoading(false);
                 openModal({
-                    message: 'Erro ao editar o post',
+                    message: "Erro ao editar o post",
                 });
             });
-    }
-    
+    };
+
     function formatText(text) {
         const newText = [""];
         let isHashtag = false;
@@ -80,11 +82,18 @@ export default function Post({ post }) {
 
     return (
         <>
+            <StyledReactTooltip
+                arrowColor="rgba(255, 255, 255, 0.9)"
+                place="bottom"
+                backgroundColor="rgba(255, 255, 255, 0.9)"
+                textColor="#505050"
+                id="name-tooltip"
+            />
             {!isDeleted && (
                 <PostContainer>
                     <LeftBox>
                             <UserImg>
-                                <Link to={`/user/${post.user.id}`}>
+                                <Link to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}>
                                     <img onError={(e) => addDefaultProfileImgSrc(e)} src={post.user.avatar} alt="Nome do usuário" />
                                 </Link>
                             </UserImg>
@@ -94,14 +103,20 @@ export default function Post({ post }) {
                             user={user}
                         />
                     </LeftBox>
-                    
+
                     <Info>
-                        <Username>
-                            <Link to={`/user/${post.user.id}`}>{post.user.username}</Link>
+                        <Username
+                            $isUser={post.user.id === user.id}
+                            data-tip={post.user.username}
+                            data-for="name-tooltip"
+                        >
+                            <Link to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}>
+                                {post.user.username}
+                            </Link>
                         </Username>
                         {isEditing ? (
                             <Comment>
-                                <EditInput 
+                                <EditInput
                                     editPostRequest={editPostRequest}
                                     isEditLoading={isEditLoading}
                                     setIsEditLoading={setIsEditLoading}
@@ -115,7 +130,10 @@ export default function Post({ post }) {
                             <Comment>
                                 {formatText(postText).map((text, i) =>
                                     text[0] === "#" ? (
-                                        <Link to={`/hashtag/${text.slice(1)}`} key={i}>
+                                        <Link
+                                            to={`/hashtag/${text.slice(1)}`}
+                                            key={i}
+                                        >
                                             <span>{text}</span>
                                         </Link>
                                     ) : (
@@ -125,14 +143,14 @@ export default function Post({ post }) {
                             </Comment>
                         )}
 
-                        {isVideo? (
+                        {isVideo ? (
                             <>
                                 <VideoBox>
-                                    <iframe 
+                                    <iframe
                                         id="ytplayer"
                                         title="ytplayer"
-                                        type="text/html" 
-                                        width="640" 
+                                        type="text/html"
+                                        width="640"
                                         height="283"
                                         allow="fullscreen; accelerometer; loop; encrypted-media; gyroscope; picture-in-picture"
                                         src={`https://www.youtube.com/embed/${videoId}?origin=http://linkr.com`}
@@ -140,18 +158,27 @@ export default function Post({ post }) {
                                     />
                                 </VideoBox>
                                 <VideoLink>
-                                    <a href={post.link} target="_blank" rel="noreferrer">
-                                        {post.link} 
+                                    <a
+                                        href={post.link}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        {post.link}
                                     </a>
                                 </VideoLink>
                             </>
-
                         ) : (
-                            <a href={post.link} onClick={openPreview}>
+                            <a
+                                href={post.link}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
                                 <LinkBox>
                                     <LinkText>
                                         <LinkTitle>{post.linkTitle}</LinkTitle>
-                                        <LinkDescription>{post.linkDescription}</LinkDescription>
+                                        <LinkDescription>
+                                            {post.linkDescription}
+                                        </LinkDescription>
                                         <LinkRef>{post.link}</LinkRef>
                                     </LinkText>
                                     <LinkImg>
@@ -160,10 +187,9 @@ export default function Post({ post }) {
                                 </LinkBox>
                             </a>
                         )}
-
                     </Info>
 
-                    {(post.user.id === user.id) && (
+                    {post.user.id === user.id && (
                         <ContainerButtons>
                             <EditButton
                                 postText={postText}
@@ -201,6 +227,7 @@ const PostContainer = styled.div`
 
     @media (max-width: 700px) {
         border-radius: 0;
+        padding: 18px;
     }
 `;
 
@@ -230,7 +257,7 @@ const UserImg = styled.div`
     cursor: pointer;
     margin-bottom: 20px;
 
-    & img,a {
+    & img, a {
         height: 100%;
     }
 
@@ -253,10 +280,14 @@ const Username = styled.h2`
     color: #ffffff;
     font-size: 20px;
     margin-bottom: 10px;
-    width: fit-content;
+    width: ${({ $isUser }) => ($isUser ? "450px" : "503px")};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     @media (max-width: 700px) {
         font-size: 17px;
+        width: ${({ $isUser }) => ($isUser ? "84%" : "100%")};
     }
 `;
 
@@ -277,11 +308,13 @@ const ContainerButtons = styled.div`
 const Comment = styled.p`
     color: #b7b7b7;
     font-size: 17px;
+    line-height: 20px;
     margin-bottom: 10px;
     -webkit-line-clamp: 10;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    width: 503px;
 
     & span {
         font-weight: 700;
@@ -290,6 +323,7 @@ const Comment = styled.p`
 
     @media (max-width: 700px) {
         font-size: 15px;
+        width: 100%;
     }
 `;
 
@@ -370,7 +404,7 @@ const LinkRef = styled.p`
 `;
 
 const VideoLink = styled.p`
-    color: #B7B7B7;
+    color: #b7b7b7;
     font-size: 17px;
     white-space: nowrap;
     overflow: hidden;
@@ -395,4 +429,9 @@ const LinkImg = styled.div`
         width: 100%;
         object-fit: cover;
     }
+`;
+
+const StyledReactTooltip = styled(ReactTooltip)`
+    font-weight: bold;
+    font-family: "Lato", sans-serif;
 `;
