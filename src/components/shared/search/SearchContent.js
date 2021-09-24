@@ -14,8 +14,6 @@ export default function SearchContent({layout, displayResults, setDisplayResults
     const [searchResults, setSearchResults] = useState([]);
     const { followingUsers } = useContext(FollowingContext);
 
-    console.log(search);
-
     function getUser(e) {
         if(e.target.value.length >= 3) {
             setSearch(e.target.value);
