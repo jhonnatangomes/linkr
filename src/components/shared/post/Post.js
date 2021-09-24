@@ -30,6 +30,18 @@ export default function Post({ post }) {
         setModal({ modalIsOpen: true, ...data });
     };
 
+    const openPreview = (e) => {
+        e.preventDefault();
+        openModal({ 
+            preview: {
+                src: e.currentTarget.href,
+                description: post.linkDescription,
+                image: post.linkImage,
+                title: post.linkTitle
+            }
+        })
+    }
+
     const editPostRequest = () => {
         editPost(editText, post.id, user.token)
             .then(() => {
@@ -156,17 +168,11 @@ export default function Post({ post }) {
                                 </VideoLink>
                             </>
                         ) : (
-                            <a
-                                href={post.link}
-                                target="_blank"
-                                rel="noreferrer"
-                            >
+                            <a href={post.link} onClick={openPreview}>
                                 <LinkBox>
                                     <LinkText>
                                         <LinkTitle>{post.linkTitle}</LinkTitle>
-                                        <LinkDescription>
-                                            {post.linkDescription}
-                                        </LinkDescription>
+                                        <LinkDescription>{post.linkDescription}</LinkDescription>
                                         <LinkRef>{post.link}</LinkRef>
                                     </LinkText>
                                     <LinkImg>

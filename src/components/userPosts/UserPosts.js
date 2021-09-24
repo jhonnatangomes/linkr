@@ -12,6 +12,8 @@ import Post from '../shared/post/Post.js';
 import Loading from '../shared/Loading.js';
 import Search from "../shared/search/Search";
 import NoPostsMessage from "../../styles/NoPostsMessage";
+import noPreviewImg from '../assets/imgs/profile-standard.jpg';
+
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
@@ -24,6 +26,9 @@ export default function MyPosts () {
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
+
+    function addDefaultPostImgSrc(ev) { ev.target.src = noPreviewImg };
+
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -62,7 +67,7 @@ export default function MyPosts () {
                     <TitleContainer>
                         <UserInfoBox>
                             <UserImg>
-                                <img src={userInfo.avatar} alt={userInfo.username} />
+                                <img onError={(e) => addDefaultPostImgSrc(e)} src={userInfo.avatar} alt={userInfo.username} />
                             </UserImg>
                             <Title>{userInfo.username}'s posts</Title>
                         </UserInfoBox>

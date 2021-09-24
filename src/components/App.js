@@ -27,6 +27,7 @@ export default function App() {
         setModal({ modalIsOpen: true, ...data });
     };
 
+
     useEffect(() => {
         if (user !== null ) {
         getFollowingList(user.token)
