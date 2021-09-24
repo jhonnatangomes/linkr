@@ -12,6 +12,8 @@ import Post from '../shared/post/Post.js';
 import Loading from '../shared/Loading.js';
 import Search from "../shared/search/Search";
 import NoPostsMessage from "../../styles/NoPostsMessage";
+import noPreviewImg from '../assets/imgs/profile-standard.jpg';
+
 
 export default function MyPosts () {
     const { user } = useContext(UserContext);
@@ -25,11 +27,12 @@ export default function MyPosts () {
         setModal({ modalIsOpen: true, ...data });
     };
 
-    if (Number(id) === Number(user.id)) {
-        history.push('/my-posts');
-    }
+    function addDefaultPostImgSrc(ev) { ev.target.src = noPreviewImg };
+
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+        setUserPosts(null);
         if (user) {
             getUserInfo(id, user.token)
                 .then((response) => {
@@ -55,11 +58,6 @@ export default function MyPosts () {
         }
     }, [id]);//eslint-disable-line react-hooks/exhaustive-deps
 
-    if (Number(id) === Number(user.id)) {
-        history.push('/my-posts');
-        return null;
-    }
-
     return (
         <>
         <NavBar />
@@ -69,7 +67,7 @@ export default function MyPosts () {
                     <TitleContainer>
                         <UserInfoBox>
                             <UserImg>
-                                <img src={userInfo.avatar} alt={userInfo.username} />
+                                <img onError={(e) => addDefaultPostImgSrc(e)} src={userInfo.avatar} alt={userInfo.username} />
                             </UserImg>
                             <Title>{userInfo.username}'s posts</Title>
                         </UserInfoBox>

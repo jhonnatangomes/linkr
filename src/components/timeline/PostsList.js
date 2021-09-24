@@ -57,7 +57,7 @@ export default function PostsList({ posts, setPosts }) {
                 {posts.length === 0 && followingUsers.length !== 0 ? <NoPostsMessage>Nenhuma publicação encontrada</NoPostsMessage>:posts.map((post) => (
                     <Post 
                         post={post} 
-                        key={post.repostCount ? post.repostId : post.id}
+                        key={post.repostId ? post.repostId : post.id}
                     />
                 ))}
             </Container>)}
