@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { getPosts } from "../../services/api.js";
+import { getPosts, getNewerPosts } from "../../services/api.js";
 import UserContext from "../../contexts/UserContext.js";
 import FollowingContext from "../../contexts/FollowingContext.js";
 import Post from "../shared/post/Post.js";
-import { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 import { useHistory } from "react-router";
 import Loading from "../shared/Loading";
 import NoPostsMessage from "../../styles/NoPostsMessage";
@@ -13,7 +13,24 @@ export default function PostsList({ posts, setPosts }) {
     const { followingUsers } = useContext(FollowingContext);
     const history = useHistory();
     const [errorMessage, setErrorMessage] = useState("");
+    const [newerPost, setNewerPost] = useState({});
 
+    const addNewPosts = useCallback(() => {
+        const request = getNewerPosts(user.token, newerPost);
+        request.then((res) => {setPosts([...res.data.posts,...posts])});
+        console.log('passou no interval');
+    }, [posts, newerPost]);//eslint-disable-line react-hooks/exhaustive-deps
+
+    const useInterval = (callback, delay) => {
+        const savedCallback = React.useRef();
+        useEffect(() => {savedCallback.current = callback}, [callback]);
+        useEffect(() => {
+            function tick() {savedCallback.current()};
+            let id = setInterval(tick, delay);
+            return () => clearInterval(id);
+        }, [delay]);
+    };
+    
     useEffect(() => {
         if (user) {
             const request = getPosts(user.token);
@@ -28,7 +45,10 @@ export default function PostsList({ posts, setPosts }) {
             alert("Você não está logado!");
             history.push("/");
         }
-    }, []);
+    }, []);//eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {posts && setNewerPost(posts[0])}, [posts]);
+    useInterval(() => {newerPost && addNewPosts()}, 15000);
 
     return (
         <>
