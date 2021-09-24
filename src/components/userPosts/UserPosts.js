@@ -26,6 +26,7 @@ export default function MyPosts () {
     };
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (user) {
             getUserInfo(id, user.token)
                 .then((response) => {
