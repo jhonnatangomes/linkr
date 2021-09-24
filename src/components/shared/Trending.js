@@ -2,13 +2,14 @@ import styled from "styled-components";
 import { getTrending } from "../../services/trendingApi";
 import React, { useState, useEffect, useContext } from "react";
 import UserContext from "../../contexts/UserContext";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 
 export default function Trending() {
   const { user } = useContext(UserContext);
   const [trending, setTrending] = useState([]);
-  
+  const [searchValue, setSearchValue] = useState("");
+  const history = useHistory();
 
   useEffect(() => {
     const request = getTrending(user.token);
@@ -17,6 +18,11 @@ export default function Trending() {
       ReactTooltip.rebuild();
     });
   }, []);
+
+  function searchHashtag (e) {
+    e.preventDefault();
+    history.push(`/hashtag/${searchValue}`);
+  }
 
   return (
     <TrendingStyle>
@@ -28,11 +34,11 @@ export default function Trending() {
             <p data-tip={"#" + topic.name} data-for="hashtag-tooltip">#{topic.name}</p>
           </Link>
         ))}
-        <SearchBox>
+        <SearchBox onSubmit={searchHashtag}>
           <Hashtag>
             #
           </Hashtag>
-          <SearchInput type="text" placeholder="type a hashtag" />
+          <SearchInput value={searchValue} type="text" placeholder="type a hashtag" onChange={(event) => setSearchValue(event.target.value)} />
         </SearchBox>
       </HashtagContainer>
       <StyledReactTooltip
@@ -96,7 +102,7 @@ const HashtagContainer = styled.div`
   }
 `;
 
-const SearchBox = styled.div`
+const SearchBox = styled.form`
   width: 100%;
   height: 35px;
   position: relative;
