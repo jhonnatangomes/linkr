@@ -97,7 +97,7 @@ const Modal = ({ modal, closeModal }) => {
 
     const customStyles = {
         content: {
-            top: '50%',
+            top: 'calc(50% - 100px)',
             left: '50%',
             right: 'auto',
             bottom: 'auto',
@@ -117,13 +117,14 @@ const Modal = ({ modal, closeModal }) => {
             padding: preview? '15px 27px 21px 27px' : '',
             boxSizing: 'border-box',
             position: 'absolute',
+            minHeight: '250px'
         },
         overlay: {
             position: 'fixed',
             top: 0,
             left: 0,
             right: 0,
-            bottom: 0,
+            bottom: '-200px',
             backgroundColor: 'rgba(255, 255, 255, 0.9)',
             zIndex: 6
         },
@@ -264,10 +265,10 @@ const ModalContent = styled.div`
     width: ${({ modalWidth }) => modalWidth};
     height: ${({ modalHeight }) => modalHeight};
     max-height: 80vh;
+    min-height: '250px';
     display: flex;
     justify-content: center;
     display: flex;
-    overflow: hidden;
 
     & button {
         padding: 0 17px;
@@ -283,6 +284,10 @@ const ModalContent = styled.div`
             opacity: 0.7;
             cursor: not-allowed;
         }
+    }
+
+    @media (max-width: 700px) {
+         width: 85vw;
     }
 `;
 
@@ -359,7 +364,6 @@ const MessageContainer = styled.div`
     margin-top: 18px;
     align-items: center;
     justify-content: center;
-
 
     @media (max-width: 700px) {
          width: 90%;
