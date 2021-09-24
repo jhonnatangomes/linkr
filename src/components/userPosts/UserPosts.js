@@ -30,6 +30,7 @@ export default function MyPosts() {
     useEffect(() => {
         setHasMore(1);
         window.scrollTo(0, 0);
+        setUserPosts(null);
         if (user) {
             getUserInfo(id, user.token)
                 .then((response) => {
