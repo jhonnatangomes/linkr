@@ -5,6 +5,7 @@ import { checkIframePermission } from "../../../services/iframeApi";
 import Loading from "../Loading";
 import noPreviewImg from '../../assets/imgs/no-image.png';
 import { ReactComponent as CloseSvg } from '../../../assets/icons/close.svg';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 
 ReactModal.setAppElement('#root');
 
@@ -12,7 +13,7 @@ const Modal = ({ modal, closeModal }) => {
 
     const [previewState, setPreviewState] = useState({available: true, loading: true});
     const [iframeVisibility, setIframeVisibility] = useState('none');
-    const { modalIsOpen, message, onConfirm, confirmText, loading, cancelText, preview} = modal;
+    const { modalIsOpen, message, onConfirm, confirmText, loading, cancelText, preview, geolocation} = modal;
     let confirmFunction = onConfirm;
 
     if (!modal.onConfirm) {
@@ -27,6 +28,8 @@ const Modal = ({ modal, closeModal }) => {
         closeModal();
         setIframeVisibility('none');
     }
+
+    const position = geolocation? [geolocation.latitude, geolocation.longitude] : [];
 
     useEffect(() => {
         if (preview) {
@@ -140,21 +143,36 @@ const Modal = ({ modal, closeModal }) => {
         >  
             <ModalContent modalHeight={modalHeight} modalWidth={modalWidth}>
                 {!preview? ( 
-                    <MessageContainer>
-                        <Message>
-                            {message}
-                        </Message>
-                        <ContainerButtons>
-                            {onConfirm && (
-                                <CancelButton disabled={loading} onClick={close}>
-                                    {cancelText || 'Cancelar'}
-                                </CancelButton>
-                            )}
-                            <ConfirmButton width="134px" disabled={loading} onClick={confirmFunction}>
-                                {confirmText || 'OK'}
-                            </ConfirmButton>
-                        </ContainerButtons>
-                    </MessageContainer>
+                    !geolocation? (
+                        <MessageContainer>
+                            <Message>
+                                {message}
+                            </Message>
+                            <ContainerButtons>
+                                {onConfirm && (
+                                    <CancelButton disabled={loading} onClick={close}>
+                                        {cancelText || 'Cancelar'}
+                                    </CancelButton>
+                                )}
+                                <ConfirmButton width="134px" disabled={loading} onClick={confirmFunction}>
+                                    {confirmText || 'OK'}
+                                </ConfirmButton>
+                            </ContainerButtons>
+                        </MessageContainer>
+                    ) : (
+                            <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
+                                <TileLayer
+                                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                />
+                                <Marker position={position}>
+                                    <Popup>
+                                        A pretty CSS3 popup. <br /> Easily customizable.
+                                    </Popup>
+                                </Marker>
+                            </MapContainer>
+                    )
+
                 ) : (
                     <PreviewContainer>
                         <PreviewButtonsContainer>

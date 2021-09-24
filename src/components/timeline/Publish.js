@@ -48,8 +48,6 @@ export default function Publish({ posts, setPosts }) {
         }
     }
 
-    console.log(locationState)
-
     function publish(e) {
         e.preventDefault();
         setLoading(true);
@@ -57,10 +55,26 @@ export default function Publish({ posts, setPosts }) {
             sentence[0] === "#" ? sentence.toLowerCase() : sentence
         );
         let formattedText = formatArray.join("");
-        const body = {
-            text: formattedText,
-            link,
-        };
+
+        let body;
+
+        if (locationState.active) {
+            body = {
+                text: formattedText,
+                link,
+                geolocation: {
+                    latitude: `${locationState.latitude}`,
+                    longitude: `${locationState.longitude}`
+                }
+            };
+        } else {
+             body = {
+                text: formattedText,
+                link
+            };
+        }
+
+        console.log(body)
 
         const request = createPost(body, user.token);
         request.then((res) => {

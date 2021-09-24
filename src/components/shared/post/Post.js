@@ -12,6 +12,7 @@ import { editPost } from "../../../services/editPostApi";
 import getYouTubeID from "get-youtube-id";
 import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
 import noPreviewImg from '../../assets/imgs/no-image.png';
+import { ReactComponent as LocationFilledSvg } from './../../../assets/icons/location-filled.svg';
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -25,10 +26,13 @@ export default function Post({ post }) {
     const videoId = getYouTubeID(post.link);
     const isVideo = Boolean(videoId);
 
-
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
+
+    const openMap = () => {
+        openModal({geolocation: post.geolocation})
+    }
 
     const openPreview = (e) => {
         e.preventDefault();
@@ -107,12 +111,18 @@ export default function Post({ post }) {
                     <Info>
                         <Username
                             $isUser={post.user.id === user.id}
-                            data-tip={post.user.username}
-                            data-for="name-tooltip"
+                            
                         >
-                            <Link to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}>
+                            <Link 
+                                to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}
+                                data-tip={post.user.username}
+                                data-for="name-tooltip"
+                            >
                                 {post.user.username}
                             </Link>
+                            {post.geolocation && (
+                                <LocationIcon onClick={openMap} />
+                            )}
                         </Username>
                         {isEditing ? (
                             <Comment>
@@ -270,11 +280,16 @@ const Info = styled.div`
     }
 `;
 
+const LocationIcon = styled(LocationFilledSvg)`
+    margin-left: 13px;
+    cursor: pointer;
+`;
+
 const Username = styled.h2`
     color: #ffffff;
     font-size: 20px;
     margin-bottom: 10px;
-    width: ${({ $isUser }) => ($isUser ? "450px" : "503px")};
+    width: ${({ $isUser }) => ($isUser ? "430px" : "483px")};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
