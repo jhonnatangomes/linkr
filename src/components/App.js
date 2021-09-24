@@ -34,7 +34,7 @@ export default function App() {
             .then((res) => setFollowingUsers(res.data.users.map((user) => user.id)))
             .catch(() => openModal({message: "Ocorreu algum erro!"}));
         }
-    },[]);
+    },[]);//eslint-disable-line react-hooks/exhaustive-deps
 
     const closeModal = () => {
         setModal({ modalIsOpen: false });
