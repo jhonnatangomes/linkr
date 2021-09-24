@@ -113,7 +113,7 @@ const Modal = ({ modal, closeModal }) => {
             justifyContent: preview ? 'flex-start' : 'center',
             alignItems:  preview ? 'flex-start' : 'center',
             textAlign: 'center',
-            lineHeight: preview ? '1.1em' : '41px',
+            lineHeight: preview ? '1.1em' : '1.9em',
             padding: preview? '15px 27px 21px 27px' : '',
             boxSizing: 'border-box',
             position: 'absolute',
