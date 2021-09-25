@@ -18,7 +18,6 @@ export default function PostsList({ posts, setPosts }) {
     const addNewPosts = useCallback(() => {
         const request = getNewerPosts(user.token, newerPost);
         request.then((res) => {setPosts([...res.data.posts,...posts])});
-        console.log('passou no interval');
     }, [posts, newerPost]);//eslint-disable-line react-hooks/exhaustive-deps
 
     const useInterval = (callback, delay) => {
