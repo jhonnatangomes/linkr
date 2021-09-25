@@ -5,23 +5,12 @@ import { checkIframePermission } from "../../../services/iframeApi";
 import Loading from "../Loading";
 import noPreviewImg from '../../assets/imgs/no-image.png';
 import { ReactComponent as CloseSvg } from '../../../assets/icons/close.svg';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import "leaflet/dist/leaflet.css";
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-import L from 'leaflet';
 
+import MapBody from './MapBody'
 ReactModal.setAppElement('#root');
 
 const Modal = ({ modal, closeModal }) => {
 
-    delete L.Icon.Default.prototype._getIconUrl;
-
-    L.Icon.Default.mergeOptions({
-        iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png').default,
-        iconUrl: require('leaflet/dist/images/marker-icon.png').default,
-        shadowUrl: require('leaflet/dist/images/marker-shadow.png').default
-    });
 
     const [previewState, setPreviewState] = useState({available: true, loading: true});
     const [iframeVisibility, setIframeVisibility] = useState('none');
@@ -41,6 +30,11 @@ const Modal = ({ modal, closeModal }) => {
         setIframeVisibility('none');
     }
 
+    const CloseButton = () => {
+        return (
+            <CloseIcon onClick={close} />
+        )
+    }
     const position = geolocation? [geolocation.latitude, geolocation.longitude] : [];
 
     useEffect(() => {
@@ -60,6 +54,14 @@ const Modal = ({ modal, closeModal }) => {
                 });
         }
     }, [preview]);
+
+    useEffect(() => {
+        if (modalIsOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'scroll';
+        }
+    }, [modalIsOpen]);
 
     const modalWidth = () => {
 
@@ -163,7 +165,6 @@ const Modal = ({ modal, closeModal }) => {
             onRequestClose={close}
             style={customStyles}
         >  
-            <ModalContent modalHeight={modalHeight} modalWidth={modalWidth}>
                 {!preview? ( 
                     !geolocation? (
                         <MessageContainer>
@@ -182,23 +183,12 @@ const Modal = ({ modal, closeModal }) => {
                             </ContainerButtons>
                         </MessageContainer>
                     ) : (
-                        <GeolocationContainer>
-                                <PreviewButtonsContainer>
-                                    <LocationTitle> {username}'s location</LocationTitle>
-                                    <CloseIcon onClick={close} />
-                                </PreviewButtonsContainer>
-                                <Map center={position} zoom={13} scrollWheelZoom={true}>
-                                    <TileLayer
-                                        attribution='<a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                    />
-                                    <Marker position={position}>
-
-                                    </Marker>
-                                </Map>
-                        </GeolocationContainer>
+                        <MapBody 
+                            CloseButton={CloseButton}
+                            username={username}
+                            position={position}
+                        />
                     )
-
                 ) : (
                     <PreviewContainer>
                         <PreviewButtonsContainer>
@@ -249,48 +239,11 @@ const Modal = ({ modal, closeModal }) => {
                         )}
                     </PreviewContainer>
                 )}
-            </ModalContent>
         </ReactModal>
     )
 }
 
-const GeolocationContainer = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 10px;
 
-    &> div {
-        justify-content: space-between;
-        width: 90%;
-    }
-`;
-
-const LocationTitle = styled.span`
-    font-family: Oswald;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 38px;
-    line-height: 1.1em;
-    color: #FFFFFF;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 90%;
-    @media (max-width: 700px) {
-        font-size: 30px;
-    }
-`;
-
-const Map = styled(MapContainer)`
-    width: 100%;
-    height: 100%;
-    max-width: 713px;
-    max-height: 240px;
-`;
 
 const CloseIcon = styled(CloseSvg)`
     font-size: 30px;
