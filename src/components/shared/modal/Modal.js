@@ -261,7 +261,7 @@ const GeolocationContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-bottom: 23px;
+    padding-bottom: 10px;
 
     &> div {
         justify-content: space-between;
@@ -274,9 +274,15 @@ const LocationTitle = styled.span`
     font-style: normal;
     font-weight: bold;
     font-size: 38px;
-    line-height: 56px;
-
+    line-height: 1.1em;
     color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+    @media (max-width: 700px) {
+        font-size: 30px;
+    }
 `;
 
 const Map = styled(MapContainer)`

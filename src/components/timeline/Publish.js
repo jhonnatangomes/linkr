@@ -75,11 +75,12 @@ export default function Publish({ posts, setPosts }) {
         }
 
         const request = createPost(body, user.token);
+
         request.then((res) => {
             setText("");
             setLink("");
             setLoading(false);
-            setPosts([res.data.post, ...posts]);
+            setPosts([{...res.data.post, geolocation: res.data.geolocation}, ...posts]);
         });
         request.catch(() => {
             setLoading(false);

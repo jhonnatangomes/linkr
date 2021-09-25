@@ -111,21 +111,47 @@ export default function Post({ post }) {
                     </LeftBox>
 
                     <Info>
-                        <Username
-                            $isUser={post.user.id === user.id}
-                            
-                        >
-                            <Link 
-                                to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}
-                                data-tip={post.user.username}
-                                data-for="name-tooltip"
+                        <PostHeader isUser={post.user.id === user.id}>
+                            <UsernameContainer 
+                                isUser={post.user.id === user.id}
+                                geolocation={post.geolocation}
                             >
-                                {post.user.username}
-                            </Link>
-                            {post.geolocation && (
-                                <LocationIcon onClick={openMap} />
-                            )}
-                        </Username>
+                                <h2>
+                                    <Link
+                                        to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}
+                                        data-tip={post.user.username}
+                                        data-for="name-tooltip"
+                                    >
+                                        {post.user.username}
+                                    </Link>
+                                </h2>
+
+                                {post.geolocation && (
+                                    <LocationIcon onClick={openMap} />
+                                )}
+                            </UsernameContainer>
+                                
+                                {post.user.id === user.id && (
+                                    <ContainerButtons>
+                                        <EditButton
+                                            postText={postText}
+                                            isEditing={isEditing}
+                                            setIsEditing={setIsEditing}
+                                            editText={editText}
+                                            setEditText={setEditText}
+                                            editPostRequest={editPostRequest}
+                                            setIsEditLoading={setIsEditLoading}
+                                        />
+                                        <DeleteButton
+                                            setIsDeleted={setIsDeleted}
+                                            openModal={openModal}
+                                            post={post}
+                                            user={user}
+                                        />
+                                    </ContainerButtons>
+                                )}
+                        </PostHeader>
+
                         {isEditing ? (
                             <Comment>
                                 <EditInput
@@ -194,26 +220,6 @@ export default function Post({ post }) {
                             </a>
                         )}
                     </Info>
-
-                    {post.user.id === user.id && (
-                        <ContainerButtons>
-                            <EditButton
-                                postText={postText}
-                                isEditing={isEditing}
-                                setIsEditing={setIsEditing}
-                                editText={editText}
-                                setEditText={setEditText}
-                                editPostRequest={editPostRequest}
-                                setIsEditLoading={setIsEditLoading}
-                            />
-                            <DeleteButton
-                                setIsDeleted={setIsDeleted}
-                                openModal={openModal}
-                                post={post}
-                                user={user}
-                            />
-                        </ContainerButtons>
-                    )}
                 </PostContainer>
             )}
         </>
@@ -282,38 +288,69 @@ const Info = styled.div`
     }
 `;
 
-const LocationIcon = styled(LocationFilledSvg)`
-    margin-left: 13px;
-    cursor: pointer;
+const PostHeader = styled.div`
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 98%;
 `;
 
-const Username = styled.h2`
+const UsernameContainer = styled.div`
+    display: flex;
+    align-items: center;
+    max-width: ${({ isUser }) => (isUser ? "90%" : "99%")};
+    width: fit-content;
     color: #ffffff;
-    font-size: 20px;
-    margin-bottom: 10px;
-    width: ${({ $isUser }) => ($isUser ? "430px" : "483px")};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
+    & h2 {
+        font-size: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: ${({ isUser, geolocation }) => {
+
+            if (geolocation) {
+                return isUser ? "93%" : "95%"
+            }
+
+            return isUser ? "100%" : "100%"
+        }};
+    }
 
     @media (max-width: 700px) {
-        font-size: 17px;
-        width: ${({ $isUser }) => ($isUser ? "84%" : "100%")};
+       max-width: ${({ isUser, geolocation }) => {
+
+            if (geolocation) {
+                return isUser ? "90%" : "100%"
+            }
+
+            return isUser ? "90%" : "100%"
+        }};
+        & h2 {
+            font-size: 17px;
+            max-width: ${({ isUser, geolocation }) => {
+
+                if (geolocation) {
+                    return isUser ? "89%" : "94%"
+                }
+
+                return isUser ? "97%" : "100%"
+            }};
+        }
     }
 `;
 
 const ContainerButtons = styled.div`
-    position: absolute;
-    top: 22px;
-    right: 22px;
     display: grid;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
     grid-column-gap: 13px;
+`;
 
-    @media (max-width: 700px) {
-        right: 5%;
-    }
+const LocationIcon = styled(LocationFilledSvg)`
+    margin-left: 10px;
+    cursor: pointer;
 `;
 
 const Comment = styled.p`
@@ -353,7 +390,7 @@ const LinkBox = styled.div`
 `;
 
 const VideoBox = styled.div`
-    width: 98%;
+    width: 503px;
     height: 100%;
     display: flex;
     align-items: center;
