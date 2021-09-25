@@ -6,13 +6,15 @@ import MapContent from './MapContent';
 import ConfirmContent from './ConfirmContent';
 import AlertContent from './AlertContent';
 import PreviewContent from './PreviewContent'
+import { useHistory } from 'react-router-dom';
 
 ReactModal.setAppElement('#root');
 
 const Modal = ({ modal, closeModal }) => {
 
     const { modalIsOpen, message, onConfirm, confirmText, loading, cancelText, preview, geolocation, username} = modal;
-    
+    const history = useHistory();
+
     const types = {
         GEOLOCATION: 'GEOLOCATION',
         PREVIEW: 'PREVIEW',
@@ -43,6 +45,11 @@ const Modal = ({ modal, closeModal }) => {
         if (modalIsOpen) {
             document.body.style.overflow = 'hidden';
 
+            window.onpopstate = e => {
+                closeModal();
+                history.push(history.location);
+            }
+
             if (geolocation) {
                 setType(types.GEOLOCATION);
 
@@ -59,6 +66,9 @@ const Modal = ({ modal, closeModal }) => {
 
         } else {
             document.body.style.overflow = 'scroll';
+            window.onpopstate = e => {
+
+            }
         }
 
     }, [modalIsOpen, onConfirm]); //eslint-disable-line react-hooks/exhaustive-deps
