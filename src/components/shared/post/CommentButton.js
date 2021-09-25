@@ -1,27 +1,14 @@
 import styled from 'styled-components';
+import { AiOutlineComment } from "react-icons/ai";
 
-import { AiOutlineComment } from "react-icons/im";
-import { useEffect } from 'react';
-
-export default function CommmentButton({post, user}) {
-
-    useEffect(() => {
-        
-    })
-    
-    const openCommentsBox = () => {
-        const request = sharePost(post.id, user.token);
-        request.then(() => { console.log('sucesso') });
-        request.catch(() => { console.log('sucesso') });
-    }
-
+export default function CommmentButton({comments, showComments, setShowComments}) {
 
     return (
         <>
-            <CommentIconButton onClick={openCommentsBox} />
-            <ShareCounter data-for="main">
-                {post.repostCount === 1 ? `${post.repostCount} re-post` : `${post.repostCount || 0} re-posts`}
-            </ShareCounter>
+            <CommentIconButton onClick={() => setShowComments(!showComments)} />
+            <CommentsCounter data-for="main">
+                {comments.length === 1 ? `${comments.length} comment` : `${comments.length || 0} comments`}
+            </CommentsCounter>
         </>
     )
 }
@@ -36,8 +23,9 @@ const CommentIconButton = styled(AiOutlineComment)`
     }
 `;
 
-const ShareCounter = styled.div`
+const CommentsCounter = styled.div`
     min-height: 30px;
+    width: 70px;
     display: flex;
     justify-content: center;
     align-items: center;

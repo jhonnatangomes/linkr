@@ -40,6 +40,7 @@ const ShareIconButton = styled(ImLoop)`
 
 const ShareCounter = styled.div`
     min-height: 30px;
+    width: 70px;
     display: flex;
     justify-content: center;
     align-items: center;

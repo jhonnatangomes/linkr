@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import UserContext from "../../../contexts/UserContext.js";
 import ModalContext from "../../../contexts/ModalContext.js";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import ReactTooltip from "react-tooltip";
 import LikeButton from "./LikeButton.js";
 import ShareButton from "./ShareButton.js";
@@ -14,6 +14,8 @@ import getYouTubeID from "get-youtube-id";
 import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
 import noPreviewImg from '../../assets/imgs/no-image.png';
 import { ImLoop } from "react-icons/im";
+import { getComments } from '../../../services/commentPostApi';
+import CommentButton from "./CommentButton";
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -23,10 +25,24 @@ export default function Post({ post }) {
     const [editText, setEditText] = useState("");
     const [isEditLoading, setIsEditLoading] = useState(false);
     const [postText, setPostText] = useState(post.text);
+    const [showComments, setShowComments] = useState(false);
+    const [comments, setComments] = useState([]);
+    const [scrollComments, setScrollComments] = useState(0);
 
     const videoId = getYouTubeID(post.link);
     const isVideo = Boolean(videoId);
 
+    let publishedContainerId = 'id';
+    let list = document.getElementById(publishedContainerId);
+
+    useEffect(() => { setScrollComments(scrollComments + 1) },[showComments]);
+    useEffect(() => { if(list) list.scrollTop = list.scrollHeight },[scrollComments]);
+
+    useEffect(() => {
+        const request = getComments(post.id, user.token);
+        request.then((res) => { setComments(res.data.comments)});
+        request.catch(() => { console.log('erro') });
+    }, [])
 
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
@@ -93,7 +109,8 @@ export default function Post({ post }) {
                                     <img onError={(e) => addDefaultProfileImgSrc(e)} src={post.user.avatar} alt="Nome do usuário" />
                                 </Link>
                             </UserImg>
-                        <LikeButton openModal={openModal} post={post} user={user} />
+                        <LikeButton openModal={openModal} post={post} user={user}/>
+                        <CommentButton comments={comments} showComments={showComments} setShowComments={setShowComments}/>
                         <ShareButton openModal={openModal} post={post} user={user}/>
                     </LeftBox>
 
@@ -193,6 +210,22 @@ export default function Post({ post }) {
                         </ContainerButtons>
                     )}
                 </PostContainer>
+
+                {showComments && <CommentsBox>
+                    <PublishedComments id={publishedContainerId}>
+                        {comments && comments.map(comment => (<CommentBox>
+                            <img onError={(e) => addDefaultProfileImgSrc(e)} src={comment.user.avatar} alt="Nome do usuário" />
+                            <div>
+                                <h1>{comment.user.username}</h1>
+                                <h2>{comment.text}</h2>
+                            </div>
+                        </CommentBox>))}
+                    </PublishedComments>
+                    <NewCommentBox>
+                        <img onError={(e) => addDefaultProfileImgSrc(e)} src={user.avatar} alt="Nome do usuário" />
+                        <textarea rows="1" placeholder={'escreva um comentário...'}></textarea>
+                    </NewCommentBox>
+                </CommentsBox>}
                 </>
             )}
         </>
@@ -207,7 +240,7 @@ const PostContainer = styled.div`
     padding: 20px;
     background-color: #171717;
     overflow: hidden;
-    margin-bottom: 15px;
+    margin-top: 15px;
     overflow-wrap: break-word;
 
     @media (max-width: 700px) {
@@ -445,4 +478,97 @@ const ShareIcon = styled(ImLoop)`
     color: #FFFFFF;
     margin: 0 12px 0 0;
     font-size: 16px;
+`;
+
+const CommentsBox = styled.div`
+    max-height: 300px;
+    width: 100%;
+    padding: 32px 25px 25px 25px;
+    margin: -32px 0 0 0;
+    background: #1E1E1E;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: scroll;
+    scrollbar-width: none;
+    h1 {
+        color: #FFFFFF;
+    }
+`;
+
+const PublishedComments = styled.div`
+    max-height: 216px;
+    width: 100%;
+    overflow: scroll;
+    scrollbar-width: none;
+`;
+
+const NewCommentBox = styled.div`
+    min-height: 40px;
+    width: 100%;
+    display: flex;
+    margin: 20px 0 0 0;
+    img {
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+        margin: 0 15px 0 0;
+    }
+    textarea {
+        height: auto;
+        width: 100%;
+        background: #252525;
+        border-radius: 8px;
+        border: none;
+        padding: 11px 15px 0 15px;
+        font-family: Lato;
+        font-size: 14px;
+        line-height: 17px;
+        color: #575757;
+        resize: none;
+        &:focus {
+            outline: none;
+        }
+    }
+    textarea::placeholder {
+        font-style: italic;
+    }
+`;
+
+const CommentBox = styled.div`
+    width: 100%;
+    display: flex;
+    padding: 16px 0px 16px 0px;
+    border-bottom: 1px solid #353535;
+    img {
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+        margin: 0 18px 0 0;
+    }
+    div {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow-wrap: break-word;
+        color: #575757;
+        font-family: Lato;
+        font-size: 14px;
+        line-height: 17px;
+        h1 {
+            font-family: Lato;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 17px;
+            color: #F3F3F3;
+            margin: 0 0 3px 0;
+        }
+        h2 {
+            font-family: Lato;
+            font-size: 14px;
+            line-height: 17px;
+            color: #ACACAC;
+        }
+    }
 `;
