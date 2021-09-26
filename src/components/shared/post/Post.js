@@ -455,14 +455,15 @@ const StyledReactTooltip = styled(ReactTooltip)`
 `;
 
 const SharedBy = styled.div`
-    height: 65px;
+    height: 49px;
     width: 100%;
     background: #1E1E1E;
-    border-radius: 16px;
+    border-radius: 16px 16px 0 0;
     margin: 0 0 -32px 0;
     display: flex;
     align-items: center;
-    padding: 0 0 32px 15px;
+    padding: 0 0 15px 15px;
+    z-index;
     h1 {
         font-family: Lato;
         font-size: 11px;
@@ -471,6 +472,9 @@ const SharedBy = styled.div`
         span {
             font-weight: 700;
         }
+    }
+    @media (max-width: 700px) {
+        border-radius: 0;
     }
 `;
 
@@ -494,6 +498,9 @@ const CommentsBox = styled.div`
     scrollbar-width: none;
     h1 {
         color: #FFFFFF;
+    }
+    @media (max-width: 700px) {
+        border-radius: 0;
     }
 `;
 
