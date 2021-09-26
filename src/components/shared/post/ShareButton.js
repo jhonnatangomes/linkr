@@ -14,7 +14,7 @@ export default function ShareButton({post, user, openModal}) {
         openModal({
             message: 'Tem certeza que deseja compartilhar essa publicação?',
             onConfirm,
-            confirmText: 'Sim, compartilhar!',
+            confirmText: 'Compartilhar!',
             cancelText: 'Não, cancelar'
         });
     }

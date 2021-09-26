@@ -6,10 +6,10 @@ const getComments = (postId, token) => {
     return request;
 };
 
-const postComment = (postId, token) => {
+const postComment = (postId, token, comment) => {
     const config = { headers: { Authorization: `Bearer ${token}`}}
-    const request = axios.post(``, "", config);
+    const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v3/linkr/posts/${postId}/comment`, {text: comment}, config);
     return request;
 }
 
-export { getComments };
+export { getComments, postComment };

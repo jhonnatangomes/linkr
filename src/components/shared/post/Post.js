@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import { PostContainer, LeftBox, UserImg, Info, Username, ContainerButtons, Comment, LinkBox, VideoBox, LinkText, LinkTitle, LinkDescription, LinkRef, VideoLink, LinkImg, StyledReactTooltip, SharedBy, ShareIcon, CommentsBox, PublishedComments, NewCommentBox, CommentBox, StyledArrow, NewCommentInput } from "../../../styles/postStyles";
 import { Link } from "react-router-dom";
 import UserContext from "../../../contexts/UserContext.js";
 import ModalContext from "../../../contexts/ModalContext.js";
@@ -13,9 +13,9 @@ import { editPost } from "../../../services/editPostApi";
 import getYouTubeID from "get-youtube-id";
 import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
 import noPreviewImg from '../../assets/imgs/no-image.png';
-import { ImLoop } from "react-icons/im";
-import { getComments } from '../../../services/commentPostApi';
+import { getComments, postComment } from '../../../services/commentPostApi';
 import CommentButton from "./CommentButton";
+import FollowingContext from "../../../contexts/FollowingContext";
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -28,6 +28,9 @@ export default function Post({ post }) {
     const [showComments, setShowComments] = useState(false);
     const [comments, setComments] = useState([]);
     const [scrollComments, setScrollComments] = useState(0);
+    const { followingUsers } = useContext(FollowingContext);
+    const [comment, setComment] = useState("");
+    const [updateComments, setUpdateComments] = useState(0);
 
     const videoId = getYouTubeID(post.link);
     const isVideo = Boolean(videoId);
@@ -41,12 +44,22 @@ export default function Post({ post }) {
     useEffect(() => {
         const request = getComments(post.id, user.token);
         request.then((res) => { setComments(res.data.comments)});
-        request.catch(() => { console.log('erro') });
-    }, [])
+        request.catch(() => { alert('Algo deu errado, por favor tente novamente.') });
+    }, [updateComments])
 
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
+
+    const checkKey = (e) => {
+        const key = e.key;
+        if (key === "Enter") {
+            e.preventDefault();
+            const request = postComment(post.id, user.token, comment);
+            request.then((res) => { setComment(""); setUpdateComments(updateComments + 1) })
+            request.catch(() => { alert('Algo deu errado, por favor tente novamente.') });
+        }
+    }
 
     const openPreview = (e) => {
         e.preventDefault();
@@ -222,14 +235,21 @@ export default function Post({ post }) {
                         {comments && comments.map(comment => (<CommentBox>
                             <img onError={(e) => addDefaultProfileImgSrc(e)} src={comment.user.avatar} alt="Nome do usuário" />
                             <div>
-                                <h1>{comment.user.username}</h1>
+                                <h1>
+                                    {comment.user.username}
+                                    <span>{comment.user.id === post.user.id ? " • post's author" : ""}</span>
+                                    <span>{followingUsers.includes(comment.user.id) ? " • following" : ""}</span>
+                                </h1>
                                 <h2>{comment.text}</h2>
                             </div>
                         </CommentBox>))}
                     </PublishedComments>
                     <NewCommentBox>
                         <img onError={(e) => addDefaultProfileImgSrc(e)} src={user.avatar} alt="Nome do usuário" />
-                        <textarea rows="1" placeholder={'escreva um comentário...'}></textarea>
+                        <NewCommentInput>
+                            <textarea rows="1" placeholder={'escreva um comentário...'} onKeyDown={checkKey} onChange={(e)=>setComment(e.target.value)} value={comment}></textarea>
+                            <StyledArrow/>
+                        </NewCommentInput>
                     </NewCommentBox>
                 </CommentsBox>}
                 </>
@@ -237,351 +257,3 @@ export default function Post({ post }) {
         </>
     );
 }
-
-const PostContainer = styled.div`
-    position: relative;
-    width: 100%;
-    display: flex;
-    border-radius: 16px;
-    padding: 20px;
-    background-color: #171717;
-    overflow: hidden;
-    margin-top: 15px;
-    overflow-wrap: break-word;
-
-    @media (max-width: 700px) {
-        border-radius: 0;
-        padding: 18px;
-    }
-`;
-
-const LeftBox = styled.div`
-    width: 10%;
-    height: 100%;
-    margin-right: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 11px;
-    color: #ffffff;
-
-    @media (max-width: 700px) {
-        font-size: 9px;
-    }
-`;
-
-const UserImg = styled.div`
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    border-radius: 50%;
-    cursor: pointer;
-    margin-bottom: 20px;
-
-    & img, a {
-        height: 100%;
-    }
-
-    @media (max-width: 700px) {
-        width: 40px;
-        height: 40px;
-    }
-`;
-
-const Info = styled.div`
-    width: 90%;
-    height: 100%;
-
-    @media (max-width: 700px) {
-        width: 85%;
-    }
-`;
-
-const Username = styled.h2`
-    color: #ffffff;
-    font-size: 20px;
-    margin-bottom: 10px;
-    width: ${({ $isUser }) => ($isUser ? "450px" : "503px")};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    @media (max-width: 700px) {
-        font-size: 17px;
-        width: ${({ $isUser }) => ($isUser ? "84%" : "100%")};
-    }
-`;
-
-const ContainerButtons = styled.div`
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    display: grid;
-    grid-auto-columns: 1fr;
-    grid-auto-flow: column;
-    grid-column-gap: 13px;
-
-    @media (max-width: 700px) {
-        right: 5%;
-    }
-`;
-
-const Comment = styled.p`
-    color: #b7b7b7;
-    font-size: 17px;
-    line-height: 20px;
-    margin-bottom: 10px;
-    -webkit-line-clamp: 10;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    width: 503px;
-
-    & span {
-        font-weight: 700;
-        color: #ffffff;
-    }
-
-    @media (max-width: 700px) {
-        font-size: 15px;
-        width: 100%;
-    }
-`;
-
-const LinkBox = styled.div`
-    width: 503px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    border: 1px solid #4d4d4d;
-    border-radius: 11px;
-    overflow: hidden;
-
-    @media (max-width: 700px) {
-        width: 100%;
-    }
-`;
-
-const VideoBox = styled.div`
-    width: 98%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-
-    @media (max-width: 700px) {
-        width: 100%;
-    }
-`;
-
-const LinkText = styled.div`
-    width: 65%;
-    padding: 25px 20px;
-
-    @media (max-width: 700px) {
-        padding: 8px 11px;
-    }
-`;
-
-const LinkTitle = styled.div`
-    color: #cecece;
-    font-size: 16px;
-    margin-bottom: 5px;
-    -webkit-line-clamp: 2;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-
-    @media (max-width: 700px) {
-        font-size: 11px;
-    }
-`;
-
-const LinkDescription = styled.div`
-    font-size: 11px;
-    color: #9b9595;
-    margin-bottom: 15px;
-    -webkit-line-clamp: 3;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-
-    @media (max-width: 700px) {
-        font-size: 9px;
-    }
-`;
-
-const LinkRef = styled.p`
-    color: #cecece;
-    font-size: 11px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    @media (max-width: 700px) {
-        font-size: 9px;
-    }
-`;
-
-const VideoLink = styled.p`
-    color: #b7b7b7;
-    font-size: 17px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-top: 6px;
-    width: 98%;
-
-    @media (max-width: 700px) {
-        font-size: 13px;
-    }
-`;
-const LinkImg = styled.div`
-    width: 35%;
-    height: 150px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    & img {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
-`;
-
-const StyledReactTooltip = styled(ReactTooltip)`
-    font-weight: bold;
-    font-family: "Lato", sans-serif;
-`;
-
-const SharedBy = styled.div`
-    height: 49px;
-    width: 100%;
-    background: #1E1E1E;
-    border-radius: 16px 16px 0 0;
-    margin: 0 0 -32px 0;
-    display: flex;
-    align-items: center;
-    padding: 0 0 15px 15px;
-    z-index;
-    h1 {
-        font-family: Lato;
-        font-size: 11px;
-        line-height: 13px;
-        color: #FFFFFF;
-        span {
-            font-weight: 700;
-        }
-    }
-    @media (max-width: 700px) {
-        border-radius: 0;
-    }
-`;
-
-const ShareIcon = styled(ImLoop)`
-    color: #FFFFFF;
-    margin: 0 12px 0 0;
-    font-size: 16px;
-`;
-
-const CommentsBox = styled.div`
-    max-height: 300px;
-    width: 100%;
-    padding: 32px 25px 25px 25px;
-    margin: -32px 0 0 0;
-    background: #1E1E1E;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: scroll;
-    scrollbar-width: none;
-    h1 {
-        color: #FFFFFF;
-    }
-    @media (max-width: 700px) {
-        border-radius: 0;
-    }
-`;
-
-const PublishedComments = styled.div`
-    max-height: 216px;
-    width: 100%;
-    overflow: scroll;
-    scrollbar-width: none;
-`;
-
-const NewCommentBox = styled.div`
-    min-height: 40px;
-    width: 100%;
-    display: flex;
-    margin: 20px 0 0 0;
-    img {
-        height: 40px;
-        width: 40px;
-        border-radius: 20px;
-        margin: 0 15px 0 0;
-    }
-    textarea {
-        height: auto;
-        width: 100%;
-        background: #252525;
-        border-radius: 8px;
-        border: none;
-        padding: 11px 15px 0 15px;
-        font-family: Lato;
-        font-size: 14px;
-        line-height: 17px;
-        color: #575757;
-        resize: none;
-        &:focus {
-            outline: none;
-        }
-    }
-    textarea::placeholder {
-        font-style: italic;
-    }
-`;
-
-const CommentBox = styled.div`
-    width: 100%;
-    display: flex;
-    padding: 16px 0px 16px 0px;
-    border-bottom: 1px solid #353535;
-    img {
-        height: 40px;
-        width: 40px;
-        border-radius: 20px;
-        margin: 0 18px 0 0;
-    }
-    div {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow-wrap: break-word;
-        color: #575757;
-        font-family: Lato;
-        font-size: 14px;
-        line-height: 17px;
-        h1 {
-            font-family: Lato;
-            font-weight: bold;
-            font-size: 14px;
-            line-height: 17px;
-            color: #F3F3F3;
-            margin: 0 0 3px 0;
-        }
-        h2 {
-            font-family: Lato;
-            font-size: 14px;
-            line-height: 17px;
-            color: #ACACAC;
-        }
-    }
-`;
