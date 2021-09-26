@@ -32,6 +32,7 @@ const ContainerDesktop = styled.div`
     position: relative;
     background-color: #e7e7e7;
     border-radius: ${({ $display }) => ($display ? "8px 8px 0 0" : "8px")};
+    z-index: 4;
 
     @media (max-width: 800px) {
         display: none;
@@ -44,6 +45,7 @@ const ContainerMobile = styled.div`
     width: 93%;
     border-radius: ${({ $display }) => ($display ? "8px 8px 0 0" : "8px")};
     background-color: #e7e7e7;
+    z-index: 4;
 
     @media (min-width: 800px) {
         display: none;
