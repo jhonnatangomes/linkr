@@ -41,6 +41,7 @@ const Message = styled.span`
     font-size: 32px;
     font-weight: bold;
     font-family: Lato;
+    text-align: center;
 
     @media (max-width: 700px) {
         font-size: 28px;

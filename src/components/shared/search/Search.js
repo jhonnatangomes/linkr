@@ -1,14 +1,19 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import SearchContent from "./SearchContent";
 
 export default function Search({ layout }) {
     const [displayResults, setDisplayResults] = useState(false);
+    const node = useRef();
+
+    const handleClick = e => {if (node.current && !node.current.contains(e.target)) setDisplayResults(false)};
+
+    useEffect(() => { document.addEventListener("mousedown", handleClick) }, []);
 
     return (
         <>
             {layout === "desktop" ? (
-                <ContainerDesktop $display={displayResults}>
+                <ContainerDesktop $display={displayResults} ref={node}>
                     <SearchContent
                         layout={layout}
                         displayResults={displayResults}
@@ -16,7 +21,7 @@ export default function Search({ layout }) {
                     />
                 </ContainerDesktop>
             ) : (
-                <ContainerMobile $display={displayResults}>
+                <ContainerMobile $display={displayResults} ref={node}>
                     <SearchContent
                         layout={layout}
                         displayResults={displayResults}
