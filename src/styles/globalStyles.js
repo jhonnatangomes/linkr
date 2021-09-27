@@ -8,6 +8,7 @@ const GlobalStyle = createGlobalStyle`
 
   * {
       word-wrap: break-word;
+      scrollbar-width: none;
   }
 `
 
