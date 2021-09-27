@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { AiOutlineSearch } from "react-icons/ai";
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState } from "react";
 import UserContext from "../../../contexts/UserContext";
 import searchUser from "../../../services/searchApi";
 import standardProfilePicture from "../../assets/imgs/profile-standard.jpg";
@@ -17,11 +17,6 @@ export default function SearchContent({
     const [search, setSearch] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const { followingUsers } = useContext(FollowingContext);
-    const node = useRef();
-
-    const handleClick = e => {if (node.current && !node.current.contains(e.target)) setDisplayResults(false)};
-
-    useEffect(() => { document.addEventListener("mousedown", handleClick) }, []);//eslint-disable-line react-hooks/exhaustive-deps
 
     function getUser(e) {
         if (e.target.value.length >= 3) {
@@ -78,7 +73,7 @@ export default function SearchContent({
                 debounceTimeout={300}
             />
             <SearchIcon />
-            <SearchResults $display={displayResults} ref={node}>
+            <SearchResults $display={displayResults}>
                 {searchResults.length ? (
                     searchResults.map((result) => (
                         <Link
@@ -201,7 +196,7 @@ const SearchResult = styled.div`
 
     span:nth-child(2) {
         max-width: ${({ layout }) =>
-            layout === "desktop" ? "378px" : "calc(93vw - 34px - 151px)"};
+            layout === "desktop" ? "365px" : "calc(93vw - 34px - 175px)"};
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

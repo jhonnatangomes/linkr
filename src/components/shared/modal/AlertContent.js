@@ -36,7 +36,7 @@ const ModalContent = styled.div`
 
 const Message = styled.span`
     font-size: 32px;
-    font-weight: bold;
+    font-weight: 700;
     font-family: Lato;
 
     @media (max-width: 700px) {

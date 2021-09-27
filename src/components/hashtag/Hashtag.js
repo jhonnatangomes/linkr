@@ -9,20 +9,36 @@ import { getHashtagPosts } from "../../services/trendingApi";
 import UserContext from "../../contexts/UserContext";
 import Search from "../shared/search/Search";
 import NoPostsMessage from "../../styles/NoPostsMessage";
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function Hashtag() {
     const { hashtag } = useParams();
     const { user } = useContext(UserContext);
     const [posts, setPosts] = useState(null);
+    const [hasMore, setHasMore] = useState(1);
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        setHasMore(1);
         setPosts(null);
         const request = getHashtagPosts(hashtag, user.token);
         request.then((res) => {
             setPosts(res.data.posts);
         });
     }, [hashtag]);//eslint-disable-line react-hooks/exhaustive-deps
+
+    function loadMorePosts() {
+        if(posts) {
+            const lastPostId = posts[posts.length - 1].repostId
+            ? posts[posts.length - 1].repostId
+            : posts[posts.length - 1].id;
+        const request = getHashtagPosts(hashtag, user.token, `?olderThan=${lastPostId}`);
+        request.then((res) => {
+            setPosts([...posts, ...res.data.posts]);
+            setHasMore(res.data.posts.length);
+        });
+        }
+    }
 
     return (
         <>
@@ -33,11 +49,17 @@ export default function Hashtag() {
                     <PageTitle># {hashtag}</PageTitle>
                     <HashtagBodyContainer>
                         <PostsListContainer>
+                            <InfiniteScroll
+                                pageStart={0}
+                                loadMore={loadMorePosts}
+                                hasMore={!!hasMore}
+                            >
                             {posts === null ? <Loading />:(<div>
                                 {posts.length === 0 ? <NoPosts />:posts.map((post) => (
                                     <Post post={post} key={post.id} />
                                 ))}
                             </div>)}
+                            </InfiniteScroll>
                         </PostsListContainer>
                         <Trending />
                     </HashtagBodyContainer>
@@ -98,9 +120,11 @@ const PageTitle = styled.h1`
     }
 
     @media (max-width: 700px) {
-        margin: 19px 17px;
+        margin: 19px 0px;
+        padding: 0px 17px;
         font-size: 33px;
         line-height: 49px;
+        width: 100%;
     }
 `;
 

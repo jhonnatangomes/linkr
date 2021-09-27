@@ -13,6 +13,7 @@
     "react-debounce-input": "^3.2.5",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
+    "react-infinite-scroller": "^1.2.4",
     "react-leaflet": "^3.2.1",
     "react-loader-spinner": "^4.0.0",
     "react-modal": "^3.14.3",
@@ -36,9 +37,9 @@
     ]
   },
   "browserslist": [
-      ">0.2%",
-      "not dead",
-      "not ie <= 11",
-      "not op_mini all"
-    ]
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

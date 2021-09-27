@@ -1,19 +1,21 @@
 import styled from "styled-components";
-import { useState, useEffect, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
-import UserContext from '../../contexts/UserContext.js';
-import { getUserPosts } from '../../services/userPostsApi.js';
+import { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
+import UserContext from "../../contexts/UserContext.js";
+import { getUserPosts } from "../../services/userPostsApi.js";
 import NavBar from "../navBar/NavBar";
-import Trending from '../shared/Trending.js';
-import Loading from '../shared/Loading.js';
-import Post from '../shared/post/Post.js';
+import Trending from "../shared/Trending.js";
+import Loading from "../shared/Loading.js";
+import Post from "../shared/post/Post.js";
 import Search from "../shared/search/Search";
 import NoPostsMessage from "../../styles/NoPostsMessage.js";
+import InfiniteScroll from "react-infinite-scroller";
 
-export default function MyPosts () {
+export default function MyPosts() {
     const { user } = useContext(UserContext);
     const [myPosts, setMyPosts] = useState(null);
     const history = useHistory();
+    const [hasMore, setHasMore] = useState(1);
 
     useEffect(() => {
         if (user) {
@@ -26,18 +28,51 @@ export default function MyPosts () {
         }
     }, []);//eslint-disable-line react-hooks/exhaustive-deps
 
+    function loadMorePosts() {
+        if (myPosts) {
+            const lastPostId = myPosts[myPosts.length - 1].repostId
+                ? myPosts[myPosts.length - 1].repostId
+                : myPosts[myPosts.length - 1].id;
+            const request = getUserPosts(
+                user.id,
+                user.token,
+                `?olderThan=${lastPostId}`
+            );
+            request.then((res) => {
+                setMyPosts([...myPosts, ...res.data.posts]);
+                setHasMore(res.data.posts.length);
+            });
+        }
+    }
+
     return (
         <>
-        <NavBar />
-        <Search layout="mobile" />
+            <NavBar />
+            <Search layout="mobile" />
             <MyPostsContainer>
                 <div>
                     <PageTitle>my posts</PageTitle>
                     <MyPostsBodyContainer>
                         <PostsListContainer>
-                            {myPosts === null ? <Loading />:(<Container>
-                                {myPosts.length === 0 ? <NoPosts />:myPosts.map((post, index) => <Post key={index} post={post} />)}
-                            </Container>)}
+                            <InfiniteScroll
+                                pageStart={0}
+                                loadMore={loadMorePosts}
+                                hasMore={!!hasMore}
+                            >
+                                {myPosts === null ? (
+                                    <Loading />
+                                ) : (
+                                    <Container>
+                                        {myPosts.length === 0 ? (
+                                            <NoPosts />
+                                        ) : (
+                                            myPosts.map((post, index) => (
+                                                <Post key={index} post={post} />
+                                            ))
+                                        )}
+                                    </Container>
+                                )}
+                            </InfiniteScroll>
                         </PostsListContainer>
                         <Trending />
                     </MyPostsBodyContainer>
@@ -47,12 +82,8 @@ export default function MyPosts () {
     );
 }
 
-function NoPosts () {
-    return (
-        <NoPostsMessage>
-            Você não postou nada ainda!
-        </NoPostsMessage>
-    );
+function NoPosts() {
+    return <NoPostsMessage>Você não postou nada ainda!</NoPostsMessage>;
 }
 
 const MyPostsContainer = styled.div`
