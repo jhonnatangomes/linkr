@@ -343,7 +343,7 @@ const NewCommentBox = styled.div`
         font-family: Lato;
         font-size: 14px;
         line-height: 17px;
-        color: #575757;
+        color: #ACACAC;
         resize: none;
         scrollbar-width: none;
         &:focus {
@@ -352,6 +352,7 @@ const NewCommentBox = styled.div`
     }
     textarea::placeholder {
         font-style: italic;
+        color: #575757;
     }
 `;
 
