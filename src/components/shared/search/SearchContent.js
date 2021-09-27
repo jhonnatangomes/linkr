@@ -146,6 +146,10 @@ const SearchResults = styled.div`
     display: ${({ $display }) => ($display ? "block" : "none")};
     z-index: 10;
     scrollbar-color: #888 #e7e7e7;
+    scrollbar-width: initial;
+    ::-webkit-scrollbar {
+        display: initial;
+    }
 
     ::-webkit-scrollbar-track {
         background: #e7e7e7;

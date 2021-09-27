@@ -1,10 +1,11 @@
-import styled from "styled-components";
+import { PostContainer, LeftBox, UserImg, Info, PostHeader, UsernameContainer, ContainerButtons, LocationIcon, Comment, LinkBox, VideoBox, LinkText, LinkTitle, LinkDescription, LinkRef, VideoLink, LinkImg, StyledReactTooltip, SharedBy, ShareIcon, CommentsBox, PublishedComments, NewCommentBox, NewCommentInput, CommentBox, StyledArrow } from "../../../styles/postStyles";
 import { Link } from "react-router-dom";
 import UserContext from "../../../contexts/UserContext.js";
 import ModalContext from "../../../contexts/ModalContext.js";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import ReactTooltip from "react-tooltip";
 import LikeButton from "./LikeButton.js";
+import ShareButton from "./ShareButton.js";
 import DeleteButton from "./DeleteButton.js";
 import EditButton from "./EditButton.js";
 import EditInput from "./EditInput.js";
@@ -12,7 +13,9 @@ import { editPost } from "../../../services/editPostApi";
 import getYouTubeID from "get-youtube-id";
 import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
 import noPreviewImg from '../../assets/imgs/no-image.png';
-import { ReactComponent as LocationFilledSvg } from './../../../assets/icons/location-filled.svg';
+import { getComments, postComment } from '../../../services/commentPostApi';
+import CommentButton from "./CommentButton";
+import FollowingContext from "../../../contexts/FollowingContext";
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -22,18 +25,48 @@ export default function Post({ post }) {
     const [editText, setEditText] = useState("");
     const [isEditLoading, setIsEditLoading] = useState(false);
     const [postText, setPostText] = useState(post.text);
-
+    const [showComments, setShowComments] = useState(false);
+    const [comments, setComments] = useState([]);
+    const { followingUsers } = useContext(FollowingContext);
+    const [comment, setComment] = useState("");
+    const [updateComments, setUpdateComments] = useState(0);
     const videoId = getYouTubeID(post.link);
     const isVideo = Boolean(videoId);
+    let publishedContainerId = 'id';
+    
+    useEffect(() => { 
+        let list = document.getElementById(publishedContainerId);
+        if(list) list.scrollTop = list.scrollHeight;
+    },[comments, showComments]);
+
+    useEffect(() => {
+        const request = getComments(post.id, user.token);
+        request.then((res) => { setComments(res.data.comments)});
+        request.catch(() => { alert('Algo deu errado, por favor tente novamente.') });
+    }, [updateComments])
 
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
 
+    const checkKey = (e) => {
+        const key = e.key;
+        if (key === "Enter") {
+            e.preventDefault();
+            publishComment();
+        }
+    }
+
+    function publishComment() {
+        if (comment) {
+            const request = postComment(post.id, user.token, comment);
+            request.then((res) => { setComment(""); setUpdateComments(updateComments + 1) })
+            request.catch(() => { alert('Algo deu errado, por favor tente novamente.') });
+        } else { alert("Não é impossível enviar um comentário vazio!" )}
+    }
+
     const openMap = () => {
-        openModal({
-            geolocation: post.geolocation, 
-            username: post.user.username})
+        openModal({geolocation: post.geolocation, username: post.user.username})
     }
 
     const openPreview = (e) => {
@@ -96,6 +129,12 @@ export default function Post({ post }) {
                 id="name-tooltip"
             />
             {!isDeleted && (
+                <>
+                {post.repostedBy && <SharedBy>
+                    <ShareIcon/>
+                    <h1>Re-posted by <span>{post.repostedBy.id === user.id ? 'you' : post.repostedBy.username}</span></h1>
+                </SharedBy>}
+
                 <PostContainer>
                     <LeftBox>
                             <UserImg>
@@ -103,11 +142,9 @@ export default function Post({ post }) {
                                     <img onError={(e) => addDefaultProfileImgSrc(e)} src={post.user.avatar} alt="Nome do usuário" />
                                 </Link>
                             </UserImg>
-                        <LikeButton
-                            openModal={openModal}
-                            post={post}
-                            user={user}
-                        />
+                        <LikeButton openModal={openModal} post={post} user={user}/>
+                        <CommentButton comments={comments} showComments={showComments} setShowComments={setShowComments}/>
+                        <ShareButton openModal={openModal} post={post} user={user}/>
                     </LeftBox>
 
                     <Info>
@@ -168,15 +205,10 @@ export default function Post({ post }) {
                             <Comment>
                                 {formatText(postText).map((text, i) =>
                                     text[0] === "#" ? (
-                                        <Link
-                                            to={`/hashtag/${text.slice(1)}`}
-                                            key={i}
-                                        >
+                                        <Link to={`/hashtag/${text.slice(1)}`} key={i}>
                                             <span>{text}</span>
                                         </Link>
-                                    ) : (
-                                        text
-                                    )
+                                    ) : (text)
                                 )}
                             </Comment>
                         )}
@@ -221,265 +253,35 @@ export default function Post({ post }) {
                         )}
                     </Info>
                 </PostContainer>
+
+                {showComments && <CommentsBox>
+                    <PublishedComments id={publishedContainerId}>
+                        {comments && comments.map(comment => (<CommentBox key={comment.id}>
+                            <Link to={comment.user.id === user.id ? "/my-posts" : `/user/${comment.user.id}`}>
+                                <img onError={(e) => addDefaultProfileImgSrc(e)} src={comment.user.avatar} alt="Nome do usuário" />
+                            </Link>
+                            <div>
+                                <Link to={comment.user.id === user.id ? "/my-posts" : `/user/${comment.user.id}`}>
+                                    <h1>
+                                        {comment.user.username}
+                                        <span>{comment.user.id === post.user.id ? " • post's author" : ""}</span>
+                                        <span>{followingUsers.includes(comment.user.id) ? " • following" : ""}</span>
+                                    </h1>
+                                </Link>
+                                <h2>{comment.text}</h2>
+                            </div>
+                        </CommentBox>))}
+                    </PublishedComments>
+                    <NewCommentBox>
+                        <img onError={(e) => addDefaultProfileImgSrc(e)} src={user.avatar} alt="Nome do usuário" />
+                        <NewCommentInput>
+                            <textarea rows="1" placeholder={'escreva um comentário...'} onKeyDown={checkKey} onChange={(e)=>setComment(e.target.value)} value={comment}></textarea>
+                            <StyledArrow onClick={() => publishComment()}/>
+                        </NewCommentInput>
+                    </NewCommentBox>
+                </CommentsBox>}
+                </>
             )}
         </>
     );
 }
-
-const PostContainer = styled.div`
-    position: relative;
-    width: 100%;
-    display: flex;
-    border-radius: 16px;
-    padding: 20px;
-    background-color: #171717;
-    overflow: hidden;
-    margin-bottom: 15px;
-    overflow-wrap: break-word;
-
-    @media (max-width: 700px) {
-        border-radius: 0;
-        padding: 18px;
-    }
-`;
-
-const LeftBox = styled.div`
-    width: 10%;
-    height: 100%;
-    margin-right: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 11px;
-    color: #ffffff;
-
-    @media (max-width: 700px) {
-        font-size: 9px;
-    }
-`;
-
-const UserImg = styled.div`
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    border-radius: 50%;
-    cursor: pointer;
-    margin-bottom: 20px;
-
-    & img, a {
-        height: 100%;
-    }
-
-    @media (max-width: 700px) {
-        width: 40px;
-        height: 40px;
-    }
-`;
-
-const Info = styled.div`
-    width: 90%;
-    height: 100%;
-
-    @media (max-width: 700px) {
-        width: 85%;
-    }
-`;
-
-const PostHeader = styled.div`
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 98%;
-`;
-
-const UsernameContainer = styled.div`
-    display: flex;
-    align-items: center;
-    max-width: ${({ isUser }) => (isUser ? "90%" : "99%")};
-    width: fit-content;
-    color: #ffffff;
-
-    & h2 {
-        font-size: 20px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: ${({ isUser, geolocation }) => {
-
-            if (geolocation) {
-                return isUser ? "93%" : "95%"
-            }
-
-            return isUser ? "100%" : "100%"
-        }};
-    }
-
-    @media (max-width: 700px) {
-       max-width: ${({ isUser, geolocation }) => {
-
-            if (geolocation) {
-                return isUser ? "90%" : "100%"
-            }
-
-            return isUser ? "90%" : "100%"
-        }};
-        & h2 {
-            font-size: 17px;
-            max-width: ${({ isUser, geolocation }) => {
-
-                if (geolocation) {
-                    return isUser ? "89%" : "94%"
-                }
-
-                return isUser ? "97%" : "100%"
-            }};
-        }
-    }
-`;
-
-const ContainerButtons = styled.div`
-    display: grid;
-    grid-auto-columns: 1fr;
-    grid-auto-flow: column;
-    grid-column-gap: 13px;
-`;
-
-const LocationIcon = styled(LocationFilledSvg)`
-    margin-left: 10px;
-    cursor: pointer;
-`;
-
-const Comment = styled.p`
-    color: #b7b7b7;
-    font-size: 17px;
-    line-height: 20px;
-    margin-bottom: 10px;
-    -webkit-line-clamp: 10;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    width: 503px;
-
-    & span {
-        font-weight: 700;
-        color: #ffffff;
-    }
-
-    @media (max-width: 700px) {
-        font-size: 15px;
-        width: 100%;
-    }
-`;
-
-const LinkBox = styled.div`
-    width: 503px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    border: 1px solid #4d4d4d;
-    border-radius: 11px;
-    overflow: hidden;
-
-    @media (max-width: 700px) {
-        width: 100%;
-    }
-`;
-
-const VideoBox = styled.div`
-    width: 503px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-
-    @media (max-width: 700px) {
-        width: 100%;
-    }
-`;
-
-const LinkText = styled.div`
-    width: 65%;
-    padding: 25px 20px;
-
-    @media (max-width: 700px) {
-        padding: 8px 11px;
-    }
-`;
-
-const LinkTitle = styled.div`
-    color: #cecece;
-    font-size: 16px;
-    margin-bottom: 5px;
-    -webkit-line-clamp: 2;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-
-    @media (max-width: 700px) {
-        font-size: 11px;
-    }
-`;
-
-const LinkDescription = styled.div`
-    font-size: 11px;
-    color: #9b9595;
-    margin-bottom: 15px;
-    -webkit-line-clamp: 3;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-
-    @media (max-width: 700px) {
-        font-size: 9px;
-    }
-`;
-
-const LinkRef = styled.p`
-    color: #cecece;
-    font-size: 11px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    @media (max-width: 700px) {
-        font-size: 9px;
-    }
-`;
-
-const VideoLink = styled.p`
-    color: #b7b7b7;
-    font-size: 17px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-top: 6px;
-    width: 98%;
-
-    @media (max-width: 700px) {
-        font-size: 13px;
-    }
-`;
-const LinkImg = styled.div`
-    width: 35%;
-    height: 150px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    & img {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
-`;
-
-const StyledReactTooltip = styled(ReactTooltip)`
-    font-weight: bold;
-    font-family: "Lato", sans-serif;
-`;

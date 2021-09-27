@@ -114,6 +114,8 @@ export default function Publish({ posts, setPosts }) {
         return newText;
     }
 
+    function addDefaultProfileImgSrc(ev) { ev.target.src = standardProfilePicture };
+
     return (
         <PublishStyle>
             <WhatToLikeToday>
@@ -149,7 +151,7 @@ export default function Publish({ posts, setPosts }) {
             </Form>
             <Link to="/my-posts">
                 <UserImg>
-                    {user ? <img src={user.avatar} alt="avatar do usuário" /> : ""}
+                    {user ? <img onError={(e) => addDefaultProfileImgSrc(e)} src={user.avatar} alt="Profile" /> : ""}
                 </UserImg>
             </Link>
         </PublishStyle>
@@ -290,7 +292,6 @@ const UserImg = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background: url(${standardProfilePicture});
     background-size: contain;
 
     & img {

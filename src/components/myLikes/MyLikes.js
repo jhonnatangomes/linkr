@@ -29,7 +29,7 @@ export default function MyPosts() {
     }, []);//eslint-disable-line react-hooks/exhaustive-deps
 
     function loadMorePosts() {
-        if (myLikes) {
+        if (myLikes !== null && myLikes.length > 0) {
             const lastPostId = myLikes[myLikes.length - 1].repostId
                 ? myLikes[myLikes.length - 1].repostId
                 : myLikes[myLikes.length - 1].id;

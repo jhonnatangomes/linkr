@@ -14,7 +14,7 @@ const ConfirmContent = ({ message, confirmText, confirmFunction, cancelText, clo
                     {cancelText || 'Cancelar'}
                 </CancelButton>
                 <ConfirmButton 
-                    width="134px" 
+                    width="150px" 
                     disabled={loading} 
                     onClick={confirmFunction}
                 >
