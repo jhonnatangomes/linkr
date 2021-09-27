@@ -44,9 +44,10 @@ export default function App() {
         <UserContext.Provider value={{ user, setUser }}>
             <ModalContext.Provider value={{ modal, setModal }}>
                 <FollowingContext.Provider value={{ followingUsers, setFollowingUsers }}>
-                    <Modal modal={modal} closeModal={closeModal} />
                     <Tooltip effect="solid" id="main" />
                     <BrowserRouter>
+                        <Modal modal={modal} closeModal={closeModal} />
+
                         <GlobalStyle />
                         <Tooltip/>
                         <Switch>

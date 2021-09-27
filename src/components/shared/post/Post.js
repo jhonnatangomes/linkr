@@ -16,6 +16,7 @@ import noPreviewImg from '../../assets/imgs/no-image.png';
 import { getComments, postComment } from '../../../services/commentPostApi';
 import CommentButton from "./CommentButton";
 import FollowingContext from "../../../contexts/FollowingContext";
+import { ReactComponent as LocationFilledSvg } from './../../../assets/icons/location-filled.svg';
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -59,6 +60,9 @@ export default function Post({ post }) {
             request.then((res) => { setComment(""); setUpdateComments(updateComments + 1) })
             request.catch(() => { alert('Algo deu errado, por favor tente novamente.') });
         }
+    }
+    const openMap = () => {
+        openModal({geolocation: post.geolocation, username: post.user.username})
     }
 
     const openPreview = (e) => {
@@ -140,11 +144,47 @@ export default function Post({ post }) {
                     </LeftBox>
 
                     <Info>
-                        <Username $isUser={post.user.id === user.id} data-tip={post.user.username} data-for="name-tooltip">
-                            <Link to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}>
-                                {post.user.username}
-                            </Link>
-                        </Username>
+                        <PostHeader isUser={post.user.id === user.id}>
+                            <UsernameContainer 
+                                isUser={post.user.id === user.id}
+                                geolocation={post.geolocation}
+                            >
+                                <h2>
+                                    <Link
+                                        to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}
+                                        data-tip={post.user.username}
+                                        data-for="name-tooltip"
+                                    >
+                                        {post.user.username}
+                                    </Link>
+                                </h2>
+
+                                {post.geolocation && (
+                                    <LocationIcon onClick={openMap} />
+                                )}
+                            </UsernameContainer>
+                                
+                                {post.user.id === user.id && (
+                                    <ContainerButtons>
+                                        <EditButton
+                                            postText={postText}
+                                            isEditing={isEditing}
+                                            setIsEditing={setIsEditing}
+                                            editText={editText}
+                                            setEditText={setEditText}
+                                            editPostRequest={editPostRequest}
+                                            setIsEditLoading={setIsEditLoading}
+                                        />
+                                        <DeleteButton
+                                            setIsDeleted={setIsDeleted}
+                                            openModal={openModal}
+                                            post={post}
+                                            user={user}
+                                        />
+                                    </ContainerButtons>
+                                )}
+                        </PostHeader>
+
                         {isEditing ? (
                             <Comment>
                                 <EditInput
@@ -208,26 +248,6 @@ export default function Post({ post }) {
                             </a>
                         )}
                     </Info>
-
-                    {post.user.id === user.id && (
-                        <ContainerButtons>
-                            <EditButton
-                                postText={postText}
-                                isEditing={isEditing}
-                                setIsEditing={setIsEditing}
-                                editText={editText}
-                                setEditText={setEditText}
-                                editPostRequest={editPostRequest}
-                                setIsEditLoading={setIsEditLoading}
-                            />
-                            <DeleteButton
-                                setIsDeleted={setIsDeleted}
-                                openModal={openModal}
-                                post={post}
-                                user={user}
-                            />
-                        </ContainerButtons>
-                    )}
                 </PostContainer>
 
                 {showComments && <CommentsBox>

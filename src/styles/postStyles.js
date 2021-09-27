@@ -11,7 +11,7 @@ const PostContainer = styled.div`
     padding: 20px;
     background-color: #171717;
     overflow: hidden;
-    margin-top: 15px;
+    margin-bottom: 15px;
     overflow-wrap: break-word;
 
     @media (max-width: 700px) {
@@ -65,33 +65,69 @@ const Info = styled.div`
     }
 `;
 
-const Username = styled.h2`
-    color: #ffffff;
-    font-size: 20px;
+const PostHeader = styled.div`
     margin-bottom: 10px;
-    width: ${({ $isUser }) => ($isUser ? "450px" : "503px")};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 98%;
+`;
+
+const UsernameContainer = styled.div`
+    display: flex;
+    align-items: center;
+    max-width: ${({ isUser }) => (isUser ? "90%" : "99%")};
+    width: fit-content;
+    color: #ffffff;
+
+    & h2 {
+        font-size: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: ${({ isUser, geolocation }) => {
+
+            if (geolocation) {
+                return isUser ? "93%" : "95%"
+            }
+
+            return isUser ? "100%" : "100%"
+        }};
+    }
 
     @media (max-width: 700px) {
-        font-size: 17px;
-        width: ${({ $isUser }) => ($isUser ? "84%" : "100%")};
+       max-width: ${({ isUser, geolocation }) => {
+
+            if (geolocation) {
+                return isUser ? "90%" : "100%"
+            }
+
+            return isUser ? "90%" : "100%"
+        }};
+        & h2 {
+            font-size: 17px;
+            max-width: ${({ isUser, geolocation }) => {
+
+                if (geolocation) {
+                    return isUser ? "89%" : "94%"
+                }
+
+                return isUser ? "97%" : "100%"
+            }};
+        }
     }
 `;
 
 const ContainerButtons = styled.div`
-    position: absolute;
-    top: 22px;
-    right: 22px;
     display: grid;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
     grid-column-gap: 13px;
+`;
 
-    @media (max-width: 700px) {
-        right: 5%;
-    }
+const LocationIcon = styled(LocationFilledSvg)`
+    margin-left: 10px;
+    cursor: pointer;
 `;
 
 const Comment = styled.p`
@@ -131,7 +167,7 @@ const LinkBox = styled.div`
 `;
 
 const VideoBox = styled.div`
-    width: 98%;
+    width: 503px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -205,7 +241,6 @@ const VideoLink = styled.p`
         font-size: 13px;
     }
 `;
-
 const LinkImg = styled.div`
     width: 35%;
     height: 150px;
@@ -373,4 +408,4 @@ const StyledArrow = styled(FiSend)`
     margin: 0 17px 0 0;
 `;
 
-export { PostContainer, LeftBox, UserImg, Info, Username, ContainerButtons, Comment, LinkBox, VideoBox, LinkText, LinkTitle, LinkDescription, LinkRef, VideoLink, LinkImg, StyledReactTooltip, SharedBy, ShareIcon, CommentsBox, PublishedComments, NewCommentBox, NewCommentInput, CommentBox, StyledArrow };
+export { PostContainer, LeftBox, UserImg, Info, PostHeader, UsernameContainer, ContainerButtons, LocationIcon, Comment, LinkBox, VideoBox, LinkText, LinkTitle, LinkDescription, LinkRef, VideoLink, LinkImg, StyledReactTooltip, SharedBy, ShareIcon, CommentsBox, PublishedComments, NewCommentBox, NewCommentInput, CommentBox, StyledArrow };
