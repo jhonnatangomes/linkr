@@ -27,13 +27,14 @@ export default function App() {
         setModal({ modalIsOpen: true, ...data });
     };
 
+
     useEffect(() => {
         if (user !== null ) {
         getFollowingList(user.token)
             .then((res) => setFollowingUsers(res.data.users.map((user) => user.id)))
             .catch(() => openModal({message: "Ocorreu algum erro!"}));
         }
-    },[]);
+    },[]);//eslint-disable-line react-hooks/exhaustive-deps
 
     const closeModal = () => {
         setModal({ modalIsOpen: false });
@@ -43,9 +44,10 @@ export default function App() {
         <UserContext.Provider value={{ user, setUser }}>
             <ModalContext.Provider value={{ modal, setModal }}>
                 <FollowingContext.Provider value={{ followingUsers, setFollowingUsers }}>
-                    <Modal modal={modal} closeModal={closeModal} />
                     <Tooltip effect="solid" id="main" />
                     <BrowserRouter>
+                        <Modal modal={modal} closeModal={closeModal} />
+
                         <GlobalStyle />
                         <Tooltip/>
                         <Switch>

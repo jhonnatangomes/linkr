@@ -11,14 +11,21 @@ function signUp(body) {
     return request;
 }
 
-function getPosts(token) {
+function getPosts(token, queryString = "") {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
         },
     };
 
-    const request = axios.get(`${URL_API}/following/posts`, config);
+    const request = axios.get(`${URL_API}/following/posts${queryString}`, config);
+    return request;
+}
+
+function getNewerPosts(token, actualNewerPost) {
+    const postId = actualNewerPost.repostId ? actualNewerPost.repostId : actualNewerPost.id;
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+    const request = axios.get(`${URL_API}/following/posts?earlierThan=${postId}`, config);
     return request;
 }
 
@@ -33,4 +40,4 @@ function createPost(body, token) {
     return request;
 }
 
-export { signIn, signUp, getPosts, createPost };
+export { signIn, signUp, getPosts, getNewerPosts, createPost };

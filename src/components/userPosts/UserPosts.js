@@ -1,44 +1,51 @@
 import styled from "styled-components";
-import { useState, useEffect, useContext } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import UserContext from '../../contexts/UserContext.js';
+import { useState, useEffect, useContext } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import UserContext from "../../contexts/UserContext.js";
 import ModalContext from "../../contexts/ModalContext.js";
-import { getUserPosts } from '../../services/userPostsApi.js';
-import { getUserInfo } from '../../services/userInfoApi.js';
+import { getUserPosts } from "../../services/userPostsApi.js";
+import { getUserInfo } from "../../services/userInfoApi.js";
 import NavBar from "../navBar/NavBar";
 import Trending from "../shared/Trending";
-import Follow from './Follow.js';
-import Post from '../shared/post/Post.js';
-import Loading from '../shared/Loading.js';
+import Follow from "./Follow.js";
+import Post from "../shared/post/Post.js";
+import Loading from "../shared/Loading.js";
+import Search from "../shared/search/Search";
 import NoPostsMessage from "../../styles/NoPostsMessage";
+import InfiniteScroll from "react-infinite-scroller";
+import noPreviewImg from '../assets/imgs/profile-standard.jpg';
 
-export default function MyPosts () {
+
+export default function MyPosts() {
     const { user } = useContext(UserContext);
     const { setModal } = useContext(ModalContext);
     const { id } = useParams();
     const [userInfo, setUserInfo] = useState("");
     const [userPosts, setUserPosts] = useState(null);
     const history = useHistory();
+    const [hasMore, setHasMore] = useState(1);
 
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
 
-    if (Number(id) === Number(user.id)) {
-        history.push('/my-posts');
-    }
+    function addDefaultPostImgSrc(ev) { ev.target.src = noPreviewImg };
+
 
     useEffect(() => {
+        setHasMore(1);
+        window.scrollTo(0, 0);
+        setUserPosts(null);
         if (user) {
             getUserInfo(id, user.token)
                 .then((response) => {
                     setUserInfo(response.data.user);
                 })
                 .catch((error) => {
-                    if(error.response.status === 500) {
-                        openModal({message: "Este usuário não existe!"});
+                    if (error.response.status === 500) {
+                        openModal({ message: "Este usuário não existe!" });
                     } else {
-                        openModal({message: "Ocorreu algum erro!"});
+                        openModal({ message: "Ocorreu algum erro!" });
                     }
                     history.push("/timeline");
                 });
@@ -47,22 +54,40 @@ export default function MyPosts () {
                 .then((response) => {
                     setUserPosts(response.data.posts);
                 })
-                .catch(() => openModal({message: "Ocorreu algum erro!"}));
+                .catch(() => openModal({ message: "Ocorreu algum erro!" }));
         } else {
             alert("Você não está logado!");
             history.push("/");
         }
-    }, []);
+    }, [id]);//eslint-disable-line react-hooks/exhaustive-deps
+
+    function loadMorePosts() {
+        if (userPosts) {
+            const lastPostId = userPosts[userPosts.length - 1].repostId
+                ? userPosts[userPosts.length - 1].repostId
+                : userPosts[userPosts.length - 1].id;
+            const request = getUserPosts(
+                id,
+                user.token,
+                `?olderThan=${lastPostId}`
+            );
+            request.then((res) => {
+                setUserPosts([...userPosts, ...res.data.posts]);
+                setHasMore(res.data.posts.length);
+            });
+        }
+    }
 
     return (
         <>
-        <NavBar />
+            <NavBar />
+            <Search layout="mobile" />
             <UserPostsContainer>
                 <div>
                     <TitleContainer>
                         <UserInfoBox>
                             <UserImg>
-                                <img src={userInfo.avatar} alt={userInfo.username} />
+                                <img onError={(e) => addDefaultPostImgSrc(e)} src={userInfo.avatar} alt={userInfo.username} />
                             </UserImg>
                             <Title>{userInfo.username}'s posts</Title>
                         </UserInfoBox>
@@ -70,9 +95,25 @@ export default function MyPosts () {
                     </TitleContainer>
                     <UserPostsBodyContainer>
                         <PostsListContainer>
-                            {userPosts === null ? <Loading />:<Container>
-                                {userPosts.length === 0 ? <NoPosts />: userPosts.map((post, index) => <Post key={index} post={post} />)}
-                            </Container>}
+                            <InfiniteScroll
+                                pageStart={0}
+                                loadMore={loadMorePosts}
+                                hasMore={!!hasMore}
+                            >
+                                {userPosts === null ? (
+                                    <Loading />
+                                ) : (
+                                    <Container>
+                                        {userPosts.length === 0 ? (
+                                            <NoPosts />
+                                        ) : (
+                                            userPosts.map((post, index) => (
+                                                <Post key={index} post={post} />
+                                            ))
+                                        )}
+                                    </Container>
+                                )}
+                            </InfiniteScroll>
                         </PostsListContainer>
                         <Trending />
                     </UserPostsBodyContainer>
@@ -82,14 +123,9 @@ export default function MyPosts () {
     );
 }
 
-function NoPosts () {
-    return (
-        <NoPostsMessage>
-            Este usuário não postou nada ainda!
-        </NoPostsMessage>
-    );
+function NoPosts() {
+    return <NoPostsMessage>Este usuário não postou nada ainda!</NoPostsMessage>;
 }
-
 
 const UserPostsContainer = styled.div`
     width: 100%;
