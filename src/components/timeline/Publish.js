@@ -149,7 +149,7 @@ export default function Publish({ posts, setPosts }) {
             </Form>
             <Link to="/my-posts">
                 <UserImg>
-                    {user ? <img src={user.avatar} alt="avatar do usuário" /> : ""}
+                    {user ? <img src={user.avatar} alt="" /> : ""}
                 </UserImg>
             </Link>
         </PublishStyle>

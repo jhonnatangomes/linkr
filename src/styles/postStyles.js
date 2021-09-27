@@ -277,6 +277,8 @@ const SharedBy = styled.div`
         font-size: 11px;
         line-height: 13px;
         color: #FFFFFF;
+        overflow: hidden;
+        text-overflow: ellipsis;
         span {
             font-weight: 700;
         }
@@ -367,6 +369,7 @@ const CommentBox = styled.div`
     display: flex;
     padding: 16px 0px 16px 0px;
     border-bottom: 1px solid #353535;
+    overflow-wrap: break-word;
     img {
         height: 40px;
         width: 40px;
@@ -374,7 +377,7 @@ const CommentBox = styled.div`
         margin: 0 18px 0 0;
     }
     div {
-        width: 100%;
+        width: calc(100% - 58px);
         display: flex;
         flex-direction: column;
         overflow-wrap: break-word;
@@ -382,6 +385,8 @@ const CommentBox = styled.div`
         font-family: Lato;
         font-size: 14px;
         line-height: 17px;
+        overflow: hidden;
+        text-overflow: ellipsis;
         h1 {
             font-family: Lato;
             font-weight: bold;
