@@ -271,14 +271,15 @@ const SharedBy = styled.div`
     display: flex;
     align-items: center;
     padding: 0 0 15px 15px;
-    z-index;
     h1 {
         font-family: Lato;
         font-size: 11px;
         line-height: 13px;
         color: #FFFFFF;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        padding: 0 10px 0 0;
         span {
             font-weight: 700;
         }
