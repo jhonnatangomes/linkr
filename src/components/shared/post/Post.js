@@ -257,13 +257,17 @@ export default function Post({ post }) {
                 {showComments && <CommentsBox>
                     <PublishedComments id={publishedContainerId}>
                         {comments && comments.map(comment => (<CommentBox key={comment.id}>
-                            <img onError={(e) => addDefaultProfileImgSrc(e)} src={comment.user.avatar} alt="Nome do usuário" />
+                            <Link to={comment.user.id === user.id ? "/my-posts" : `/user/${comment.user.id}`}>
+                                <img onError={(e) => addDefaultProfileImgSrc(e)} src={comment.user.avatar} alt="Nome do usuário" />
+                            </Link>
                             <div>
-                                <h1>
-                                    {comment.user.username}
-                                    <span>{comment.user.id === post.user.id ? " • post's author" : ""}</span>
-                                    <span>{followingUsers.includes(comment.user.id) ? " • following" : ""}</span>
-                                </h1>
+                                <Link to={comment.user.id === user.id ? "/my-posts" : `/user/${comment.user.id}`}>
+                                    <h1>
+                                        {comment.user.username}
+                                        <span>{comment.user.id === post.user.id ? " • post's author" : ""}</span>
+                                        <span>{followingUsers.includes(comment.user.id) ? " • following" : ""}</span>
+                                    </h1>
+                                </Link>
                                 <h2>{comment.text}</h2>
                             </div>
                         </CommentBox>))}
