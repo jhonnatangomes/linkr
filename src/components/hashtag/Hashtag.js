@@ -120,9 +120,11 @@ const PageTitle = styled.h1`
     }
 
     @media (max-width: 700px) {
-        margin: 19px 17px;
+        margin: 19px 0px;
+        padding: 0px 17px;
         font-size: 33px;
         line-height: 49px;
+        width: 100%;
     }
 `;
 
