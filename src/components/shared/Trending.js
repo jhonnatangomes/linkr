@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { getTrending } from "../../services/trendingApi";
 import React, { useState, useEffect, useContext } from "react";
 import UserContext from "../../contexts/UserContext";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import { useHistory } from "react-router";
 

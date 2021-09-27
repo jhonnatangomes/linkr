@@ -28,15 +28,15 @@ export default function Hashtag() {
     }, [hashtag]);//eslint-disable-line react-hooks/exhaustive-deps
 
     function loadMorePosts() {
-        if(posts) {
+        if(posts !== null && posts.length > 0) {
             const lastPostId = posts[posts.length - 1].repostId
             ? posts[posts.length - 1].repostId
             : posts[posts.length - 1].id;
-        const request = getHashtagPosts(hashtag, user.token, `?olderThan=${lastPostId}`);
-        request.then((res) => {
-            setPosts([...posts, ...res.data.posts]);
-            setHasMore(res.data.posts.length);
-        });
+            const request = getHashtagPosts(hashtag, user.token, `?olderThan=${lastPostId}`);
+            request.then((res) => {
+                setPosts([...posts, ...res.data.posts]);
+                setHasMore(res.data.posts.length);
+            });
         }
     }
 
