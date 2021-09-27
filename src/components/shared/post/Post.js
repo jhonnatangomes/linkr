@@ -256,7 +256,7 @@ export default function Post({ post }) {
 
                 {showComments && <CommentsBox>
                     <PublishedComments id={publishedContainerId}>
-                        {comments && comments.map(comment => (<CommentBox>
+                        {comments && comments.map(comment => (<CommentBox key={comment.id}>
                             <img onError={(e) => addDefaultProfileImgSrc(e)} src={comment.user.avatar} alt="Nome do usuário" />
                             <div>
                                 <h1>
