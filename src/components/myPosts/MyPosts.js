@@ -26,7 +26,7 @@ export default function MyPosts() {
             alert("Você não está logado!");
             history.push("/");
         }
-    }, []);
+    }, []);//eslint-disable-line react-hooks/exhaustive-deps
 
     function loadMorePosts() {
         if (myPosts) {

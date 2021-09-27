@@ -1,10 +1,30 @@
 import styled from "styled-components";
 import ReactModal from 'react-modal';
+import { useState, useEffect } from "react";
+import { ReactComponent as CloseSvg } from '../../../assets/icons/close.svg';
+import MapContent from './MapContent';
+import ConfirmContent from './ConfirmContent';
+import AlertContent from './AlertContent';
+import PreviewContent from './PreviewContent'
+import { useHistory } from 'react-router-dom';
+
 ReactModal.setAppElement('#root');
 
 const Modal = ({ modal, closeModal }) => {
 
-    const { modalIsOpen, message, onConfirm, confirmText, loading, cancelText} = modal;
+    const { modalIsOpen, message, onConfirm, confirmText, loading, cancelText, preview, geolocation, username} = modal;
+    const history = useHistory();
+
+    const types = {
+        GEOLOCATION: 'GEOLOCATION',
+        PREVIEW: 'PREVIEW',
+        CONFIRM: 'CONFIRM',
+        ALERT: 'ALERT',
+        NONE: 'NONE'
+    }
+
+    const [type, setType] = useState(types.NONE);
+
     let confirmFunction = onConfirm;
 
     if (!modal.onConfirm) {
@@ -15,9 +35,48 @@ const Modal = ({ modal, closeModal }) => {
         closeModal = () => {}
     }
 
+    const CloseButton = () => {
+        return (
+            <CloseIcon onClick={closeModal} />
+        )
+    }
+
+    useEffect(() => {
+        if (modalIsOpen) {
+            document.body.style.overflow = 'hidden';
+
+            window.onpopstate = e => {
+                closeModal();
+                history.push(history.location);
+            }
+
+            if (geolocation) {
+                setType(types.GEOLOCATION);
+
+            } else if (preview) {
+                setType(types.PREVIEW);
+
+            } else if (onConfirm) {
+                setType(types.CONFIRM);
+
+            } else if (message) {
+                setType(types.ALERT);
+
+            }
+
+        } else {
+            document.body.style.overflow = 'scroll';
+            window.onpopstate = e => {
+
+            }
+        }
+
+    }, [modalIsOpen, onConfirm]); //eslint-disable-line react-hooks/exhaustive-deps
+
+ 
     const customStyles = {
         content: {
-            top: '50%',
+            top: 'calc(50% - 100px)',
             left: '50%',
             right: 'auto',
             bottom: 'auto',
@@ -25,93 +84,83 @@ const Modal = ({ modal, closeModal }) => {
             transform: 'translate(-50%, -50%)',
             background: '#333333',
             color: '#FFFFFF',
-            borderRadius: '50px',
-            maxWidth: '597px',
-            width: '90%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            textAlign: 'center',
-            lineHeight: '41px'
-        }
+            borderRadius: (preview || geolocation) ? '20px' : '50px',
+            overflow: 'hidden',
+        },
+        overlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: '-200px',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            zIndex: 6
+        },
     };
+
 
     return (
         <ReactModal
             isOpen={modalIsOpen}
             onRequestClose={closeModal}
             style={customStyles}
-        >
-            <ModalContent>
-                <Message>
-                    {message}
-                </Message>
-                <ContainerButtons>
-                    {onConfirm && (
-                        <CancelButton disabled={loading} onClick={closeModal}>
-                            {cancelText || 'Cancelar'}
-                        </CancelButton>
+        >  
+            {modalIsOpen && (
+                <ModalContent>
+                    {(type === types.ALERT) && (
+                        <AlertContent
+                            closeModal={closeModal}
+                            message={message}
+                            confirmText={confirmText}
+                            confirmFunction={confirmFunction}
+                            cancelText={cancelText}
+                            loading={loading}
+                        />
                     )}
 
-                    <ConfirmButton disabled={loading} onClick={confirmFunction}>
-                        {confirmText || 'OK'}
-                     </ConfirmButton>
-                </ContainerButtons>
-            </ModalContent>
+                    {(type === types.CONFIRM) && (
+                        <ConfirmContent
+                            closeModal={closeModal}
+                            message={message}
+                            confirmText={confirmText}
+                            confirmFunction={confirmFunction}
+                            cancelText={cancelText}
+                            loading={loading}
+                        />
+                    )}
+
+                    {(type === types.GEOLOCATION) && (
+                        <MapContent
+                            username={username}
+                            CloseButton={CloseButton}
+                            geolocation={geolocation}
+                        />
+                    )}
+
+                    {(type === types.PREVIEW) && (
+                        <PreviewContent 
+                            closeModal={closeModal}
+                            CloseButton={CloseButton}
+                            preview={preview}
+                        />
+                    )}
+
+                </ModalContent>
+            )}
         </ReactModal>
     )
 }
 
-const Message = styled.span`
-    font-size: 32px;
-    font-weight: bold;
-    font-family: Lato;
-
-    @media (max-width: 700px) {
-        font-size: 28px;
-    }
-`;
-
-const ContainerButtons = styled.div`
-    display: grid;
-    grid-auto-columns: 1fr;
-    grid-auto-flow: column;
-    justify-content: center;
-    align-items: center;
-    justify-items: center;
-    margin: 0 auto;
-    width: fit-content;
-    column-gap: 27px;
-    margin-top: 48px;
-`;
-
-const ConfirmButton = styled.button`
-    background: #1877f2;
-    color: #ffffff;
-
-    &:not([disabled]):hover {
-        background-color: #18a9f2;
-    }
-`;
-
-const CancelButton = styled.button`
-    background: #FFFFFF;
-    color: #1877f2;
-
-    &:not([disabled]):hover {
-        color: #18a9f2;
-    }
+const CloseIcon = styled(CloseSvg)`
+    font-size: 30px;
+    cursor: pointer;
 `;
 
 const ModalContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 75%;
-    margin-bottom: 46px;
-    margin-top: 18px;
-
+    width: fit-content;
+    height: fit-content;
     & button {
-        width: 134px;
+        padding: 0 17px;
         min-height: 37px;
         border-radius: 5px;
         font-family: Lato;
@@ -124,10 +173,6 @@ const ModalContent = styled.div`
             opacity: 0.7;
             cursor: not-allowed;
         }
-    }
-
-    @media (max-width: 700px) {
-         width: 90%;
     }
 `;
 

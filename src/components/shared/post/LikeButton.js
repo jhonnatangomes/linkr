@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { ReactComponent as OutlineHeartSvg } from '../../../assets/icons/outline-heart.svg';
 import { ReactComponent as FilledHeartSvg } from '../../../assets/icons/filled-heart.svg';
-
 import { useState } from "react";
 import { likePost, dislikePost } from "../../../services/likePostApi";
 

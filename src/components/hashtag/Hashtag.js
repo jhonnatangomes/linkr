@@ -25,7 +25,7 @@ export default function Hashtag() {
         request.then((res) => {
             setPosts(res.data.posts);
         });
-    }, [hashtag]);
+    }, [hashtag]);//eslint-disable-line react-hooks/exhaustive-deps
 
     function loadMorePosts() {
         if(posts) {

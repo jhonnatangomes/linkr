@@ -13,6 +13,8 @@ import Loading from "../shared/Loading.js";
 import Search from "../shared/search/Search";
 import NoPostsMessage from "../../styles/NoPostsMessage";
 import InfiniteScroll from "react-infinite-scroller";
+import noPreviewImg from '../assets/imgs/profile-standard.jpg';
+
 
 export default function MyPosts() {
     const { user } = useContext(UserContext);
@@ -26,6 +28,9 @@ export default function MyPosts() {
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
+
+    function addDefaultPostImgSrc(ev) { ev.target.src = noPreviewImg };
+
 
     useEffect(() => {
         setHasMore(1);
@@ -54,7 +59,7 @@ export default function MyPosts() {
             alert("Você não está logado!");
             history.push("/");
         }
-    }, [id]);
+    }, [id]);//eslint-disable-line react-hooks/exhaustive-deps
 
     function loadMorePosts() {
         if (userPosts) {
@@ -82,10 +87,7 @@ export default function MyPosts() {
                     <TitleContainer>
                         <UserInfoBox>
                             <UserImg>
-                                <img
-                                    src={userInfo.avatar}
-                                    alt={userInfo.username}
-                                />
+                                <img onError={(e) => addDefaultPostImgSrc(e)} src={userInfo.avatar} alt={userInfo.username} />
                             </UserImg>
                             <Title>{userInfo.username}'s posts</Title>
                         </UserInfoBox>

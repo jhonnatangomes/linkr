@@ -196,7 +196,7 @@ const SearchResult = styled.div`
 
     span:nth-child(2) {
         max-width: ${({ layout }) =>
-            layout === "desktop" ? "378px" : "calc(93vw - 34px - 151px)"};
+            layout === "desktop" ? "365px" : "calc(93vw - 34px - 175px)"};
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
