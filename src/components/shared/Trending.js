@@ -7,9 +7,10 @@ import ReactTooltip from "react-tooltip";
 import { useHistory } from "react-router";
 
 export default function Trending() {
-    const { user } = useContext(UserContext);
-    const [trending, setTrending] = useState([]);
-    const history = useHistory();
+  const { user } = useContext(UserContext);
+  const [trending, setTrending] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const history = useHistory();
 
     useEffect(() => {
         if (user) {
@@ -23,32 +24,43 @@ export default function Trending() {
         }
     }, []);//eslint-disable-line react-hooks/exhaustive-deps
 
-    return (
-        <TrendingStyle>
-            <p>trending</p>
-            <DivisionLine />
-            <HashtagContainer>
-                {trending.map((topic) => (
-                    <Link to={`/hashtag/${topic.name}`} key={topic.id}>
-                        <p
-                            data-tip={"#" + topic.name}
-                            data-for="hashtag-tooltip"
-                        >
-                            #{topic.name}
-                        </p>
-                    </Link>
-                ))}
-            </HashtagContainer>
-            <StyledReactTooltip
-                arrowColor="rgba(255, 255, 255, 0.9)"
-                place="bottom"
-                backgroundColor="rgba(255, 255, 255, 0.9)"
-                textColor="#505050"
-                effect="float"
-                id="hashtag-tooltip"
-            />
-        </TrendingStyle>
-    );
+  function searchHashtag (e) {
+    e.preventDefault();
+    history.push(`/hashtag/${searchValue}`);
+  }
+
+  return (
+    <TrendingStyle>
+      <p>trending</p>
+      <DivisionLine />
+      <HashtagContainer>
+        {trending.map((topic) => (
+          <Link to={`/hashtag/${topic.name}`} key={topic.id}>
+            <p
+              data-tip={"#" + topic.name}
+              data-for="hashtag-tooltip"
+            >
+              #{topic.name}
+            </p>
+          </Link>
+        ))}
+        <SearchBox onSubmit={searchHashtag}>
+          <Hashtag>
+            #
+          </Hashtag>
+          <SearchInput value={searchValue} type="text" placeholder="type a hashtag" onChange={(event) => setSearchValue(event.target.value)} />
+        </SearchBox>
+      </HashtagContainer>
+      <StyledReactTooltip
+        arrowColor="rgba(255, 255, 255, 0.9)"
+        place="bottom"
+        backgroundColor="rgba(255, 255, 255, 0.9)"
+        textColor="#505050"
+        effect="float"
+        id="hashtag-tooltip"
+      />
+    </TrendingStyle>
+  );
 }
 
 const TrendingStyle = styled.div`
@@ -98,6 +110,42 @@ const HashtagContainer = styled.div`
     & p:hover {
         text-decoration: underline;
     }
+`;
+
+const SearchBox = styled.form`
+  width: 100%;
+  height: 35px;
+  position: relative;
+`;
+
+const Hashtag = styled.div`
+  position: absolute;
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 700;
+  top: 50%;
+  left: 10px;
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  height: 100%;
+  background-color: #252525;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Lato', sans-serif;
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 700;
+  padding-left: 25px;
+  margin-top: 10px;
+
+  ::placeholder {
+    font-size: 16px;
+    color: #575757;
+    font-weight: 400;
+    font-style: italic;
+  }
 `;
 
 const StyledReactTooltip = styled(ReactTooltip)`

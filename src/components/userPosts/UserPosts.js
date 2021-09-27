@@ -62,7 +62,7 @@ export default function MyPosts() {
     }, [id]);//eslint-disable-line react-hooks/exhaustive-deps
 
     function loadMorePosts() {
-        if (userPosts) {
+        if (userPosts !== null && userPosts.length > 0) {
             const lastPostId = userPosts[userPosts.length - 1].repostId
                 ? userPosts[userPosts.length - 1].repostId
                 : userPosts[userPosts.length - 1].id;

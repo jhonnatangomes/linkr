@@ -54,14 +54,16 @@ export default function PostsList({ posts, setPosts }) {
     useInterval(() => {newerPost && addNewPosts()}, 15000);
 
     function loadMorePosts() {
-        const lastPostId = posts[posts.length - 1].repostId
-            ? posts[posts.length - 1].repostId
-            : posts[posts.length - 1].id;
-        const request = getPosts(user.token, `?olderThan=${lastPostId}`);
-        request.then((res) => {
-            setPosts([...posts, ...res.data.posts]);
-            setHasMore(res.data.posts.length);
-        });
+        if (posts !== null && posts.length > 0) {
+            const lastPostId = posts[posts.length - 1].repostId
+                ? posts[posts.length - 1].repostId
+                : posts[posts.length - 1].id;
+            const request = getPosts(user.token, `?olderThan=${lastPostId}`);
+            request.then((res) => {
+                setPosts([...posts, ...res.data.posts]);
+                setHasMore(res.data.posts.length);
+            });
+        }
     }
 
     return (
