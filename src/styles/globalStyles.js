@@ -9,6 +9,9 @@ const GlobalStyle = createGlobalStyle`
   * {
       word-wrap: break-word;
       scrollbar-width: none;
+      ::-webkit-scrollbar {
+        display: none;
+      }
   }
 `
 
