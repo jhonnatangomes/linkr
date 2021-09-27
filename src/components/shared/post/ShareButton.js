@@ -22,7 +22,7 @@ export default function ShareButton({post, user, openModal}) {
     return (
         <>
             <ShareIconButton onClick={openSharePostDialog} />
-            <ShareCounter data-for="main">
+            <ShareCounter>
                 {post.repostCount === 1 ? `${post.repostCount} re-post` : `${post.repostCount || 0} re-posts`}
             </ShareCounter>
         </>

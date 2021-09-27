@@ -6,7 +6,7 @@ export default function CommmentButton({comments, showComments, setShowComments}
     return (
         <>
             <CommentIconButton onClick={() => setShowComments(!showComments)} />
-            <CommentsCounter data-for="main">
+            <CommentsCounter>
                 {comments.length === 1 ? `${comments.length} comment` : `${comments.length || 0} comments`}
             </CommentsCounter>
         </>
