@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { ImLoop } from "react-icons/im";
 import { FiSend } from "react-icons/fi";
 import ReactTooltip from "react-tooltip";
+import { ReactComponent as LocationFilledSvg } from '../assets/icons/location-filled.svg';
 
 const PostContainer = styled.div`
     position: relative;
@@ -11,7 +12,7 @@ const PostContainer = styled.div`
     padding: 20px;
     background-color: #171717;
     overflow: hidden;
-    margin-bottom: 15px;
+    margin: 16px 0 16px 0;
     overflow-wrap: break-word;
 
     @media (max-width: 700px) {
@@ -295,7 +296,7 @@ const CommentsBox = styled.div`
     max-height: 300px;
     width: 100%;
     padding: 32px 25px 25px 25px;
-    margin: -32px 0 0 0;
+    margin: -48px 0 0 0;
     background: #1E1E1E;
     border-radius: 16px;
     display: flex;
@@ -406,6 +407,7 @@ const StyledArrow = styled(FiSend)`
     color: #F3F3F3;
     font-size: 20px;
     margin: 0 17px 0 0;
+    cursor: pointer;
 `;
 
 export { PostContainer, LeftBox, UserImg, Info, PostHeader, UsernameContainer, ContainerButtons, LocationIcon, Comment, LinkBox, VideoBox, LinkText, LinkTitle, LinkDescription, LinkRef, VideoLink, LinkImg, StyledReactTooltip, SharedBy, ShareIcon, CommentsBox, PublishedComments, NewCommentBox, NewCommentInput, CommentBox, StyledArrow };

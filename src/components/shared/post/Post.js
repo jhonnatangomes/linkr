@@ -1,4 +1,4 @@
-import { PostContainer, LeftBox, UserImg, Info, Username, ContainerButtons, Comment, LinkBox, VideoBox, LinkText, LinkTitle, LinkDescription, LinkRef, VideoLink, LinkImg, StyledReactTooltip, SharedBy, ShareIcon, CommentsBox, PublishedComments, NewCommentBox, CommentBox, StyledArrow, NewCommentInput } from "../../../styles/postStyles";
+import { PostContainer, LeftBox, UserImg, Info, PostHeader, UsernameContainer, ContainerButtons, LocationIcon, Comment, LinkBox, VideoBox, LinkText, LinkTitle, LinkDescription, LinkRef, VideoLink, LinkImg, StyledReactTooltip, SharedBy, ShareIcon, CommentsBox, PublishedComments, NewCommentBox, NewCommentInput, CommentBox, StyledArrow } from "../../../styles/postStyles";
 import { Link } from "react-router-dom";
 import UserContext from "../../../contexts/UserContext.js";
 import ModalContext from "../../../contexts/ModalContext.js";
@@ -16,7 +16,6 @@ import noPreviewImg from '../../assets/imgs/no-image.png';
 import { getComments, postComment } from '../../../services/commentPostApi';
 import CommentButton from "./CommentButton";
 import FollowingContext from "../../../contexts/FollowingContext";
-import { ReactComponent as LocationFilledSvg } from './../../../assets/icons/location-filled.svg';
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -28,19 +27,17 @@ export default function Post({ post }) {
     const [postText, setPostText] = useState(post.text);
     const [showComments, setShowComments] = useState(false);
     const [comments, setComments] = useState([]);
-    const [scrollComments, setScrollComments] = useState(0);
     const { followingUsers } = useContext(FollowingContext);
     const [comment, setComment] = useState("");
     const [updateComments, setUpdateComments] = useState(0);
-
     const videoId = getYouTubeID(post.link);
     const isVideo = Boolean(videoId);
-
     let publishedContainerId = 'id';
-    let list = document.getElementById(publishedContainerId);
-
-    useEffect(() => { setScrollComments(scrollComments + 1) },[showComments]);
-    useEffect(() => { if(list) list.scrollTop = list.scrollHeight },[scrollComments]);
+    
+    useEffect(() => { 
+        let list = document.getElementById(publishedContainerId);
+        if(list) list.scrollTop = list.scrollHeight;
+    },[comments, showComments]);
 
     useEffect(() => {
         const request = getComments(post.id, user.token);
@@ -56,11 +53,18 @@ export default function Post({ post }) {
         const key = e.key;
         if (key === "Enter") {
             e.preventDefault();
+            publishComment();
+        }
+    }
+
+    function publishComment() {
+        if (comment) {
             const request = postComment(post.id, user.token, comment);
             request.then((res) => { setComment(""); setUpdateComments(updateComments + 1) })
             request.catch(() => { alert('Algo deu errado, por favor tente novamente.') });
-        }
+        } else { alert("Não é impossível enviar um comentário vazio!" )}
     }
+
     const openMap = () => {
         openModal({geolocation: post.geolocation, username: post.user.username})
     }
@@ -268,7 +272,7 @@ export default function Post({ post }) {
                         <img onError={(e) => addDefaultProfileImgSrc(e)} src={user.avatar} alt="Nome do usuário" />
                         <NewCommentInput>
                             <textarea rows="1" placeholder={'escreva um comentário...'} onKeyDown={checkKey} onChange={(e)=>setComment(e.target.value)} value={comment}></textarea>
-                            <StyledArrow/>
+                            <StyledArrow onClick={() => publishComment()}/>
                         </NewCommentInput>
                     </NewCommentBox>
                 </CommentsBox>}
