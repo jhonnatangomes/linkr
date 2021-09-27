@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import { createPost } from "../../services/api";
 import { Link } from "react-router-dom";
 import standardProfilePicture from '../assets/imgs/profile-standard.jpg';
+import { ReactComponent as LocationOutlineSvg } from './../../assets/icons/location-outline.svg';
 
 export default function Publish({ posts, setPosts }) {
     const { user } = useContext(UserContext);
@@ -12,11 +13,40 @@ export default function Publish({ posts, setPosts }) {
     const [loading, setLoading] = useState(false);
     const [text, setText] = useState("");
     const [link, setLink] = useState("");
+    const [locationState, setLocationState] = useState({active: false})
 
     function openModal(data) {
         setModal({ modalIsOpen: true, ...data });
     }
 
+    const toggleLocation = () => {
+
+        if (locationState.active) {
+            setLocationState({ ...locationState, active: false });
+            return;
+        }
+
+        if (navigator.geolocation) {
+            const savePosition = (geolocation) => {
+                const { latitude, longitude } = geolocation.coords;
+                setLocationState({
+                    active: !locationState.active,
+                    latitude,
+                    longitude
+                });
+            }
+
+            function positionError() {
+                openModal({ message: 'Ative a localização do navegador para usar o recurso' });
+            }
+
+            navigator.geolocation.getCurrentPosition(savePosition, positionError);
+
+        } else {
+            openModal({ message: 'Seu navegador não suporta geolocalização' });
+            setLocationState({ ...locationState, active: false });
+        }
+    }
 
     function publish(e) {
         e.preventDefault();
@@ -25,17 +55,32 @@ export default function Publish({ posts, setPosts }) {
             sentence[0] === "#" ? sentence.toLowerCase() : sentence
         );
         let formattedText = formatArray.join("");
-        const body = {
-            text: formattedText,
-            link,
-        };
+
+        let body;
+
+        if (locationState.active) {
+            body = {
+                text: formattedText,
+                link,
+                geolocation: {
+                    latitude: `${locationState.latitude}`,
+                    longitude: `${locationState.longitude}`
+                }
+            };
+        } else {
+             body = {
+                text: formattedText,
+                link
+            };
+        }
 
         const request = createPost(body, user.token);
+
         request.then((res) => {
             setText("");
             setLink("");
             setLoading(false);
-            setPosts([res.data.post, ...posts]);
+            setPosts([{...res.data.post, geolocation: res.data.geolocation}, ...posts]);
         });
         request.catch(() => {
             setLoading(false);
@@ -92,6 +137,12 @@ export default function Publish({ posts, setPosts }) {
                     onKeyDown={checkEnterKey}
                     maxLength={50000}
                 />
+                <LocationContainer active={locationState.active} onClick={toggleLocation}>
+                    <LocationOutlineSvg />
+                    <span>
+                        {locationState.active ? 'Localização ativada' : 'Localização desativada'}
+                    </span>
+                </LocationContainer>
                 <button type="submit" disabled={loading}>
                     {loading ? "Publicando..." : "Publicar"}
                 </button>
@@ -104,6 +155,28 @@ export default function Publish({ posts, setPosts }) {
         </PublishStyle>
     );
 }
+
+const LocationContainer = styled.div`
+    display: flex;
+    align-items: center;
+    color: ${({ active }) => active ? '#238700' : '#949494' };
+    cursor: pointer;
+    width: fit-content;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+
+    svg path {
+        fill: ${({ active }) => active ? '#238700' : '#949494' };
+    }
+
+    span {
+        font-weight: 300;
+        font-size: 13px;
+        margin-left: 5px;
+    }
+`;
 
 const PublishStyle = styled.div`
     background: white;

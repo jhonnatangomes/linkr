@@ -12,6 +12,7 @@ import { editPost } from "../../../services/editPostApi";
 import getYouTubeID from "get-youtube-id";
 import standardProfilePicture from '../../assets/imgs/profile-standard.jpg';
 import noPreviewImg from '../../assets/imgs/no-image.png';
+import { ReactComponent as LocationFilledSvg } from './../../../assets/icons/location-filled.svg';
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -25,10 +26,15 @@ export default function Post({ post }) {
     const videoId = getYouTubeID(post.link);
     const isVideo = Boolean(videoId);
 
-
     const openModal = (data) => {
         setModal({ modalIsOpen: true, ...data });
     };
+
+    const openMap = () => {
+        openModal({
+            geolocation: post.geolocation, 
+            username: post.user.username})
+    }
 
     const openPreview = (e) => {
         e.preventDefault();
@@ -105,15 +111,47 @@ export default function Post({ post }) {
                     </LeftBox>
 
                     <Info>
-                        <Username
-                            $isUser={post.user.id === user.id}
-                            data-tip={post.user.username}
-                            data-for="name-tooltip"
-                        >
-                            <Link to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}>
-                                {post.user.username}
-                            </Link>
-                        </Username>
+                        <PostHeader isUser={post.user.id === user.id}>
+                            <UsernameContainer 
+                                isUser={post.user.id === user.id}
+                                geolocation={post.geolocation}
+                            >
+                                <h2>
+                                    <Link
+                                        to={post.user.id === user.id ? "/my-posts" : `/user/${post.user.id}`}
+                                        data-tip={post.user.username}
+                                        data-for="name-tooltip"
+                                    >
+                                        {post.user.username}
+                                    </Link>
+                                </h2>
+
+                                {post.geolocation && (
+                                    <LocationIcon onClick={openMap} />
+                                )}
+                            </UsernameContainer>
+                                
+                                {post.user.id === user.id && (
+                                    <ContainerButtons>
+                                        <EditButton
+                                            postText={postText}
+                                            isEditing={isEditing}
+                                            setIsEditing={setIsEditing}
+                                            editText={editText}
+                                            setEditText={setEditText}
+                                            editPostRequest={editPostRequest}
+                                            setIsEditLoading={setIsEditLoading}
+                                        />
+                                        <DeleteButton
+                                            setIsDeleted={setIsDeleted}
+                                            openModal={openModal}
+                                            post={post}
+                                            user={user}
+                                        />
+                                    </ContainerButtons>
+                                )}
+                        </PostHeader>
+
                         {isEditing ? (
                             <Comment>
                                 <EditInput
@@ -182,26 +220,6 @@ export default function Post({ post }) {
                             </a>
                         )}
                     </Info>
-
-                    {post.user.id === user.id && (
-                        <ContainerButtons>
-                            <EditButton
-                                postText={postText}
-                                isEditing={isEditing}
-                                setIsEditing={setIsEditing}
-                                editText={editText}
-                                setEditText={setEditText}
-                                editPostRequest={editPostRequest}
-                                setIsEditLoading={setIsEditLoading}
-                            />
-                            <DeleteButton
-                                setIsDeleted={setIsDeleted}
-                                openModal={openModal}
-                                post={post}
-                                user={user}
-                            />
-                        </ContainerButtons>
-                    )}
                 </PostContainer>
             )}
         </>
@@ -270,33 +288,69 @@ const Info = styled.div`
     }
 `;
 
-const Username = styled.h2`
-    color: #ffffff;
-    font-size: 20px;
+const PostHeader = styled.div`
     margin-bottom: 10px;
-    width: ${({ $isUser }) => ($isUser ? "450px" : "503px")};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 98%;
+`;
+
+const UsernameContainer = styled.div`
+    display: flex;
+    align-items: center;
+    max-width: ${({ isUser }) => (isUser ? "90%" : "99%")};
+    width: fit-content;
+    color: #ffffff;
+
+    & h2 {
+        font-size: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: ${({ isUser, geolocation }) => {
+
+            if (geolocation) {
+                return isUser ? "93%" : "95%"
+            }
+
+            return isUser ? "100%" : "100%"
+        }};
+    }
 
     @media (max-width: 700px) {
-        font-size: 17px;
-        width: ${({ $isUser }) => ($isUser ? "84%" : "100%")};
+       max-width: ${({ isUser, geolocation }) => {
+
+            if (geolocation) {
+                return isUser ? "90%" : "100%"
+            }
+
+            return isUser ? "90%" : "100%"
+        }};
+        & h2 {
+            font-size: 17px;
+            max-width: ${({ isUser, geolocation }) => {
+
+                if (geolocation) {
+                    return isUser ? "89%" : "94%"
+                }
+
+                return isUser ? "97%" : "100%"
+            }};
+        }
     }
 `;
 
 const ContainerButtons = styled.div`
-    position: absolute;
-    top: 22px;
-    right: 22px;
     display: grid;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
     grid-column-gap: 13px;
+`;
 
-    @media (max-width: 700px) {
-        right: 5%;
-    }
+const LocationIcon = styled(LocationFilledSvg)`
+    margin-left: 10px;
+    cursor: pointer;
 `;
 
 const Comment = styled.p`
@@ -336,7 +390,7 @@ const LinkBox = styled.div`
 `;
 
 const VideoBox = styled.div`
-    width: 98%;
+    width: 503px;
     height: 100%;
     display: flex;
     align-items: center;
